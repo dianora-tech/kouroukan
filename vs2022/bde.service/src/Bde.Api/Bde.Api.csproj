@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bde.Api</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bde.Domain\Bde.Domain.csproj" />
+    <ProjectReference Include="..\Bde.Application\Bde.Application.csproj" />
+    <ProjectReference Include="..\Bde.Infrastructure\Bde.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\gn-core-libraries\GnDapper\GnDapper.csproj" />
+    <ProjectReference Include="..\..\..\gn-core-libraries\GnSecurity\GnSecurity.csproj" />
+    <ProjectReference Include="..\..\..\gn-core-libraries\GnMessaging\GnMessaging.csproj" />
+    <ProjectReference Include="..\..\..\gn-core-libraries\GnValidation\GnValidation.csproj" />
+  </ItemGroup>
+
+</Project>

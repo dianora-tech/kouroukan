@@ -1,0 +1,447 @@
+# =============================================================================
+# Kouroukan - Docker Compose (100% open-source)
+# =============================================================================
+# Usage:
+#   cp .env.example .env   # Configurer les secrets
+#   docker compose build --parallel
+#   docker compose up -d
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # REVERSE PROXY
+  # ===========================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: kouroukan-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - certbot-certs:/etc/letsencrypt:ro
+      - certbot-www:/var/www/certbot:ro
+    depends_on:
+      frontend:
+        condition: service_healthy
+      portal:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Renouvellement SSL automatique
+  certbot:
+    image: certbot/certbot:latest
+    container_name: kouroukan-certbot
+    volumes:
+      - certbot-certs:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done;'"
+    restart: unless-stopped
+
+  # ===========================================================================
+  # FRONTEND APPLICATIF (Nuxt 4 SSR)
+  # ===========================================================================
+  frontend:
+    build:
+      context: ../kouroukan.front
+      dockerfile: Dockerfile
+    container_name: kouroukan-frontend
+    environment:
+      - NUXT_PUBLIC_API_BASE_URL=http://gateway:5000
+    depends_on:
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===========================================================================
+  # PORTAIL PUBLIC (Nuxt 4 SSG)
+  # ===========================================================================
+  portal:
+    build:
+      context: ../kouroukan.portal
+      dockerfile: Dockerfile
+    container_name: kouroukan-portal
+    restart: unless-stopped
+
+  # ===========================================================================
+  # GATEWAY API (.NET 8 / YARP)
+  # ===========================================================================
+  gateway:
+    build:
+      context: ../vs2022
+      dockerfile: kouroukan.api/Dockerfile
+    container_name: kouroukan-gateway
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
+      - Redis__ConnectionString=redis:6379
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===========================================================================
+  # MICROSERVICES
+  # ===========================================================================
+  inscriptions-service:
+    build:
+      context: ../vs2022
+      dockerfile: inscriptions.service/Dockerfile
+    container_name: kouroukan-inscriptions
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  pedagogie-service:
+    build:
+      context: ../vs2022
+      dockerfile: pedagogie.service/Dockerfile
+    container_name: kouroukan-pedagogie
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  evaluations-service:
+    build:
+      context: ../vs2022
+      dockerfile: evaluations.service/Dockerfile
+    container_name: kouroukan-evaluations
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  presences-service:
+    build:
+      context: ../vs2022
+      dockerfile: presences.service/Dockerfile
+    container_name: kouroukan-presences
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  finances-service:
+    build:
+      context: ../vs2022
+      dockerfile: finances.service/Dockerfile
+    container_name: kouroukan-finances
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  personnel-service:
+    build:
+      context: ../vs2022
+      dockerfile: personnel.service/Dockerfile
+    container_name: kouroukan-personnel
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  communication-service:
+    build:
+      context: ../vs2022
+      dockerfile: communication.service/Dockerfile
+    container_name: kouroukan-communication
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  bde-service:
+    build:
+      context: ../vs2022
+      dockerfile: bde.service/Dockerfile
+    container_name: kouroukan-bde
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  documents-service:
+    build:
+      context: ../vs2022
+      dockerfile: documents.service/Dockerfile
+    container_name: kouroukan-documents
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+      - MinIO__Endpoint=minio:9000
+      - MinIO__AccessKey=${MINIO_ACCESS_KEY:-kouroukan}
+      - MinIO__SecretKey=${MINIO_SECRET_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+
+  services-premium-service:
+    build:
+      context: ../vs2022
+      dockerfile: services-premium.service/Dockerfile
+    container_name: kouroukan-services-premium
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Support Service (cas special : depend d'Ollama pour l'aide IA)
+  support-service:
+    build:
+      context: ../vs2022
+      dockerfile: support.service/Dockerfile
+    container_name: kouroukan-support
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+      - Ollama__BaseUrl=http://ollama:11434
+      - Ollama__Model=${OLLAMA_MODEL:-mistral}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===========================================================================
+  # CACHE SERVICE (MemoryCache L1 + Redis L2 + Quartz.NET)
+  # ===========================================================================
+  cache:
+    build:
+      context: ../vs2022
+      dockerfile: gn-cache/Dockerfile
+    container_name: kouroukan-cache
+    environment:
+      - Redis__ConnectionString=redis:6379
+      - Gateway__BaseUrl=http://gateway:5000
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      redis:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===========================================================================
+  # INFRASTRUCTURE (100% open-source)
+  # ===========================================================================
+
+  # PostgreSQL 16
+  postgres:
+    image: postgres:16-alpine
+    container_name: kouroukan-postgres
+    environment:
+      - POSTGRES_USER=${DB_USER:-kouroukan}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME:-kouroukan}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-kouroukan} -d ${DB_NAME:-kouroukan}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis 7 (Cache L2)
+  redis:
+    image: redis:7-alpine
+    container_name: kouroukan-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # RabbitMQ (Message Bus inter-services)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: kouroukan-rabbitmq
+    ports:
+      - "${RABBITMQ_MGMT_PORT:-15672}:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-kouroukan}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # MinIO (Stockage fichiers S3-compatible, self-hosted)
+  minio:
+    image: minio/minio:latest
+    container_name: kouroukan-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-kouroukan}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    volumes:
+      - miniodata:/data
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Ollama (IA generative self-hosted pour le module support)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: kouroukan-ollama
+    volumes:
+      - ollama-models:/root/.ollama
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  # Uptime Kuma (Monitoring open-source)
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: kouroukan-uptime-kuma
+    ports:
+      - "${UPTIME_KUMA_PORT:-3001}:3001"
+    volumes:
+      - uptime-kuma-data:/app/data
+    restart: unless-stopped
+
+# ===========================================================================
+# VOLUMES
+# ===========================================================================
+volumes:
+  pgdata:
+    name: kouroukan-pgdata
+  redisdata:
+    name: kouroukan-redisdata
+  rabbitmqdata:
+    name: kouroukan-rabbitmqdata
+  miniodata:
+    name: kouroukan-miniodata
+  certbot-certs:
+    name: kouroukan-certbot-certs
+  certbot-www:
+    name: kouroukan-certbot-www
+  uptime-kuma-data:
+    name: kouroukan-uptime-kuma-data
+  ollama-models:
+    name: kouroukan-ollama-models
+
+# ===========================================================================
+# NETWORK
+# ===========================================================================
+networks:
+  default:
+    name: kouroukan-network

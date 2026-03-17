@@ -1,0 +1,313 @@
+# =============================================================================
+# Kouroukan - CI Pipeline
+# =============================================================================
+# Declenchement : push et pull requests sur main/develop
+# Jobs intelligents : chaque job ne se lance que si ses fichiers sont modifies
+# =============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  DOTNET_VERSION: "8.0.x"
+  NODE_VERSION: "20"
+
+jobs:
+  # ===========================================================================
+  # Detect changes — Determine which projects were modified
+  # ===========================================================================
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      portal: ${{ steps.filter.outputs.portal }}
+      backend: ${{ steps.filter.outputs.backend }}
+      backend-services: ${{ steps.filter.outputs.backend-services }}
+      docker: ${{ steps.filter.outputs.docker }}
+      sql: ${{ steps.filter.outputs.sql }}
+      gateway: ${{ steps.filter.outputs.gateway }}
+      shared-libs: ${{ steps.filter.outputs.shared-libs }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'kouroukan.front/**'
+            portal:
+              - 'kouroukan.portal/**'
+            gateway:
+              - 'vs2022/kouroukan.api/**'
+              - 'vs2022/gn-core-libraries/**'
+            shared-libs:
+              - 'vs2022/gn-core-libraries/**'
+              - 'vs2022/gn-cache/**'
+            backend:
+              - 'vs2022/**'
+            backend-services:
+              - 'vs2022/inscriptions.service/**'
+              - 'vs2022/pedagogie.service/**'
+              - 'vs2022/evaluations.service/**'
+              - 'vs2022/presences.service/**'
+              - 'vs2022/finances.service/**'
+              - 'vs2022/personnel.service/**'
+              - 'vs2022/communication.service/**'
+              - 'vs2022/bde.service/**'
+              - 'vs2022/documents.service/**'
+              - 'vs2022/services-premium.service/**'
+              - 'vs2022/support.service/**'
+            docker:
+              - 'docker/**'
+            sql:
+              - 'sql/**'
+
+  # ===========================================================================
+  # Frontend — Lint + Tests
+  # ===========================================================================
+  lint-frontend:
+    name: Lint Frontend
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: kouroukan.front/package-lock.json
+
+      - name: Install dependencies
+        working-directory: kouroukan.front
+        run: npm ci --legacy-peer-deps
+
+      - name: Lint
+        working-directory: kouroukan.front
+        run: npm run lint
+
+  test-frontend:
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: kouroukan.front/package-lock.json
+
+      - name: Install dependencies
+        working-directory: kouroukan.front
+        run: npm ci --legacy-peer-deps
+
+      - name: Run tests
+        working-directory: kouroukan.front
+        run: npm run test
+
+  # ===========================================================================
+  # Portal — Lint
+  # ===========================================================================
+  lint-portal:
+    name: Lint Portal
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.portal == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: kouroukan.portal/package-lock.json
+
+      - name: Install dependencies
+        working-directory: kouroukan.portal
+        run: npm ci
+
+      - name: Lint
+        working-directory: kouroukan.portal
+        run: npm run lint
+
+  # ===========================================================================
+  # Backend — Gateway + Shared Libraries (always tested if any backend changes)
+  # ===========================================================================
+  test-gateway:
+    name: Test Gateway & Core Libraries
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.gateway == 'true' || needs.changes.outputs.shared-libs == 'true'
+    strategy:
+      matrix:
+        solution:
+          - vs2022/kouroukan.api/kouroukan.api.sln
+          - vs2022/gn-cache/gn-cache.sln
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore ${{ matrix.solution }}
+
+      - name: Build
+        run: dotnet build ${{ matrix.solution }} --no-restore -c Release
+
+      - name: Test
+        run: dotnet test ${{ matrix.solution }} --no-build -c Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-gateway-${{ strategy.job-index }}
+          path: "**/test-results.trx"
+          retention-days: 7
+
+  # ===========================================================================
+  # Backend — Microservices (only tested if their files or shared libs change)
+  # ===========================================================================
+  test-services:
+    name: Test Microservices
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.backend-services == 'true' || needs.changes.outputs.shared-libs == 'true'
+    strategy:
+      matrix:
+        solution:
+          - vs2022/inscriptions.service/Inscriptions.Service.sln
+          - vs2022/pedagogie.service/Pedagogie.Service.sln
+          - vs2022/evaluations.service/Evaluations.Service.sln
+          - vs2022/presences.service/Presences.Service.sln
+          - vs2022/finances.service/Finances.Service.sln
+          - vs2022/personnel.service/Personnel.Service.sln
+          - vs2022/communication.service/Communication.Service.sln
+          - vs2022/bde.service/Bde.Service.sln
+          - vs2022/documents.service/Documents.Service.sln
+          - vs2022/services-premium.service/ServicesPremium.Service.sln
+          - vs2022/support.service/Support.Service.sln
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore ${{ matrix.solution }}
+
+      - name: Build
+        run: dotnet build ${{ matrix.solution }} --no-restore -c Release
+
+      - name: Test
+        run: dotnet test ${{ matrix.solution }} --no-build -c Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-service-${{ strategy.job-index }}
+          path: "**/test-results.trx"
+          retention-days: 7
+
+  # ===========================================================================
+  # SQL — Validate migrations
+  # ===========================================================================
+  validate-sql:
+    name: Validate SQL Migrations
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.sql == 'true'
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: kouroukan
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: kouroukan
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kouroukan -d kouroukan"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run migrations
+        env:
+          PGPASSWORD: testpassword
+        run: |
+          for file in $(ls sql/V*.sql | sort); do
+            echo "Executing $file..."
+            psql -h localhost -U kouroukan -d kouroukan -f "$file"
+          done
+          echo "All migrations executed successfully"
+
+  # ===========================================================================
+  # Docker — Build (only on push + if any source changed)
+  # ===========================================================================
+  build-docker:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [changes, lint-frontend, test-frontend, lint-portal, test-gateway, test-services]
+    if: |
+      always() &&
+      github.event_name == 'push' &&
+      !contains(needs.*.result, 'failure') &&
+      (needs.changes.outputs.frontend == 'true' ||
+       needs.changes.outputs.portal == 'true' ||
+       needs.changes.outputs.backend == 'true' ||
+       needs.changes.outputs.docker == 'true')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build all images
+        working-directory: docker
+        run: |
+          cp .env.example .env
+          sed -i 's/CHANGE_ME/ci-test-password/g' .env
+          docker compose build --parallel
+
+  # ===========================================================================
+  # Security — Scan avec Trivy
+  # ===========================================================================
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: [build-docker]
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
+          ignore-unfixed: true

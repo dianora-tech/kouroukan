@@ -1,0 +1,10 @@
+[
+  { "id": 1, "name": "Conakry", "code": "CKY" },
+  { "id": 2, "name": "Boke", "code": "BOK" },
+  { "id": 3, "name": "Faranah", "code": "FAR" },
+  { "id": 4, "name": "Kankan", "code": "KAN" },
+  { "id": 5, "name": "Kindia", "code": "KIN" },
+  { "id": 6, "name": "Labe", "code": "LAB" },
+  { "id": 7, "name": "Mamou", "code": "MAM" },
+  { "id": 8, "name": "Nzerekore", "code": "NZR" }
+]

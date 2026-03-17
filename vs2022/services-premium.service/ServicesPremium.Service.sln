@@ -1,0 +1,49 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesPremium.Api", "src\ServicesPremium.Api\ServicesPremium.Api.csproj", "{10A1B2C3-D4E5-F678-90AB-CDEF10000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesPremium.Domain", "src\ServicesPremium.Domain\ServicesPremium.Domain.csproj", "{10A1B2C3-D4E5-F678-90AB-CDEF10000002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesPremium.Application", "src\ServicesPremium.Application\ServicesPremium.Application.csproj", "{10A1B2C3-D4E5-F678-90AB-CDEF10000003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesPremium.Infrastructure", "src\ServicesPremium.Infrastructure\ServicesPremium.Infrastructure.csproj", "{10A1B2C3-D4E5-F678-90AB-CDEF10000004}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesPremium.Tests.Unit", "tests\ServicesPremium.Tests.Unit\ServicesPremium.Tests.Unit.csproj", "{10A1B2C3-D4E5-F678-90AB-CDEF10000005}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesPremium.Tests.Integration", "tests\ServicesPremium.Tests.Integration\ServicesPremium.Tests.Integration.csproj", "{10A1B2C3-D4E5-F678-90AB-CDEF10000006}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10A1B2C3-D4E5-F678-90AB-CDEF10000006}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

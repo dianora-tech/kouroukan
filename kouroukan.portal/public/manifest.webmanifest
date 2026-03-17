@@ -1,0 +1,22 @@
+{
+  "name": "Kouroukan - Gestion scolaire",
+  "short_name": "Kouroukan",
+  "description": "Plateforme de gestion scolaire pour les etablissements guineens",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#16a34a",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

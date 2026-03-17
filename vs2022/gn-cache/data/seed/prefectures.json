@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Conakry", "code": "CKY", "region_id": 1 },
+  { "id": 2, "name": "Boke", "code": "BOK", "region_id": 2 },
+  { "id": 3, "name": "Boffa", "code": "BOF", "region_id": 2 },
+  { "id": 4, "name": "Fria", "code": "FRI", "region_id": 2 },
+  { "id": 5, "name": "Gaoual", "code": "GAO", "region_id": 2 },
+  { "id": 6, "name": "Koundara", "code": "KOU", "region_id": 2 }
+]

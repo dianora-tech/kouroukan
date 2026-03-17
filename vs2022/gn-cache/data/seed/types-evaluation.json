@@ -1,0 +1,12 @@
+[
+  { "id": 1, "name": "Devoir surveille" },
+  { "id": 2, "name": "Interrogation" },
+  { "id": 3, "name": "Examen trimestriel" },
+  { "id": 4, "name": "Examen semestriel" },
+  { "id": 5, "name": "Examen final" },
+  { "id": 6, "name": "TP/TD" },
+  { "id": 7, "name": "CEE" },
+  { "id": 8, "name": "BEPC" },
+  { "id": 9, "name": "Baccalaureat Unique" },
+  { "id": 10, "name": "Concours d'entree" }
+]

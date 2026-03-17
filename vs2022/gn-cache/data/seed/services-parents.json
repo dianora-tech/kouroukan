@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Notifications SMS", "code": "SMS_NOTIF", "tarif": 5000, "periodicite": "Mensuel", "est_actif": true, "periode_essai_jours": 7, "tarif_degressif": true },
+  { "id": 2, "name": "Alertes absence", "code": "ALERT_ABS", "tarif": 3000, "periodicite": "Mensuel", "est_actif": true, "periode_essai_jours": 7, "tarif_degressif": true },
+  { "id": 3, "name": "Graphiques progression", "code": "GRAPH_PROG", "tarif": 10000, "periodicite": "Annuel", "est_actif": true, "periode_essai_jours": 14, "tarif_degressif": false },
+  { "id": 4, "name": "Rapport hebdomadaire", "code": "RAPPORT_HEBDO", "tarif": 8000, "periodicite": "Mensuel", "est_actif": true, "periode_essai_jours": 7, "tarif_degressif": true }
+]

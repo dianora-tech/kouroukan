@@ -1,0 +1,51 @@
+# =============================================================================
+# Kouroukan Monorepo - .gitignore
+# =============================================================================
+
+# ---- Node.js ----
+node_modules/
+.nuxt/
+.output/
+dist/
+*.tsbuildinfo
+
+# ---- .NET ----
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+TestResults/
+*.trx
+
+# ---- IDE ----
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ---- Environment & Secrets ----
+docker/.env
+!docker/.env.example
+*.pfx
+*.key
+*.pem
+
+# ---- Docker volumes (local) ----
+docker/volumes/
+
+# ---- Claude Code (local config) ----
+.claude/
+
+# ---- Misc ----
+*.log
+npm-debug.log*
+coverage/
+.nyc_output/

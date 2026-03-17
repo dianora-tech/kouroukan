@@ -1,0 +1,15 @@
+**/bin
+**/obj
+**/.vs
+**/*.user
+**/*.suo
+**/node_modules
+**/.env
+**/*.log
+.git
+.gitignore
+.vscode
+.idea
+**/Dockerfile
+**/docker-compose*
+_test-patterns

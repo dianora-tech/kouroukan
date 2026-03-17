@@ -1,0 +1,58 @@
+categories:
+  - id: general
+    label: "Questions generales"
+    questions:
+      - question: "Qu'est-ce que Kouroukan ?"
+        answer: "Kouroukan est une plateforme numerique de gestion scolaire concue pour les etablissements guineens. Elle permet de gerer les inscriptions, les notes, les presences, les paiements et la communication avec les parents depuis un seul outil."
+      - question: "Kouroukan est-il adapte au systeme educatif guineen ?"
+        answer: "Oui, Kouroukan a ete concu specifiquement pour la Guinee. Il respecte la nomenclature guineenne (CP1-CM2, 7eme-10eme, series SE/SM/SS), les examens nationaux (CEE, BEPC, BU) et integre le Mobile Money (Orange Money, Soutra Money, MTN MoMo)."
+      - question: "Quels types d'etablissements peuvent utiliser Kouroukan ?"
+        answer: "Tous les types : public, prive laique, prive franco-arabe (medersa), communautaire et confessionnel. La plateforme s'adapte aux specificites de chaque type d'etablissement."
+      - question: "Faut-il installer un logiciel ?"
+        answer: "Non, Kouroukan fonctionne directement dans le navigateur web de votre telephone ou ordinateur. Aucune installation n'est necessaire. Vous pouvez ajouter un raccourci sur votre ecran d'accueil pour un acces rapide."
+      - question: "Kouroukan fonctionne-t-il sur telephone ?"
+        answer: "Oui, Kouroukan est concu en priorite pour les telephones mobiles (smartphones). L'interface s'adapte automatiquement a la taille de votre ecran. Il fonctionne sur Chrome, Firefox, Samsung Internet et Opera Mini."
+
+  - id: guinee
+    label: "Specifique Guinee"
+    questions:
+      - question: "Quels sont les cycles scolaires geres par Kouroukan ?"
+        answer: "Kouroukan gere tous les cycles : prescolaire, primaire (CP1 a CM2), college (7eme a 10eme), lycee (11eme a Terminale), et l'enseignement technique (CAP, BEP, BTS). Chaque cycle a sa propre nomenclature et ses parametres specifiques."
+      - question: "Comment sont geres les examens nationaux (CEE, BEPC, BU) ?"
+        answer: "Vous pouvez creer des evaluations de type examen blanc calquees sur le format des examens nationaux. La plateforme permet de suivre la progression des eleves et de generer des statistiques par matiere pour mieux preparer les candidats."
+      - question: "Les medersas (ecoles franco-arabes) sont-elles prises en charge ?"
+        answer: "Oui, les medersas sont pleinement supportees. Kouroukan permet de gerer les specificites de l'enseignement bilingue francais/arabe, y compris les matieres arabes et les programmes specifiques."
+      - question: "Quels moyens de paiement sont disponibles ?"
+        answer: "Kouroukan integre les principaux operateurs Mobile Money guineens : Orange Money, Soutra Money et MTN MoMo. Les paiements en especes peuvent egalement etre enregistres dans le systeme."
+      - question: "Kouroukan fonctionne-t-il en zone rurale avec une connexion faible ?"
+        answer: "Oui, Kouroukan est optimise pour fonctionner avec des connexions 2G/3G. Les pages sont legeres (moins de 500 Ko), et un mode hors ligne permet de faire l'appel et saisir les notes sans internet. Les donnees se synchronisent automatiquement quand la connexion revient."
+
+  - id: technique
+    label: "Questions techniques"
+    questions:
+      - question: "Kouroukan fonctionne-t-il sans connexion internet ?"
+        answer: "Partiellement. Le mode hors ligne permet de realiser les taches essentielles : appel des presences, saisie des notes, consultation des listes. Les donnees sont synchronisees automatiquement des que la connexion est retablie."
+      - question: "Mes donnees sont-elles securisees ?"
+        answer: "Oui, la securite est une priorite. Les donnees sont chiffrees, les acces sont controles par roles (directeur, enseignant, comptable, parent), les sauvegardes sont automatiques et tous les acces sont journalises."
+      - question: "Qui peut acceder aux donnees de mon etablissement ?"
+        answer: "Seules les personnes que vous autorisez. Chaque utilisateur a un role defini (directeur, enseignant, comptable, parent) qui determine ses droits d'acces. Un directeur voit tout, un enseignant voit ses classes, un parent voit son enfant."
+      - question: "Comment sont envoyees les notifications aux parents ?"
+        answer: "Les notifications sont envoyees par SMS sur le telephone des parents. Ils recoivent des alertes pour les absences, les notes, les paiements et les communications de l'etablissement."
+      - question: "Puis-je exporter mes donnees ?"
+        answer: "Oui, vous pouvez exporter vos donnees au format Excel ou PDF a tout moment : listes d'eleves, bulletins, rapports financiers, statistiques de presences."
+      - question: "Comment signaler un probleme technique ?"
+        answer: "Contactez notre equipe support par telephone, WhatsApp ou email. Nous assurons un support en francais adapte au contexte guineen."
+
+  - id: tarifs
+    label: "Tarifs et abonnement"
+    questions:
+      - question: "Kouroukan est-il gratuit ?"
+        answer: "Kouroukan propose un plan Starter gratuit avec les fonctionnalites de base (inscriptions, notes, presences) pour un nombre limite d'eleves. Les plans Standard et Premium offrent des fonctionnalites avancees et un nombre d'eleves illimite."
+      - question: "Comment fonctionne l'abonnement ?"
+        answer: "L'abonnement est annuel, aligne sur l'annee scolaire. Vous choisissez le plan qui correspond a vos besoins et vous payez par Mobile Money ou virement bancaire."
+      - question: "Puis-je changer de plan en cours d'annee ?"
+        answer: "Oui, vous pouvez passer a un plan superieur a tout moment. La difference de prix est calculee au prorata de la periode restante."
+      - question: "Y a-t-il une periode d'essai ?"
+        answer: "Le plan Starter est gratuit et sans engagement. C'est la meilleure facon de decouvrir Kouroukan. Vous pouvez passer a un plan payant quand vous etes pret."
+      - question: "Comment payer mon abonnement ?"
+        answer: "Vous pouvez payer par Orange Money, Soutra Money, MTN MoMo ou par virement bancaire. Un recu est genere automatiquement apres chaque paiement."

@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Kaloum", "code": "KAL", "prefecture_id": 1 },
+  { "id": 2, "name": "Dixinn", "code": "DIX", "prefecture_id": 1 },
+  { "id": 3, "name": "Matam", "code": "MAT", "prefecture_id": 1 },
+  { "id": 4, "name": "Matoto", "code": "MTO", "prefecture_id": 1 },
+  { "id": 5, "name": "Ratoma", "code": "RAT", "prefecture_id": 1 }
+]

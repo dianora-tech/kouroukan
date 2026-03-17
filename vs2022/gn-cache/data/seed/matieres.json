@@ -1,0 +1,9 @@
+[
+  { "id": 1, "name": "Mathematiques", "code": "MATH", "coefficient": 4, "nombre_heures": 6, "niveau_classe_id": 10 },
+  { "id": 2, "name": "Francais", "code": "FR", "coefficient": 4, "nombre_heures": 6, "niveau_classe_id": 10 },
+  { "id": 3, "name": "Histoire-Geographie", "code": "HG", "coefficient": 2, "nombre_heures": 3, "niveau_classe_id": 10 },
+  { "id": 4, "name": "Sciences Physiques", "code": "SP", "coefficient": 2, "nombre_heures": 3, "niveau_classe_id": 10 },
+  { "id": 5, "name": "Sciences de la Vie et de la Terre", "code": "SVT", "coefficient": 2, "nombre_heures": 2, "niveau_classe_id": 10 },
+  { "id": 6, "name": "Anglais", "code": "ANG", "coefficient": 2, "nombre_heures": 3, "niveau_classe_id": 10 },
+  { "id": 7, "name": "Education Physique et Sportive", "code": "EPS", "coefficient": 1, "nombre_heures": 2, "niveau_classe_id": 10 }
+]

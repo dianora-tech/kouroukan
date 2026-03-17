@@ -1,0 +1,231 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "about": "About",
+    "testimonials": "Testimonials",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "demo": "Demo",
+    "help": "Help",
+    "blog": "Blog",
+    "education": "Education System",
+    "register": "Get started for free",
+    "login": "Sign in"
+  },
+  "hero": {
+    "title": "Manage your school, simply.",
+    "subtitle": "Enrollments, grades, Mobile Money payments, report cards, timetables — all in one platform. Built for Guinea.",
+    "cta": "Get started for free",
+    "ctaDemo": "See the demo",
+    "badge": "Built for Guinea"
+  },
+  "problem": {
+    "title": "Challenges facing Guinean schools",
+    "subtitle": "Daily problems that hinder education quality",
+    "items": {
+      "paper": {
+        "title": "Lost paper records",
+        "description": "Paper registers lost, incomplete, or difficult to access. Years of school data at risk."
+      },
+      "visibility": {
+        "title": "No parent visibility",
+        "description": "Parents have no visibility on their children's grades and absences. Limited communication with the school."
+      },
+      "payments": {
+        "title": "Chaotic payments",
+        "description": "Payment management is chaotic between cash and Mobile Money. Manual reconciliation causes errors."
+      },
+      "communication": {
+        "title": "Difficult communication",
+        "description": "Teacher-parent communication is non-existent or difficult. No structured channel for exchanges."
+      }
+    }
+  },
+  "solution": {
+    "title": "Kouroukan, your solution",
+    "subtitle": "A complete platform covering all your school's needs"
+  },
+  "features": {
+    "title": "Everything you need",
+    "subtitle": "Features designed for the Guinean education context",
+    "overview": "Overview",
+    "items": {
+      "academic": {
+        "title": "Complete academic management",
+        "description": "Grades, report cards, timetables, attendance — all school tracking digitized from preschool to university."
+      },
+      "payments": {
+        "title": "Integrated Mobile Money payments",
+        "description": "Orange Money, Soutra Money, MTN MoMo + physical cash desk. Automatic reconciliation and instant receipts."
+      },
+      "mobile": {
+        "title": "Mobile access for all",
+        "description": "Smartphone-optimized interface. Parents track their children's schooling from their phone."
+      },
+      "offline": {
+        "title": "Works offline",
+        "description": "Offline mode for low connectivity areas. Automatic sync when connection returns."
+      },
+      "documents": {
+        "title": "Official documents",
+        "description": "Automatic generation of report cards, certificates, and receipts. Integrated electronic signature."
+      },
+      "security": {
+        "title": "Secure and reliable",
+        "description": "Encrypted data, automatic backups, role-based access control. Your data is protected."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "subtitle": "Get started in 3 simple steps",
+    "steps": {
+      "register": {
+        "title": "Sign up",
+        "description": "Create your free account in less than 2 minutes. No commitment required."
+      },
+      "configure": {
+        "title": "Configure your school",
+        "description": "Add your classes, subjects, and teachers. Import your existing students."
+      },
+      "optimize": {
+        "title": "Track and optimize",
+        "description": "Manage grades, attendance, payments, and communications from a single dashboard."
+      }
+    }
+  },
+  "stats": {
+    "title": "Kouroukan in numbers",
+    "subtitle": "A platform that grows with you",
+    "schools": "Schools",
+    "students": "Students managed",
+    "regions": "Regions covered",
+    "satisfaction": "Satisfaction"
+  },
+  "liveStats": {
+    "title": "In real time",
+    "subtitle": "The platform in action",
+    "schools": "Active schools",
+    "directors": "Directors",
+    "teachers": "Teachers",
+    "parents": "Parents",
+    "students": "Students",
+    "transactions": "Transactions",
+    "documents": "Documents generated",
+    "fallback": "Launch targets"
+  },
+  "pricing": {
+    "title": "Pricing that fits your needs",
+    "subtitle": "Start free, scale at your own pace",
+    "free": "Free",
+    "onQuote": "Contact us",
+    "recommended": "Recommended",
+    "cta": "Get started",
+    "ctaContact": "Contact us",
+    "compare": "Compare plans in detail"
+  },
+  "cta": {
+    "title": "Ready to transform your school?",
+    "subtitle": "Join the schools that chose modernity. Free registration, no commitment.",
+    "button": "Start now",
+    "contact": "Contact us",
+    "phone": "Call us"
+  },
+  "faqSection": {
+    "title": "Frequently asked questions",
+    "subtitle": "Answers to your most common questions",
+    "seeAll": "See all questions"
+  },
+  "inscription": {
+    "title": "Create your account",
+    "subtitle": "Get started in minutes",
+    "steps": {
+      "profile": "Information",
+      "activity": "Activity",
+      "location": "Location",
+      "confirmation": "Confirmation"
+    },
+    "step1": {
+      "title": "Your information",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Phone",
+      "phonePlaceholder": "+224 XX XX XX XX",
+      "email": "Email (optional)",
+      "password": "Password",
+      "confirmPassword": "Confirm password"
+    },
+    "step2": {
+      "title": "Your activity",
+      "subtitle": "Select the modules you're interested in",
+      "minSelect": "Select at least one module"
+    },
+    "step3": {
+      "title": "Your location",
+      "region": "Region",
+      "prefecture": "Prefecture",
+      "address": "Address (optional)"
+    },
+    "confirmation": {
+      "title": "Confirmation",
+      "summary": "Summary of your information",
+      "submit": "Create my account",
+      "success": "Your account has been created successfully!",
+      "goToApp": "Access your space",
+      "error": "An error occurred. Please try again."
+    },
+    "navigation": {
+      "next": "Next",
+      "previous": "Previous",
+      "step": "Step"
+    },
+    "validation": {
+      "required": "This field is required",
+      "phoneFormat": "Expected format: +224 XX XX XX XX",
+      "emailFormat": "Invalid email address",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordMatch": "Passwords do not match"
+    }
+  },
+  "footer": {
+    "tagline": "Manage your school, simply.",
+    "product": "Product",
+    "resources": "Resources",
+    "legalTitle": "Legal",
+    "contact": "Contact",
+    "copyright": "Kouroukan. All rights reserved.",
+    "madeIn": "Built in Guinea",
+    "newsletter": {
+      "title": "Stay informed",
+      "placeholder": "Your email",
+      "subscribe": "Subscribe",
+      "success": "Thank you for subscribing!",
+      "error": "Error, please try again."
+    }
+  },
+  "cookies": {
+    "message": "This site uses cookies to improve your experience.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "learnMore": "Learn more"
+  },
+  "common": {
+    "learnMore": "Learn more",
+    "getStarted": "Get started",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "back": "Back",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or"
+  },
+  "offline": {
+    "title": "You are offline",
+    "message": "Check your Internet connection and try again.",
+    "retry": "Retry"
+  }
+}

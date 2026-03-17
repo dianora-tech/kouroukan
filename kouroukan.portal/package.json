@@ -1,0 +1,27 @@
+{
+  "name": "kouroukan-portal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/content": "^3.0.0",
+    "@nuxt/image": "^1.9.0",
+    "@nuxt/ui": "^3.0.0",
+    "@nuxtjs/i18n": "^9.1.0",
+    "@nuxtjs/seo": "^2.0.0",
+    "better-sqlite3": "^12.6.2",
+    "nuxt": "^3.16.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@vite-pwa/nuxt": "^0.10.0",
+    "typescript": "^5.7.0",
+    "vue-tsc": "^2.0.0"
+  }
+}

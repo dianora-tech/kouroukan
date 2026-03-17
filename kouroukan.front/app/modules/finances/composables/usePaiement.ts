@@ -1,0 +1,152 @@
+import { usePaiementStore } from '../stores/paiement.store'
+import type {
+  Paiement,
+  CreatePaiementPayload,
+  UpdatePaiementPayload,
+  PaiementFilters,
+} from '../types/paiement.types'
+
+export function usePaiement() {
+  const store = usePaiementStore()
+  const toast = useToast()
+  const { t } = useI18n()
+
+  const items = computed(() => store.items)
+  const currentItem = computed(() => store.currentItem)
+  const types = computed(() => store.types)
+  const loading = computed(() => store.loading)
+  const saving = computed(() => store.saving)
+  const isEmpty = computed(() => store.isEmpty)
+  const hasFilters = computed(() => store.hasFilters)
+  const pagination = computed(() => store.pagination)
+
+  const paginatedData = computed(() => ({
+    items: store.items,
+    totalCount: store.pagination.totalCount,
+    pageNumber: store.pagination.page,
+    pageSize: store.pagination.pageSize,
+    totalPages: store.pagination.totalPages,
+    hasNextPage: store.pagination.page < store.pagination.totalPages,
+    hasPreviousPage: store.pagination.page > 1,
+  }))
+
+  const typeOptions = computed(() =>
+    store.types.map(t => ({ label: t.name, value: t.id })),
+  )
+
+  const totalMontant = computed(() =>
+    store.items.reduce((sum, p) => sum + p.montantPaye, 0),
+  )
+
+  const totalConfirmes = computed(() =>
+    store.items.filter(p => p.statutPaiement === 'Confirme').length,
+  )
+
+  const totalMobileMoney = computed(() =>
+    store.items.filter(p => ['OrangeMoney', 'SoutraMoney', 'MTNMoMo'].includes(p.moyenPaiement)).length,
+  )
+
+  async function fetchAll(params?: Partial<PaiementFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    try {
+      await store.fetchAll(params)
+    }
+    catch {
+      toast.add({ title: t('finances.paiement.fetchError'), color: 'error' })
+    }
+  }
+
+  async function fetchById(id: number): Promise<Paiement | null> {
+    try {
+      return await store.fetchById(id)
+    }
+    catch {
+      toast.add({ title: t('finances.paiement.fetchError'), color: 'error' })
+      return null
+    }
+  }
+
+  async function fetchTypes(): Promise<void> {
+    await store.fetchTypes()
+  }
+
+  async function create(payload: CreatePaiementPayload): Promise<Paiement | null> {
+    try {
+      const result = await store.create(payload)
+      if (result) {
+        toast.add({ title: t('finances.paiement.createSuccess'), color: 'success' })
+      }
+      return result
+    }
+    catch {
+      toast.add({ title: t('finances.paiement.createError'), color: 'error' })
+      return null
+    }
+  }
+
+  async function update(id: number, payload: UpdatePaiementPayload): Promise<Paiement | null> {
+    try {
+      const result = await store.update(id, payload)
+      if (result) {
+        toast.add({ title: t('finances.paiement.updateSuccess'), color: 'success' })
+      }
+      return result
+    }
+    catch {
+      toast.add({ title: t('finances.paiement.updateError'), color: 'error' })
+      return null
+    }
+  }
+
+  async function remove(id: number): Promise<boolean> {
+    try {
+      const success = await store.remove(id)
+      if (success) {
+        toast.add({ title: t('finances.paiement.deleteSuccess'), color: 'success' })
+      }
+      return success
+    }
+    catch {
+      toast.add({ title: t('finances.paiement.deleteError'), color: 'error' })
+      return false
+    }
+  }
+
+  function setFilters(filters: PaiementFilters): void {
+    store.setFilters(filters)
+    fetchAll()
+  }
+
+  function resetFilters(): void {
+    store.resetFilters()
+    fetchAll()
+  }
+
+  function changePage(page: number): void {
+    fetchAll({ page })
+  }
+
+  return {
+    items,
+    currentItem,
+    types,
+    loading,
+    saving,
+    isEmpty,
+    hasFilters,
+    pagination,
+    paginatedData,
+    typeOptions,
+    totalMontant,
+    totalConfirmes,
+    totalMobileMoney,
+    fetchAll,
+    fetchById,
+    fetchTypes,
+    create,
+    update,
+    remove,
+    setFilters,
+    resetFilters,
+    changePage,
+  }
+}

@@ -1,0 +1,527 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalites",
+    "pricing": "Tarifs",
+    "about": "A propos",
+    "testimonials": "Temoignages",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "demo": "Demo",
+    "help": "Aide",
+    "blog": "Blog",
+    "education": "Systeme educatif",
+    "register": "Commencer gratuitement",
+    "login": "Se connecter"
+  },
+  "hero": {
+    "title": "Gerez votre etablissement scolaire, simplement.",
+    "subtitle": "Inscriptions, notes, paiements Mobile Money, bulletins, emplois du temps — tout en une plateforme. Concu pour la Guinee.",
+    "cta": "Commencer gratuitement",
+    "ctaDemo": "Voir la demo",
+    "badge": "Concu pour la Guinee"
+  },
+  "problem": {
+    "title": "Les defis des etablissements guineens",
+    "subtitle": "Des problemes quotidiens qui freinent la qualite de l'education",
+    "items": {
+      "paper": {
+        "title": "Registres papier perdus",
+        "description": "Registres papier perdus, incomplets ou difficiles a consulter. Des annees de donnees scolaires vulnerables."
+      },
+      "visibility": {
+        "title": "Parents sans visibilite",
+        "description": "Parents sans visibilite sur les notes et absences de leurs enfants. Communication limitee avec l'etablissement."
+      },
+      "payments": {
+        "title": "Paiements chaotiques",
+        "description": "Gestion des paiements chaotique entre especes et Mobile Money. Reconciliation manuelle source d'erreurs."
+      },
+      "communication": {
+        "title": "Communication difficile",
+        "description": "Communication enseignant-parent inexistante ou difficile. Pas de canal structure pour les echanges."
+      }
+    }
+  },
+  "solution": {
+    "title": "Kouroukan, votre solution",
+    "subtitle": "Une plateforme complete qui couvre tous les besoins de votre etablissement"
+  },
+  "features": {
+    "title": "Tout ce dont vous avez besoin",
+    "subtitle": "Des fonctionnalites pensees pour le contexte educatif guineen",
+    "overview": "Vue d'ensemble",
+    "items": {
+      "academic": {
+        "title": "Gestion pedagogique complete",
+        "description": "Notes, bulletins, emplois du temps, absences — tout le suivi scolaire numerise du prescolaire a l'universite."
+      },
+      "payments": {
+        "title": "Paiements Mobile Money integres",
+        "description": "Orange Money, Soutra Money, MTN MoMo + caisse physique. Reconciliation automatique et recus instantanes."
+      },
+      "mobile": {
+        "title": "Acces mobile pour tous",
+        "description": "Interface optimisee pour smartphone. Les parents suivent la scolarite de leurs enfants depuis leur telephone."
+      },
+      "offline": {
+        "title": "Fonctionne hors ligne",
+        "description": "Mode hors ligne pour les zones a faible connectivite. Synchronisation automatique des que la connexion revient."
+      },
+      "documents": {
+        "title": "Documents officiels",
+        "description": "Generation automatique de bulletins, attestations, certificats et recus. Signature electronique integree."
+      },
+      "security": {
+        "title": "Securise et fiable",
+        "description": "Donnees chiffrees, sauvegardes automatiques, controle d'acces par roles. Vos donnees sont protegees."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Comment ca marche",
+    "subtitle": "Lancez-vous en 3 etapes simples",
+    "steps": {
+      "register": {
+        "title": "Inscrivez-vous",
+        "description": "Creez votre compte gratuitement en moins de 2 minutes. Aucun engagement requis."
+      },
+      "configure": {
+        "title": "Configurez votre etablissement",
+        "description": "Ajoutez vos classes, matieres et enseignants. Importez vos eleves existants."
+      },
+      "optimize": {
+        "title": "Suivez et optimisez",
+        "description": "Gerez les notes, presences, paiements et communications depuis un tableau de bord unique."
+      }
+    }
+  },
+  "stats": {
+    "title": "Kouroukan en chiffres",
+    "subtitle": "Une plateforme qui grandit avec vous",
+    "schools": "Etablissements",
+    "students": "Eleves geres",
+    "regions": "Regions couvertes",
+    "satisfaction": "Satisfaction"
+  },
+  "liveStats": {
+    "title": "En temps reel",
+    "subtitle": "La plateforme en activite",
+    "schools": "Etablissements actifs",
+    "directors": "Directeurs",
+    "teachers": "Enseignants",
+    "parents": "Parents",
+    "students": "Eleves",
+    "transactions": "Transactions",
+    "documents": "Documents generes",
+    "fallback": "Objectifs de lancement"
+  },
+  "testimonials": {
+    "title": "Ils nous font confiance",
+    "subtitle": "Decouvrez ce que disent nos utilisateurs",
+    "allTestimonials": "Tous les temoignages",
+    "categories": {
+      "directors": "Directeurs",
+      "teachers": "Enseignants",
+      "parents": "Parents",
+      "staff": "Personnel administratif"
+    },
+    "items": {
+      "director1": {
+        "name": "Mamadou Diallo",
+        "role": "Directeur d'ecole primaire, Conakry",
+        "quote": "Kouroukan a transforme notre gestion. Fini les registres papier qui se perdent. Tout est numerise et accessible en quelques clics."
+      },
+      "teacher1": {
+        "name": "Fatoumata Camara",
+        "role": "Enseignante, College de Kindia",
+        "quote": "La saisie des notes est devenue si simple. Je gagne un temps precieux que je consacre a mes eleves."
+      },
+      "parent1": {
+        "name": "Ibrahima Sow",
+        "role": "Parent d'eleve, Labe",
+        "quote": "Je suis les resultats de mes enfants depuis mon telephone. Les paiements par Orange Money m'evitent les deplacements."
+      },
+      "director2": {
+        "name": "Aissatou Barry",
+        "role": "Proviseur de lycee, Kankan",
+        "quote": "La gestion des emplois du temps et du personnel est maintenant centralisee. Un gain d'efficacite enorme pour notre etablissement."
+      },
+      "admin1": {
+        "name": "Ousmane Keita",
+        "role": "Chef d'IRE, Boke",
+        "quote": "Le suivi des resultats aux examens nationaux CEE, BEPC et Baccalaureat est enfin automatise. Des statistiques fiables en temps reel."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Des tarifs adaptes a vos besoins",
+    "subtitle": "Commencez gratuitement, evoluez a votre rythme",
+    "monthly": "par mois",
+    "yearly": "par an",
+    "free": "Gratuit",
+    "onQuote": "Sur devis",
+    "recommended": "Recommande",
+    "cta": "Commencer",
+    "ctaContact": "Nous contacter",
+    "compare": "Comparer les plans en detail",
+    "plans": {
+      "starter": {
+        "name": "STARTER",
+        "price": "0 GNF",
+        "description": "Ideal pour decouvrir la plateforme",
+        "features": [
+          "Jusqu'a 100 eleves",
+          "Inscriptions et dossiers",
+          "Notes et bulletins",
+          "Appels et presences",
+          "Emploi du temps basique",
+          "Communication interne"
+        ]
+      },
+      "standard": {
+        "name": "STANDARD",
+        "price": "Sur devis",
+        "description": "Pour les etablissements en croissance",
+        "features": [
+          "Eleves illimites",
+          "Tout STARTER +",
+          "Paiements Mobile Money",
+          "Gestion financiere",
+          "Communication SMS/Push",
+          "LMS basique"
+        ]
+      },
+      "premium": {
+        "name": "PREMIUM",
+        "price": "Sur devis",
+        "description": "La solution complete pour les grands etablissements",
+        "features": [
+          "Tout STANDARD +",
+          "Signature electronique",
+          "Modeles documents personnalises",
+          "Module BDE",
+          "Multi-etablissements",
+          "Support prioritaire"
+        ]
+      }
+    }
+  },
+  "cta": {
+    "title": "Pret a transformer votre etablissement ?",
+    "subtitle": "Rejoignez les etablissements qui ont choisi la modernite. Inscription gratuite, sans engagement.",
+    "button": "Commencer maintenant",
+    "contact": "Nous contacter",
+    "phone": "Appelez-nous"
+  },
+  "faqSection": {
+    "title": "Questions frequentes",
+    "subtitle": "Les reponses a vos questions les plus courantes",
+    "seeAll": "Voir toutes les questions"
+  },
+  "about": {
+    "title": "A propos de Kouroukan",
+    "mission": {
+      "title": "Notre mission",
+      "description": "Kouroukan a pour mission de democratiser l'acces aux outils de gestion scolaire numerique en Guinee. Nous croyons que chaque etablissement, qu'il soit public, prive ou communautaire, merite des outils modernes pour offrir une education de qualite."
+    },
+    "values": {
+      "title": "Nos valeurs",
+      "accessibility": {
+        "title": "Accessibilite",
+        "description": "Concu pour fonctionner meme avec une connexion faible, accessible depuis un simple smartphone."
+      },
+      "simplicity": {
+        "title": "Simplicite",
+        "description": "Une interface intuitive qui ne necessite aucune formation technique prealable."
+      },
+      "trust": {
+        "title": "Confiance",
+        "description": "Vos donnees sont securisees, chiffrees et sauvegardees automatiquement."
+      },
+      "local": {
+        "title": "Ancrage local",
+        "description": "Concu pour le systeme educatif guineen, avec les nomenclatures officielles et les moyens de paiement locaux."
+      }
+    },
+    "context": {
+      "title": "Le contexte educatif guineen",
+      "description": "La Guinee compte plus de 5 millions de jeunes en age scolaire. 40% des 5-24 ans n'ont jamais ete scolarises. Avec 3 ministeres de tutelle (MENA, METFP-ET, MESRS) et des types d'etablissements varies, la gestion scolaire est un defi quotidien. Kouroukan apporte une reponse numerique adaptee a ces realites."
+    }
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Une question ? Un projet ? Nous sommes la pour vous accompagner.",
+    "form": {
+      "name": "Nom complet",
+      "email": "Adresse email",
+      "phone": "Telephone",
+      "phonePlaceholder": "+224 XX XX XX XX",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Choisissez un sujet",
+      "subjects": {
+        "info": "Demande d'information",
+        "demo": "Demande de demo",
+        "pricing": "Question sur les tarifs",
+        "support": "Support technique",
+        "partnership": "Partenariat",
+        "other": "Autre"
+      },
+      "message": "Message",
+      "messagePlaceholder": "Decrivez votre demande...",
+      "submit": "Envoyer le message",
+      "success": "Votre message a ete envoye avec succes. Nous vous repondrons dans les 24 heures.",
+      "error": "Une erreur est survenue. Veuillez reessayer ou nous contacter par telephone."
+    },
+    "info": {
+      "title": "Nos coordonnees",
+      "address": "Conakry, Republique de Guinee",
+      "phone": "+224 XX XX XX XX",
+      "email": "contact{'@'}kouroukan.gn",
+      "whatsapp": "Ecrivez-nous sur WhatsApp",
+      "hours": "Lundi - Vendredi, 8h - 18h"
+    }
+  },
+  "demo": {
+    "title": "Demandez une demo",
+    "subtitle": "Decouvrez Kouroukan en action avec une demonstration personnalisee",
+    "form": {
+      "name": "Nom complet",
+      "schoolName": "Nom de l'etablissement",
+      "role": "Votre fonction",
+      "roles": {
+        "director": "Directeur / Proviseur",
+        "admin": "Administrateur",
+        "teacher": "Enseignant",
+        "parent": "Parent d'eleve",
+        "other": "Autre"
+      },
+      "phone": "Telephone",
+      "date": "Date souhaitee",
+      "submit": "Demander la demo",
+      "success": "Votre demande de demo a ete envoyee. Nous vous contacterons pour confirmer le rendez-vous."
+    }
+  },
+  "inscription": {
+    "title": "Creez votre compte",
+    "subtitle": "Lancez-vous en quelques minutes",
+    "steps": {
+      "profile": "Informations",
+      "activity": "Activite",
+      "location": "Localisation",
+      "confirmation": "Confirmation"
+    },
+    "step1": {
+      "title": "Vos informations",
+      "firstName": "Prenom",
+      "lastName": "Nom",
+      "phone": "Telephone",
+      "phonePlaceholder": "+224 XX XX XX XX",
+      "email": "Email (optionnel)",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe"
+    },
+    "step2": {
+      "title": "Votre activite",
+      "subtitle": "Selectionnez les modules qui vous interessent",
+      "minSelect": "Selectionnez au moins un module"
+    },
+    "step3": {
+      "title": "Votre localisation",
+      "region": "Region",
+      "regionPlaceholder": "Selectionnez une region",
+      "prefecture": "Prefecture",
+      "prefecturePlaceholder": "Selectionnez une prefecture",
+      "sousPrefecture": "Sous-prefecture",
+      "sousPrefecturePlaceholder": "Selectionnez une sous-prefecture",
+      "address": "Adresse (optionnel)"
+    },
+    "confirmation": {
+      "title": "Confirmation",
+      "summary": "Recapitulatif de vos informations",
+      "submit": "Creer mon compte",
+      "success": "Votre compte a ete cree avec succes !",
+      "goToApp": "Acceder a votre espace",
+      "error": "Une erreur est survenue. Veuillez reessayer."
+    },
+    "navigation": {
+      "next": "Suivant",
+      "previous": "Precedent",
+      "step": "Etape"
+    },
+    "validation": {
+      "required": "Ce champ est requis",
+      "phoneFormat": "Format attendu : +224 XX XX XX XX",
+      "emailFormat": "Adresse email invalide",
+      "passwordMin": "Le mot de passe doit contenir au moins 8 caracteres",
+      "passwordMatch": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "modules": {
+    "inscriptions": {
+      "name": "Inscriptions",
+      "description": "Gestion des inscriptions, admissions, dossiers eleves et workflow d'admission complet",
+      "longDescription": "Gerez l'ensemble du processus d'inscription de vos eleves, des prospects aux eleves inscrits. Suivi des dossiers d'admission, gestion des annees scolaires, et workflow d'admission personnalisable."
+    },
+    "pedagogie": {
+      "name": "Pedagogie",
+      "description": "Classes, niveaux, matieres, emplois du temps, salles et cahier de textes",
+      "longDescription": "Organisez votre structure pedagogique : niveaux du systeme guineen (CP1-CM2, 7eme-10eme, 11eme-Terminale), classes, matieres avec coefficients, emplois du temps automatises et cahier de textes numerique."
+    },
+    "evaluations": {
+      "name": "Evaluations",
+      "description": "Notes, evaluations, examens et generation des bulletins",
+      "longDescription": "Saisissez et gerez les notes de vos eleves, creez des evaluations par type (devoir surveille, examen trimestriel, CEE, BEPC, BU), generez des bulletins PDF personnalises avec moyennes, rangs et appreciations."
+    },
+    "presences": {
+      "name": "Presences",
+      "description": "Appels, absences, justifications et badgeage NFC/QR Code",
+      "longDescription": "Faites l'appel numeriquement, suivez les absences et retards, gerez les justifications avec pieces jointes. Optionnel : badgeage NFC ou QR Code a l'entree de l'etablissement."
+    },
+    "finances": {
+      "name": "Finances",
+      "description": "Facturation, paiements Mobile Money et especes, depenses et remuneration enseignants",
+      "longDescription": "Gerez les frais de scolarite, generez des factures, acceptez les paiements par Orange Money, Soutra Money, MTN MoMo ou especes. Suivez les depenses et la remuneration de vos enseignants."
+    },
+    "personnel": {
+      "name": "Personnel",
+      "description": "Enseignants, contrats, absences, conges et suivi des heures",
+      "longDescription": "Gerez les dossiers de vos enseignants et personnel : matricule, specialites, mode de remuneration, demandes de conges et suivi des heures effectuees."
+    },
+    "communication": {
+      "name": "Communication",
+      "description": "Messagerie interne, notifications push/SMS, annonces et alertes",
+      "longDescription": "Communiquez avec les parents, enseignants et eleves via une messagerie interne, des notifications push, des SMS (NimbaSMS) et des annonces sur le tableau d'affichage numerique."
+    },
+    "bde": {
+      "name": "BDE",
+      "description": "Bureau des etudiants, associations, evenements et cotisations",
+      "longDescription": "Gerez les associations etudiantes, leurs evenements, cotisations et budget. Ideal pour les lycees et universites avec une vie associative active."
+    },
+    "documents": {
+      "name": "Documents",
+      "description": "Modeles de documents, generation PDF et signature electronique",
+      "longDescription": "Creez des modeles de documents personnalises (bulletins, attestations, certificats, recus), generez des PDF automatiquement et faites-les signer electroniquement via OpenSign."
+    },
+    "services-premium": {
+      "name": "Services Premium",
+      "description": "Services a valeur ajoutee pour parents et etablissements",
+      "longDescription": "Proposez des services optionnels aux parents : alertes SMS, graphiques de progression, rapports hebdomadaires. Pour les etablissements : badge NFC, consultation enseignant, archive bulletins."
+    },
+    "support": {
+      "name": "Support",
+      "description": "Support utilisateur, tickets, suggestions et aide generative IA",
+      "longDescription": "Accedez a un centre d'aide complet avec articles, FAQ, systeme de tickets et un assistant IA pour repondre a vos questions en temps reel."
+    }
+  },
+  "education": {
+    "title": "Le systeme educatif guineen",
+    "subtitle": "Comprendre la structure des cycles, examens et passerelles",
+    "overview": "Vue d'ensemble",
+    "cycles": {
+      "preschool": "Prescolaire",
+      "primary": "Primaire",
+      "college": "College",
+      "highschool": "Lycee",
+      "university": "Universite",
+      "etfp": "ETFP"
+    },
+    "table": {
+      "age": "Age",
+      "cycle": "Cycle",
+      "levels": "Niveaux",
+      "duration": "Duree",
+      "diploma": "Diplome/Examen",
+      "ministry": "Ministere"
+    }
+  },
+  "help": {
+    "title": "Centre d'aide",
+    "subtitle": "Trouvez des reponses a vos questions",
+    "search": "Rechercher un article...",
+    "searchResults": "Resultats de recherche",
+    "noResults": "Aucun resultat pour votre recherche.",
+    "categories": {
+      "demarrage": {
+        "title": "Demarrage",
+        "description": "Premiers pas avec Kouroukan"
+      },
+      "utilisation": {
+        "title": "Utilisation",
+        "description": "Guides d'utilisation par module"
+      },
+      "systeme-educatif": {
+        "title": "Systeme educatif",
+        "description": "Comprendre les cycles guineens"
+      },
+      "mobile": {
+        "title": "Mobile",
+        "description": "Application mobile et mode hors ligne"
+      }
+    },
+    "helpful": "Cet article vous a-t-il aide ?",
+    "helpfulYes": "Oui, merci !",
+    "helpfulNo": "Non",
+    "relatedArticles": "Articles lies"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Actualites et conseils pour la gestion scolaire en Guinee",
+    "readMore": "Lire la suite",
+    "readTime": "min de lecture",
+    "share": "Partager",
+    "shareWhatsApp": "Partager sur WhatsApp"
+  },
+  "legal": {
+    "cgu": {
+      "title": "Conditions Generales d'Utilisation",
+      "version": "Version 1.0.0",
+      "lastUpdate": "Derniere mise a jour"
+    },
+    "privacy": {
+      "title": "Politique de Confidentialite"
+    },
+    "mentions": {
+      "title": "Mentions Legales"
+    }
+  },
+  "footer": {
+    "tagline": "Gerez votre etablissement scolaire, simplement.",
+    "product": "Produit",
+    "resources": "Ressources",
+    "legalTitle": "Legal",
+    "contact": "Contact",
+    "copyright": "Kouroukan. Tous droits reserves.",
+    "madeIn": "Concu en Guinee",
+    "newsletter": {
+      "title": "Restez informe",
+      "placeholder": "Votre email",
+      "subscribe": "S'abonner",
+      "success": "Merci pour votre inscription !",
+      "error": "Erreur, veuillez reessayer."
+    }
+  },
+  "cookies": {
+    "message": "Ce site utilise des cookies pour ameliorer votre experience.",
+    "accept": "Accepter",
+    "decline": "Decliner",
+    "learnMore": "En savoir plus"
+  },
+  "common": {
+    "learnMore": "En savoir plus",
+    "getStarted": "Commencer",
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "retry": "Reessayer",
+    "back": "Retour",
+    "close": "Fermer",
+    "yes": "Oui",
+    "no": "Non",
+    "or": "ou"
+  },
+  "offline": {
+    "title": "Vous etes hors ligne",
+    "message": "Verifiez votre connexion Internet et reessayez.",
+    "retry": "Reessayer"
+  }
+}

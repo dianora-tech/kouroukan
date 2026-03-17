@@ -1,0 +1,106 @@
+# =============================================================================
+# Kouroukan - Deploy Pipeline
+# =============================================================================
+# Declenchement : push sur main apres CI reussi
+# Deploiement : SSH vers VPS, pull, build, up, health check
+# =============================================================================
+
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment: production
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -e
+
+            echo "=== Deploiement Kouroukan ==="
+            cd /opt/kouroukan
+
+            echo "--- Git pull ---"
+            git pull origin main
+
+            echo "--- Build des images Docker ---"
+            cd docker
+            docker compose build --parallel
+
+            echo "--- Mise a jour des services ---"
+            docker compose up -d --remove-orphans
+
+            echo "--- Nettoyage des anciennes images ---"
+            docker image prune -f
+
+            echo "--- Health checks ---"
+            sleep 15
+
+            # Verifier PostgreSQL
+            docker compose exec -T postgres pg_isready -U kouroukan -d kouroukan
+            echo "[OK] PostgreSQL"
+
+            # Verifier Redis
+            docker compose exec -T redis redis-cli ping
+            echo "[OK] Redis"
+
+            # Verifier RabbitMQ
+            docker compose exec -T rabbitmq rabbitmq-diagnostics -q ping
+            echo "[OK] RabbitMQ"
+
+            # Verifier Gateway
+            curl -sf http://localhost:5000/health || (echo "[FAIL] Gateway" && exit 1)
+            echo "[OK] Gateway"
+
+            # Verifier Frontend
+            curl -sf http://localhost:3000/ || (echo "[FAIL] Frontend" && exit 1)
+            echo "[OK] Frontend"
+
+            # Verifier Ollama
+            curl -sf http://localhost:11434/api/tags || (echo "[WARN] Ollama pas encore pret" && true)
+            echo "[OK] Ollama"
+
+            echo "=== Deploiement termine avec succes ==="
+
+      - name: Notify success
+        if: success()
+        uses: appleboy/telegram-action@master
+        continue-on-error: true
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ✅ Kouroukan deploye en production
+            Commit: ${{ github.event.workflow_run.head_sha }}
+            Par: ${{ github.event.workflow_run.head_commit.author.name }}
+
+      - name: Notify failure
+        if: failure()
+        uses: appleboy/telegram-action@master
+        continue-on-error: true
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ❌ Echec deploiement Kouroukan
+            Commit: ${{ github.event.workflow_run.head_sha }}
+            Verifier les logs GitHub Actions.

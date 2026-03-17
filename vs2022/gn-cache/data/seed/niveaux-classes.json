@@ -1,0 +1,23 @@
+[
+  { "id": 1, "name": "Petite Section", "code": "PS", "ordre": 1, "cycle_etude": "Prescolaire", "age_officiel_entree": 3, "taux_horaire_enseignant": 12000 },
+  { "id": 2, "name": "Moyenne Section", "code": "MS", "ordre": 2, "cycle_etude": "Prescolaire", "age_officiel_entree": 4, "taux_horaire_enseignant": 12000 },
+  { "id": 3, "name": "Grande Section", "code": "GS", "ordre": 3, "cycle_etude": "Prescolaire", "age_officiel_entree": 5, "taux_horaire_enseignant": 12000 },
+  { "id": 4, "name": "CP1 (1ere annee)", "code": "CP1", "ordre": 4, "cycle_etude": "Primaire", "age_officiel_entree": 6, "taux_horaire_enseignant": 15000 },
+  { "id": 5, "name": "CP2 (2eme annee)", "code": "CP2", "ordre": 5, "cycle_etude": "Primaire", "age_officiel_entree": 7, "taux_horaire_enseignant": 15000 },
+  { "id": 6, "name": "CE1 (3eme annee)", "code": "CE1", "ordre": 6, "cycle_etude": "Primaire", "age_officiel_entree": 8, "taux_horaire_enseignant": 15000 },
+  { "id": 7, "name": "CE2 (4eme annee)", "code": "CE2", "ordre": 7, "cycle_etude": "Primaire", "age_officiel_entree": 9, "taux_horaire_enseignant": 15000 },
+  { "id": 8, "name": "CM1 (5eme annee)", "code": "CM1", "ordre": 8, "cycle_etude": "Primaire", "age_officiel_entree": 10, "taux_horaire_enseignant": 18000 },
+  { "id": 9, "name": "CM2 (6eme annee)", "code": "CM2", "ordre": 9, "cycle_etude": "Primaire", "age_officiel_entree": 11, "taux_horaire_enseignant": 18000 },
+  { "id": 10, "name": "7eme annee", "code": "7E", "ordre": 10, "cycle_etude": "College", "age_officiel_entree": 12, "taux_horaire_enseignant": 22000 },
+  { "id": 11, "name": "8eme annee", "code": "8E", "ordre": 11, "cycle_etude": "College", "age_officiel_entree": 13, "taux_horaire_enseignant": 22000 },
+  { "id": 12, "name": "9eme annee", "code": "9E", "ordre": 12, "cycle_etude": "College", "age_officiel_entree": 14, "taux_horaire_enseignant": 22000 },
+  { "id": 13, "name": "10eme annee", "code": "10E", "ordre": 13, "cycle_etude": "College", "age_officiel_entree": 15, "taux_horaire_enseignant": 22000 },
+  { "id": 14, "name": "11eme annee", "code": "11E", "ordre": 14, "cycle_etude": "Lycee", "age_officiel_entree": 16, "taux_horaire_enseignant": 28000 },
+  { "id": 15, "name": "12eme annee", "code": "12E", "ordre": 15, "cycle_etude": "Lycee", "age_officiel_entree": 17, "taux_horaire_enseignant": 28000 },
+  { "id": 16, "name": "Terminale", "code": "TLE", "ordre": 16, "cycle_etude": "Lycee", "age_officiel_entree": 18, "taux_horaire_enseignant": 28000 },
+  { "id": 17, "name": "Licence 1", "code": "L1", "ordre": 17, "cycle_etude": "Universite", "age_officiel_entree": 19, "taux_horaire_enseignant": 35000 },
+  { "id": 18, "name": "Licence 2", "code": "L2", "ordre": 18, "cycle_etude": "Universite", "age_officiel_entree": 20, "taux_horaire_enseignant": 35000 },
+  { "id": 19, "name": "Licence 3", "code": "L3", "ordre": 19, "cycle_etude": "Universite", "age_officiel_entree": 21, "taux_horaire_enseignant": 35000 },
+  { "id": 20, "name": "Master 1", "code": "M1", "ordre": 20, "cycle_etude": "Universite", "age_officiel_entree": 22, "taux_horaire_enseignant": 45000 },
+  { "id": 21, "name": "Master 2", "code": "M2", "ordre": 21, "cycle_etude": "Universite", "age_officiel_entree": 23, "taux_horaire_enseignant": 45000 }
+]

@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+:root {
+  --color-primary: #16a34a;
+  --color-secondary: #dc2626;
+  --color-accent: #f59e0b;
+
+  /* Module colors */
+  --color-module-inscriptions: #16a34a;
+  --color-module-pedagogie: #2563eb;
+  --color-module-evaluations: #7c3aed;
+  --color-module-presences: #0891b2;
+  --color-module-finances: #dc2626;
+  --color-module-personnel: #ea580c;
+  --color-module-communication: #0d9488;
+  --color-module-bde: #d946ef;
+  --color-module-documents: #64748b;
+  --color-module-services-premium: #f59e0b;
+  --color-module-support: #6366f1;
+}

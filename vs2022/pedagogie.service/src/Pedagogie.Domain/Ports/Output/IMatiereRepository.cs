@@ -1,0 +1,19 @@
+using GnDapper.Models;
+using Pedagogie.Domain.Entities;
+
+namespace Pedagogie.Domain.Ports.Output;
+
+/// <summary>
+/// Port de sortie pour la persistance des matieres.
+/// </summary>
+public interface IMatiereRepository
+{
+    Task<Matiere?> GetByIdAsync(int id, CancellationToken ct = default);
+    Task<IReadOnlyList<Matiere>> GetAllAsync(CancellationToken ct = default);
+    Task<PagedResult<Matiere>> GetPagedAsync(int page, int pageSize, string? search, int? typeId, string? orderBy, CancellationToken ct = default);
+    Task<Matiere> AddAsync(Matiere entity, CancellationToken ct = default);
+    Task<bool> UpdateAsync(Matiere entity, CancellationToken ct = default);
+    Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+    Task<bool> ExistsAsync(int id, CancellationToken ct = default);
+    Task<IReadOnlyList<TypeDto>> GetTypesAsync(CancellationToken ct = default);
+}
