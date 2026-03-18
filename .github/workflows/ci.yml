@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
+      contents: read
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
       portal: ${{ steps.filter.outputs.portal }}

@@ -1357,5 +1357,77 @@
       "deleteSuccess": "Subscription deleted successfully",
       "deleteError": "Error deleting subscription"
     }
+  },
+  "evaluations": {
+    "subtitle": "Manage grades, assessments and report cards",
+    "note": { "title": "Grades", "description": "Enter and view student grades" },
+    "evaluation": { "title": "Assessments", "description": "Manage assessments, exams and tests" },
+    "bulletin": { "title": "Report Cards", "description": "Generate and view report cards" }
+  },
+  "personnel": {
+    "subtitle": "Manage teachers, contracts and leave requests",
+    "enseignant": { "title": "Teachers", "description": "Manage teaching staff and contracts" },
+    "demandeConge": { "title": "Leave Requests", "description": "Track and approve leave requests" }
+  },
+  "profil": {
+    "title": "My Profile",
+    "subtitle": "Personal information and account security",
+    "personalInfo": "Personal Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "role": "Role",
+    "lastLogin": "Last Login",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "saveChanges": "Save Changes",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Error updating profile"
+  },
+  "parametres": {
+    "title": "Settings",
+    "subtitle": "Application configuration",
+    "appearance": "Appearance",
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "notifications": "Notifications",
+    "notifEmail": "Email notifications",
+    "notifPush": "Push notifications",
+    "saveChanges": "Save"
+  },
+  "supportPages": {
+    "tickets": {
+      "title": "Support Tickets",
+      "subtitle": "Report an issue or track your requests",
+      "new": "New Ticket",
+      "empty": "No tickets",
+      "emptyDesc": "You haven't created any tickets yet."
+    },
+    "suggestions": {
+      "title": "Suggestions",
+      "subtitle": "Propose improvements for the platform",
+      "new": "New Suggestion",
+      "empty": "No suggestions",
+      "emptyDesc": "Be the first to suggest an improvement."
+    },
+    "aide": {
+      "title": "Knowledge Base",
+      "subtitle": "Guides and documentation for using the platform",
+      "search": "Search documentation...",
+      "empty": "No articles found"
+    },
+    "aideIA": {
+      "title": "AI Assistant",
+      "subtitle": "Ask questions to the AI assistant",
+      "placeholder": "Describe your issue or ask a question...",
+      "send": "Send",
+      "thinking": "AI is thinking...",
+      "emptyState": "Ask a question to get started"
+    }
   }
 }
