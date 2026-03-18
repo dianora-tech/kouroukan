@@ -141,6 +141,11 @@ export default defineNuxtConfig({
     formats: ['webp', 'avif'],
   },
 
+  // --------------- Icon ---------------
+  icon: {
+    localApiEndpoint: '/_nuxt_icon',
+  },
+
   // --------------- Nitro (Proxy API) ---------------
   nitro: {
     routeRules: {

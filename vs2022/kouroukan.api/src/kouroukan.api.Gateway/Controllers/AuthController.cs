@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Threading.RateLimiting;
 using GnSecurity.Jwt;
 using Kouroukan.Api.Gateway.Auth;
@@ -90,7 +91,7 @@ public sealed class AuthController : ControllerBase
         await _refreshTokenService.RevokeAsync(request.RefreshToken, cancellationToken);
 
         _logger.LogInformation("Deconnexion de l'utilisateur {UserId}",
-            User.FindFirst("sub")?.Value);
+            User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value);
 
         return Ok(ApiResponse<object>.Ok(null!, "Deconnexion reussie."));
     }
@@ -106,7 +107,8 @@ public sealed class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Me(CancellationToken cancellationToken)
     {
-        var userIdClaim = User.FindFirst("sub")?.Value;
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                       ?? User.FindFirst("sub")?.Value;
         if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
             return Unauthorized(ApiResponse<object>.Fail("Token invalide."));
 
@@ -146,7 +148,8 @@ public sealed class AuthController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<AuthTokensDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> AcceptCgu(CancellationToken cancellationToken)
     {
-        var userIdClaim = User.FindFirst("sub")?.Value;
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                       ?? User.FindFirst("sub")?.Value;
         if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
             return Unauthorized(ApiResponse<object>.Fail("Token invalide."));
 

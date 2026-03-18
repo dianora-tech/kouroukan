@@ -25,6 +25,10 @@ RUN addgroup -g 1001 -S kouroukan && \
     adduser -S kouroukan -u 1001 -G kouroukan
 
 COPY --from=build --chown=kouroukan:kouroukan /app/.output ./.output
+COPY --from=build /app/node_modules/.package-lock.json /tmp/
+
+# Install runtime dependencies required by Nuxt Image (ipx)
+RUN npm install --no-save ipx 2>/dev/null || true
 
 USER kouroukan
 
