@@ -48,18 +48,16 @@ describe('useAuthStore', () => {
         cguAcceptedAt: '2025-01-01T00:00:00Z',
       }
 
-      const useFetchMock = vi.fn().mockResolvedValue({
-        data: {
-          value: {
-            success: true,
-            data: {
-              accessToken: 'jwt-token-123',
-              user: mockUser,
-            },
-          },
-        },
-      })
-      vi.stubGlobal('useFetch', useFetchMock)
+      vi.stubGlobal('$fetch', vi.fn()
+        .mockResolvedValueOnce({
+          success: true,
+          data: { accessToken: 'jwt-token-123', refreshToken: 'refresh-token' },
+        })
+        .mockResolvedValueOnce({
+          success: true,
+          data: mockUser,
+        }),
+      )
 
       await store.login('ibrahima@test.gn', 'password123')
 

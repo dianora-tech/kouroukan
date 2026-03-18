@@ -50,6 +50,16 @@ vi.stubGlobal('useToast', () => ({
 vi.stubGlobal('useNuxtApp', () => ({
   $i18n: { t: (key: string) => key },
 }))
+vi.stubGlobal('useAuth', () => ({
+  getToken: vi.fn().mockReturnValue(null),
+  setToken: vi.fn(),
+  signIn: vi.fn(),
+  signOut: vi.fn(),
+  status: ref('unauthenticated'),
+}))
+vi.stubGlobal('useState', vi.fn().mockImplementation((_key: string, init?: () => unknown) => {
+  return ref(init !== undefined ? init() : null)
+}))
 
 // ─── Pinia persistence plugin mock ───
 vi.stubGlobal('piniaPluginPersistedstate', {

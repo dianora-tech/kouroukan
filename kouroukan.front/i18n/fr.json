@@ -1596,5 +1596,92 @@
       "deleteSuccess": "Souscription supprimee avec succes",
       "deleteError": "Erreur lors de la suppression de la souscription"
     }
+  },
+  "evaluations": {
+    "subtitle": "Gestion des notes, évaluations et bulletins scolaires",
+    "note": {
+      "title": "Notes",
+      "description": "Saisie et consultation des notes des élèves"
+    },
+    "evaluation": {
+      "title": "Évaluations",
+      "description": "Gestion des évaluations, examens et contrôles"
+    },
+    "bulletin": {
+      "title": "Bulletins",
+      "description": "Génération et consultation des bulletins scolaires"
+    }
+  },
+  "personnel": {
+    "subtitle": "Gestion des enseignants, contrats et congés",
+    "enseignant": {
+      "title": "Enseignants",
+      "description": "Gestion du personnel enseignant et des contrats"
+    },
+    "demandeConge": {
+      "title": "Demandes de congé",
+      "description": "Suivi et validation des demandes de congé"
+    }
+  },
+  "profil": {
+    "title": "Mon profil",
+    "subtitle": "Informations personnelles et sécurité du compte",
+    "personalInfo": "Informations personnelles",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "role": "Rôle",
+    "lastLogin": "Dernière connexion",
+    "changePassword": "Changer le mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "saveChanges": "Enregistrer les modifications",
+    "updateSuccess": "Profil mis à jour avec succès",
+    "updateError": "Erreur lors de la mise à jour du profil"
+  },
+  "parametres": {
+    "title": "Paramètres",
+    "subtitle": "Configuration de l'application",
+    "appearance": "Apparence",
+    "language": "Langue",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "notifications": "Notifications",
+    "notifEmail": "Notifications par email",
+    "notifPush": "Notifications push",
+    "saveChanges": "Enregistrer"
+  },
+  "supportPages": {
+    "tickets": {
+      "title": "Tickets de support",
+      "subtitle": "Signalez un problème ou suivez vos demandes",
+      "new": "Nouveau ticket",
+      "empty": "Aucun ticket",
+      "emptyDesc": "Vous n'avez pas encore créé de ticket."
+    },
+    "suggestions": {
+      "title": "Suggestions",
+      "subtitle": "Proposez des améliorations pour la plateforme",
+      "new": "Nouvelle suggestion",
+      "empty": "Aucune suggestion",
+      "emptyDesc": "Soyez le premier à proposer une amélioration."
+    },
+    "aide": {
+      "title": "Base de connaissances",
+      "subtitle": "Guides et documentation pour utiliser la plateforme",
+      "search": "Rechercher dans la documentation...",
+      "empty": "Aucun article trouvé"
+    },
+    "aideIA": {
+      "title": "Aide IA",
+      "subtitle": "Posez vos questions à l'assistant IA",
+      "placeholder": "Décrivez votre problème ou posez une question...",
+      "send": "Envoyer",
+      "thinking": "L'IA réfléchit...",
+      "emptyState": "Posez une question pour commencer"
+    }
   }
 }
