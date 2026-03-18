@@ -13,6 +13,7 @@ export function useRegistration() {
   const step1Data = reactive({
     firstName: '',
     lastName: '',
+    schoolName: '',
     phone: '',
     email: '',
     password: '',
@@ -96,6 +97,7 @@ export function useRegistration() {
         email: step1Data.email || undefined,
         password: step1Data.password,
         modules: step2Data.modules,
+        schoolName: step1Data.schoolName || undefined,
         region: step3Data.region || undefined,
         prefecture: step3Data.prefecture || undefined,
         sousPrefecture: step3Data.sousPrefecture || undefined,

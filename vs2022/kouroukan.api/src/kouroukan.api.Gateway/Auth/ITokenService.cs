@@ -40,4 +40,13 @@ public interface ITokenService
     /// <param name="cancellationToken">Token d'annulation.</param>
     /// <returns>Nouveaux tokens avec le claim cguVersion mis a jour.</returns>
     Task<AuthTokensDto> AcceptCguAsync(int userId, string cguVersion, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Inscrit un nouvel etablissement : cree l'utilisateur directeur, l'etablissement,
+    /// assigne le role et optionnellement enregistre la localisation.
+    /// </summary>
+    /// <param name="request">Donnees d'inscription.</param>
+    /// <param name="cancellationToken">Token d'annulation.</param>
+    /// <returns>Les tokens d'authentification du directeur inscrit.</returns>
+    Task<AuthTokensDto> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default);
 }

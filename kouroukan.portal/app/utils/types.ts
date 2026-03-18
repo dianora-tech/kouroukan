@@ -37,6 +37,7 @@ export interface RegistrationPayload {
   email?: string
   password: string
   modules: string[]
+  schoolName?: string
   region?: string
   prefecture?: string
   sousPrefecture?: string
@@ -61,6 +62,12 @@ export interface GeoRegion {
 }
 
 export interface GeoPrefecture {
+  name: string
+  code: string
+  sousPrefectures?: GeoSousPrefecture[]
+}
+
+export interface GeoSousPrefecture {
   name: string
   code: string
 }

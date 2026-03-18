@@ -53,6 +53,7 @@ public sealed class GlobalExceptionMiddleware
 
         var (statusCode, message) = exception switch
         {
+            ConflictException => (StatusCodes.Status409Conflict, exception.Message),
             KeyNotFoundException => (StatusCodes.Status404NotFound, exception.Message),
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, exception.Message),
             ValidationException validationEx => (StatusCodes.Status400BadRequest, validationEx.Message),

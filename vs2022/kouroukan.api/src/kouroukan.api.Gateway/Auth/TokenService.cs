@@ -3,6 +3,7 @@ using GnDapper.Connection;
 using GnSecurity.Hashing;
 using GnSecurity.Jwt;
 using Kouroukan.Api.Gateway.Models;
+using ConflictException = Kouroukan.Api.Gateway.Models.ConflictException;
 
 namespace Kouroukan.Api.Gateway.Auth;
 
@@ -191,6 +192,144 @@ public sealed class TokenService : ITokenService
             cancellationToken);
 
         _logger.LogInformation("CGU version {CguVersion} acceptee par l'utilisateur {UserId}", cguVersion, userId);
+
+        return new AuthTokensDto
+        {
+            AccessToken = tokenResult.AccessToken,
+            RefreshToken = tokenResult.RefreshToken,
+            AccessTokenExpiresAt = tokenResult.AccessTokenExpiresAt,
+            RefreshTokenExpiresAt = tokenResult.RefreshTokenExpiresAt
+        };
+    }
+
+    /// <inheritdoc />
+    public async Task<AuthTokensDto> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        // ── 1. Verifier l'unicite du numero de telephone ──────────────────────
+        var phoneExists = await connection.ExecuteScalarAsync<bool>(
+            "SELECT EXISTS(SELECT 1 FROM auth.users WHERE phone_number = @Phone AND is_deleted = FALSE)",
+            new { Phone = request.PhoneNumber });
+
+        if (phoneExists)
+            throw new ConflictException("Un compte avec ce numero de telephone existe deja.");
+
+        // ── 2. Verifier l'unicite de l'email (si fourni) ──────────────────────
+        if (!string.IsNullOrWhiteSpace(request.Email))
+        {
+            var emailExists = await connection.ExecuteScalarAsync<bool>(
+                "SELECT EXISTS(SELECT 1 FROM auth.users WHERE email = @Email AND is_deleted = FALSE)",
+                new { Email = request.Email });
+
+            if (emailExists)
+                throw new ConflictException("Un compte avec cet email existe deja.");
+        }
+
+        // ── 3. Hasher le mot de passe ─────────────────────────────────────────
+        var passwordHash = await _passwordHasher.HashAsync(request.Password, cancellationToken);
+
+        // Email : utiliser le vrai email ou generer un placeholder unique a partir du telephone
+        var effectiveEmail = !string.IsNullOrWhiteSpace(request.Email)
+            ? request.Email
+            : $"{request.PhoneNumber.Replace("+", "").Replace(" ", "")}@kouroukan.gn";
+
+        // ── 4. Creer l'utilisateur (directeur) ───────────────────────────────
+        var userId = await connection.ExecuteScalarAsync<int>(
+            """
+            INSERT INTO auth.users (first_name, last_name, email, phone_number, password_hash, is_active)
+            VALUES (@FirstName, @LastName, @Email, @PhoneNumber, @PasswordHash, TRUE)
+            RETURNING id
+            """,
+            new
+            {
+                request.FirstName,
+                request.LastName,
+                Email = effectiveEmail,
+                request.PhoneNumber,
+                PasswordHash = passwordHash
+            });
+
+        // ── 5. Assigner le role 'directeur' ───────────────────────────────────
+        await connection.ExecuteAsync(
+            """
+            INSERT INTO auth.user_roles (user_id, role_id)
+            SELECT @UserId, id FROM auth.roles WHERE name = 'directeur' AND is_deleted = FALSE
+            """,
+            new { UserId = userId });
+
+        // ── 6. Creer l'etablissement (company / tenant) ───────────────────────
+        var schoolName = string.IsNullOrWhiteSpace(request.SchoolName)
+            ? $"{request.FirstName} {request.LastName}"
+            : request.SchoolName;
+
+        var companyId = await connection.ExecuteScalarAsync<int>(
+            """
+            INSERT INTO auth.companies (name, phone_number, email, address, modules)
+            VALUES (@Name, @PhoneNumber, @Email, @Address, @Modules::text[])
+            RETURNING id
+            """,
+            new
+            {
+                Name = schoolName,
+                PhoneNumber = request.PhoneNumber,
+                Email = string.IsNullOrWhiteSpace(request.Email) ? (string?)null : request.Email,
+                Address = request.Address,
+                Modules = request.Modules.ToArray()
+            });
+
+        // ── 7. Lier l'utilisateur a la company (role owner) ───────────────────
+        await connection.ExecuteAsync(
+            """
+            INSERT INTO auth.user_companies (user_id, company_id, role)
+            VALUES (@UserId, @CompanyId, 'owner')
+            """,
+            new { UserId = userId, CompanyId = companyId });
+
+        // ── 8. Enregistrer la localisation si sous-prefecture fournie ─────────
+        if (!string.IsNullOrWhiteSpace(request.SousPrefecture))
+        {
+            var sousPrefectureId = await connection.ExecuteScalarAsync<int?>(
+                """
+                SELECT sp.id
+                FROM geo.sous_prefectures sp
+                INNER JOIN geo.prefectures p ON p.id = sp.prefecture_id
+                WHERE sp.code = @Code AND sp.is_deleted = FALSE
+                LIMIT 1
+                """,
+                new { Code = request.SousPrefecture.ToUpperInvariant() });
+
+            if (sousPrefectureId.HasValue)
+            {
+                await connection.ExecuteAsync(
+                    """
+                    INSERT INTO geo.user_locations (user_id, sous_prefecture_id, address)
+                    VALUES (@UserId, @SousPrefectureId, @Address)
+                    """,
+                    new { UserId = userId, SousPrefectureId = sousPrefectureId.Value, request.Address });
+            }
+        }
+
+        // ── 9. Charger roles et permissions, generer les tokens ───────────────
+        var roles = await GetRolesForUserAsync(connection, userId);
+        var permissions = await GetPermissionsForUserAsync(connection, userId);
+
+        var tokenResult = _jwtTokenService.GenerateTokens(
+            userId,
+            effectiveEmail,
+            $"{request.FirstName} {request.LastName}",
+            roles,
+            permissions);
+
+        await _refreshTokenStore.StoreAsync(
+            userId,
+            tokenResult.RefreshToken,
+            tokenResult.RefreshTokenExpiresAt,
+            cancellationToken);
+
+        _logger.LogInformation(
+            "Inscription reussie pour le directeur {UserId} ({Phone}), etablissement {CompanyId} '{SchoolName}'",
+            userId, request.PhoneNumber, companyId, schoolName);
 
         return new AuthTokensDto
         {
