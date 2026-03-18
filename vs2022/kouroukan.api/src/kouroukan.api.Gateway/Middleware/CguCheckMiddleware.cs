@@ -77,7 +77,7 @@ public sealed class CguCheckMiddleware
         {
             _logger.LogWarning(
                 "CGU non acceptees pour l'utilisateur {UserId}. Version token: {UserVersion}, Version active: {ActiveVersion}",
-                context.User.FindFirst("sub")?.Value,
+                context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? context.User.FindFirst("sub")?.Value,
                 userCguVersion ?? "(aucune)",
                 activeCguVersion);
 

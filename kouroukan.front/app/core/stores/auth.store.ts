@@ -34,19 +34,45 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(email: string, password: string): Promise<void> {
-      const { data } = await useFetch<{
+      // 1. Login — get tokens
+      const loginResponse = await $fetch<{
         success: boolean
         data: {
           accessToken: string
-          user: User
+          refreshToken: string
         }
       }>('/api/auth/login', {
         method: 'POST',
         body: { email, password },
       })
 
-      if (data.value?.success && data.value.data) {
-        const { user } = data.value.data
+      if (!loginResponse?.success || !loginResponse.data?.accessToken) {
+        throw new Error('Login failed')
+      }
+
+      // Store the token for sidebase/nuxt-auth if available
+      const token = loginResponse.data.accessToken
+      try {
+        const { setToken } = useAuth()
+        setToken(token)
+      }
+      catch {
+        // sidebase auth not available, store token manually
+        useState('auth-token', () => token).value = token
+      }
+
+      // 2. Fetch user profile with the token
+      const profileResponse = await $fetch<{
+        success: boolean
+        data: User
+      }>('/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (profileResponse?.success && profileResponse.data) {
+        const user = profileResponse.data
         this.user = user
         this.roles = (user.roles ?? []) as RoleName[]
         this.permissions = (user.permissions ?? []) as PermissionKey[]
@@ -70,13 +96,13 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async refreshToken(): Promise<void> {
-      const { data } = await useFetch<{
+      const response = await $fetch<{
         success: boolean
         data: User
       }>('/api/auth/me')
 
-      if (data.value?.success && data.value.data) {
-        const user = data.value.data
+      if (response?.success && response.data) {
+        const user = response.data
         this.user = user
         this.roles = (user.roles ?? []) as RoleName[]
         this.permissions = (user.permissions ?? []) as PermissionKey[]
@@ -86,13 +112,13 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async fetchPermissions(): Promise<void> {
-      const { data } = await useFetch<{
+      const response = await $fetch<{
         success: boolean
         data: { permissions: string[] }
       }>('/api/auth/permissions')
 
-      if (data.value?.success && data.value.data) {
-        this.permissions = data.value.data.permissions as PermissionKey[]
+      if (response?.success && response.data) {
+        this.permissions = response.data.permissions as PermissionKey[]
       }
     },
 
@@ -116,10 +142,39 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async acceptCgu(version: string): Promise<void> {
-      await $fetch('/api/auth/cgu/accept', {
+      let token: string | null = null
+      try {
+        const { getToken } = useAuth()
+        token = getToken()
+      }
+      catch {
+        token = useState<string | null>('auth-token').value
+      }
+
+      const response = await $fetch<{
+        success: boolean
+        data: {
+          accessToken: string
+          refreshToken: string
+        }
+      }>('/api/auth/cgu/accept', {
         method: 'POST',
-        body: { version },
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       })
+
+      // Update token with new cguVersion claim
+      if (response?.success && response.data?.accessToken) {
+        try {
+          const { setToken } = useAuth()
+          setToken(response.data.accessToken)
+        }
+        catch {
+          useState('auth-token').value = response.data.accessToken
+        }
+      }
+
       this.cguVersion = version
       this.cguAccepted = true
     },

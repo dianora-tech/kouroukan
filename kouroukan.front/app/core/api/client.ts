@@ -50,9 +50,25 @@ function handleCguError(response: ApiResponse<unknown>): void {
 
 export class ApiClient {
   private getHeaders(): Record<string, string> {
-    return {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     }
+
+    try {
+      const { getToken } = useAuth()
+      const token = getToken()
+      if (token) {
+        headers.Authorization = `Bearer ${token}`
+      }
+    }
+    catch {
+      const token = useState<string | null>('auth-token').value
+      if (token) {
+        headers.Authorization = `Bearer ${token}`
+      }
+    }
+
+    return headers
   }
 
   async get<T>(url: string): Promise<ApiResponse<T>> {
