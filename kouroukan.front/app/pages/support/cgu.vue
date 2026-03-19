@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { marked } from 'marked'
 import { useAuthStore } from '~/core/stores/auth.store'
 
 definePageMeta({
@@ -17,11 +18,11 @@ const cguVersion = ref('')
 // Fetch CGU content
 const { data } = await useFetch<{
   success: boolean
-  data: { content: string; version: string }
+  data: { contenu: string; version: string }
 }>('/api/auth/cgu/active')
 
 if (data.value?.success && data.value.data) {
-  cguContent.value = data.value.data.content
+  cguContent.value = marked(data.value.data.contenu) as string
   cguVersion.value = data.value.data.version
 }
 else {
