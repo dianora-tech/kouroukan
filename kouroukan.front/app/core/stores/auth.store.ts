@@ -9,6 +9,7 @@ interface AuthState {
   lastLoginAt: string | null
   cguAccepted: boolean
   cguVersion: string | null
+  activeCompanyId: number | null
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -19,6 +20,7 @@ export const useAuthStore = defineStore('auth', {
     lastLoginAt: null,
     cguAccepted: false,
     cguVersion: null,
+    activeCompanyId: null,
   }),
 
   getters: {
@@ -50,16 +52,10 @@ export const useAuthStore = defineStore('auth', {
         throw new Error('Login failed')
       }
 
-      // Store the token for sidebase/nuxt-auth if available
+      // Store the token in the sidebase cookie
       const token = loginResponse.data.accessToken
-      try {
-        const { setToken } = useAuth()
-        setToken(token)
-      }
-      catch {
-        // sidebase auth not available, store token manually
-        useState('auth-token', () => token).value = token
-      }
+      const tokenCookie = useCookie('auth.token')
+      tokenCookie.value = token
 
       // 2. Fetch user profile with the token
       const profileResponse = await $fetch<{
@@ -90,8 +86,18 @@ export const useAuthStore = defineStore('auth', {
         // Ignore logout errors
       }
       finally {
+        // Clear sidebase/nuxt-auth token
+        try {
+          const { signOut } = useAuth()
+          await signOut({ callbackUrl: '/connexion', redirect: false })
+        }
+        catch {
+          // sidebase auth not available, clear manual token
+          useState('auth-token').value = null
+        }
+
         this.$reset()
-        navigateTo('/connexion')
+        await navigateTo('/connexion', { replace: true })
       }
     },
 
@@ -142,14 +148,8 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async acceptCgu(version: string): Promise<void> {
-      let token: string | null = null
-      try {
-        const { getToken } = useAuth()
-        token = getToken()
-      }
-      catch {
-        token = useState<string | null>('auth-token').value
-      }
+      const tokenCookie = useCookie('auth.token')
+      const token = tokenCookie.value
 
       const response = await $fetch<{
         success: boolean
@@ -166,13 +166,7 @@ export const useAuthStore = defineStore('auth', {
 
       // Update token with new cguVersion claim
       if (response?.success && response.data?.accessToken) {
-        try {
-          const { setToken } = useAuth()
-          setToken(response.data.accessToken)
-        }
-        catch {
-          useState('auth-token').value = response.data.accessToken
-        }
+        tokenCookie.value = response.data.accessToken
       }
 
       this.cguVersion = version
@@ -190,6 +184,6 @@ export const useAuthStore = defineStore('auth', {
   },
 
   persist: {
-    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion'],
+    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion', 'activeCompanyId'],
   },
 })

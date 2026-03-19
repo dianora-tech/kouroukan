@@ -5,6 +5,7 @@ using GnSecurity.Extensions;
 using GnSecurity.Jwt;
 using GnSecurity.Rbac;
 using Kouroukan.Api.Gateway.Auth;
+using Kouroukan.Api.Gateway.Services;
 using Kouroukan.Api.Gateway.HealthChecks;
 using Kouroukan.Api.Gateway.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -58,6 +59,9 @@ try
 
     // Service de token applicatif
     builder.Services.AddScoped<ITokenService, TokenService>();
+
+    // Service de gestion des utilisateurs
+    builder.Services.AddScoped<IUserService, UserService>();
 
     // 4. GnDapper (Data Access Layer — PostgreSQL via Npgsql)
     builder.Services.AddDataAccessLayer(builder.Configuration);

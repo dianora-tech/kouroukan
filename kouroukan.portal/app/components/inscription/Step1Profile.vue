@@ -12,8 +12,16 @@
         </UFormField>
       </div>
 
+      <UFormField :label="$t('inscription.step1.schoolName')" name="schoolName">
+        <UInput
+          v-model="data.schoolName"
+          :placeholder="$t('inscription.step1.schoolNamePlaceholder')"
+          class="w-full"
+        />
+      </UFormField>
+
       <UFormField :label="$t('inscription.step1.phone')" name="phone" required>
-        <UInput v-model="data.phone" :placeholder="$t('inscription.step1.phonePlaceholder')" class="w-full" />
+        <PhoneInput v-model="data.phone" />
       </UFormField>
 
       <UFormField :label="$t('inscription.step1.email')" name="email">
@@ -36,6 +44,7 @@ defineProps<{
   data: {
     firstName: string
     lastName: string
+    schoolName: string
     phone: string
     email: string
     password: string

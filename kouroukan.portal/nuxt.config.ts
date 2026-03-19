@@ -97,6 +97,12 @@ export default defineNuxtConfig({
     }
   },
 
+  runtimeConfig: {
+    public: {
+      appUrl: process.env.APP_URL || 'http://localhost',
+    },
+  },
+
   routeRules: {
     '/inscription': { ssr: true },
     '/aide/**': { isr: true }

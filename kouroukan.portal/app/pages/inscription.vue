@@ -11,8 +11,8 @@
 
         <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 sm:p-8 shadow-sm">
           <InscriptionStep1Profile v-if="currentStep === 1" :data="step1Data" />
-          <InscriptionStep2Activity v-else-if="currentStep === 2" :data="step2Data" />
-          <InscriptionStep3Location v-else-if="currentStep === 3" :data="step3Data" />
+          <InscriptionStep3Location v-else-if="currentStep === 2" :data="step2Data" />
+          <InscriptionStep3Pricing v-else-if="currentStep === 3" :data="step3Data" />
           <InscriptionStepConfirmation
             v-else
             :step1="step1Data"
@@ -74,14 +74,14 @@ const {
   nextStep,
   prevStep,
   submit,
-  loadFromSession
+  loadFromSession,
 } = useRegistration()
 
 const stepLabels = computed(() => [
   t('inscription.steps.profile'),
-  t('inscription.steps.activity'),
   t('inscription.steps.location'),
-  t('inscription.steps.confirmation')
+  t('inscription.steps.pricing'),
+  t('inscription.steps.confirmation'),
 ])
 
 function handleNext() {
@@ -89,7 +89,6 @@ function handleNext() {
     if (!step1Data.firstName || !step1Data.lastName || !step1Data.phone || !step1Data.password) return
     if (step1Data.password !== step1Data.confirmPassword) return
   }
-  if (currentStep.value === 2 && step2Data.modules.length === 0) return
   nextStep()
 }
 

@@ -148,6 +148,45 @@ async function handleLogout(): Promise<void> {
             </NuxtLink>
           </template>
         </template>
+
+        <!-- Settings section -->
+        <template v-if="auth.hasPermission('settings:manage') || auth.hasPermission('users:manage')">
+          <div class="my-2 border-t border-gray-200 dark:border-gray-700" />
+          <NuxtLink
+            to="/parametres"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+            :class="isActiveModule('parametres')
+              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
+              : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
+          >
+            <UIcon name="i-heroicons-cog-6-tooth" class="h-5 w-5 shrink-0 text-gray-400" />
+            <span v-if="!ui.sidebarCollapsed">{{ $t('nav.settings') }}</span>
+          </NuxtLink>
+
+          <template v-if="!ui.sidebarCollapsed && isActiveModule('parametres')">
+            <NuxtLink
+              to="/parametres/etablissement"
+              class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"
+              :class="route.path === '/parametres/etablissement'
+                ? 'text-indigo-600 dark:text-indigo-400'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
+            >
+              <UIcon name="i-heroicons-building-office-2" class="h-4 w-4 shrink-0" />
+              <span>{{ $t('nav.establishment') }}</span>
+            </NuxtLink>
+            <NuxtLink
+              v-if="auth.hasPermission('users:manage')"
+              to="/parametres/utilisateurs"
+              class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"
+              :class="route.path === '/parametres/utilisateurs'
+                ? 'text-indigo-600 dark:text-indigo-400'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
+            >
+              <UIcon name="i-heroicons-users" class="h-4 w-4 shrink-0" />
+              <span>{{ $t('nav.users') }}</span>
+            </NuxtLink>
+          </template>
+        </template>
       </nav>
 
       <!-- Footer -->
@@ -173,6 +212,8 @@ async function handleLogout(): Promise<void> {
         </div>
 
         <div class="flex items-center gap-3">
+          <!-- Company Switcher -->
+          <CompanySwitcher />
           <!-- Language Switcher -->
           <LanguageSwitcher />
 
@@ -184,7 +225,7 @@ async function handleLogout(): Promise<void> {
                 { label: $t('user.settings'), icon: 'i-heroicons-cog-6-tooth', to: '/parametres' },
               ],
               [
-                { label: $t('user.logout'), icon: 'i-heroicons-arrow-right-on-rectangle', click: handleLogout },
+                { label: $t('user.logout'), icon: 'i-heroicons-arrow-right-on-rectangle', onSelect: handleLogout },
               ],
             ]"
           >

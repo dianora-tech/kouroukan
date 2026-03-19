@@ -1,4 +1,5 @@
 using FluentAssertions;
+using GnDapper.Connection;
 using Kouroukan.Api.Gateway.Auth;
 using Kouroukan.Api.Gateway.Middleware;
 using Kouroukan.Api.Gateway.Models;
@@ -16,12 +17,14 @@ public class CguCheckMiddlewareTests
     private readonly Mock<ILogger<CguCheckMiddleware>> _loggerMock;
     private readonly Mock<IDistributedCache> _cacheMock;
     private readonly Mock<ITokenService> _tokenServiceMock;
+    private readonly Mock<IDbConnectionFactory> _dbConnectionFactoryMock;
 
     public CguCheckMiddlewareTests()
     {
         _loggerMock = new Mock<ILogger<CguCheckMiddleware>>();
         _cacheMock = new Mock<IDistributedCache>();
         _tokenServiceMock = new Mock<ITokenService>();
+        _dbConnectionFactoryMock = new Mock<IDbConnectionFactory>();
     }
 
     [Fact]
@@ -33,7 +36,7 @@ public class CguCheckMiddlewareTests
         var context = new DefaultHttpContext();
 
         // Act
-        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object);
+        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object, _dbConnectionFactoryMock.Object);
 
         // Assert
         nextCalled.Should().BeTrue();
@@ -48,7 +51,7 @@ public class CguCheckMiddlewareTests
         var context = CreateAuthenticatedContext("/api/auth/login", "1.0");
 
         // Act
-        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object);
+        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object, _dbConnectionFactoryMock.Object);
 
         // Assert
         nextCalled.Should().BeTrue();
@@ -64,9 +67,11 @@ public class CguCheckMiddlewareTests
 
         _cacheMock.Setup(x => x.GetAsync("cgu:active_version", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Encoding.UTF8.GetBytes("1.0"));
+        _cacheMock.Setup(x => x.GetAsync("cgu:user:1", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Encoding.UTF8.GetBytes("1.0"));
 
         // Act
-        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object);
+        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object, _dbConnectionFactoryMock.Object);
 
         // Assert
         nextCalled.Should().BeTrue();
@@ -82,9 +87,11 @@ public class CguCheckMiddlewareTests
 
         _cacheMock.Setup(x => x.GetAsync("cgu:active_version", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Encoding.UTF8.GetBytes("1.0"));
+        _cacheMock.Setup(x => x.GetAsync("cgu:user:1", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Encoding.UTF8.GetBytes("0.9"));
 
         // Act
-        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object);
+        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object, _dbConnectionFactoryMock.Object);
 
         // Assert
         context.Response.StatusCode.Should().Be(403);
@@ -104,7 +111,7 @@ public class CguCheckMiddlewareTests
             .ReturnsAsync((CguVersionDto?)null);
 
         // Act
-        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object);
+        await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object, _dbConnectionFactoryMock.Object);
 
         // Assert
         nextCalled.Should().BeTrue();

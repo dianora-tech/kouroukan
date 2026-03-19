@@ -20,6 +20,9 @@ vi.stubGlobal('isRef', isRef)
 vi.stubGlobal('shallowRef', shallowRef)
 vi.stubGlobal('triggerRef', triggerRef)
 
+// ─── Nuxt cookie mock ───
+vi.stubGlobal('useCookie', (_key: string) => ref(null))
+
 // ─── Nuxt auto-imports mock ───
 vi.stubGlobal('navigateTo', vi.fn())
 vi.stubGlobal('useRuntimeConfig', () => ({

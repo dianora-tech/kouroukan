@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import type { RegistrationPayload } from '~/utils/types'
+import { MODULE_SLUGS } from '~/utils/constants'
 
 const STORAGE_KEY = 'kouroukan_registration'
 
@@ -13,33 +14,34 @@ export function useRegistration() {
   const step1Data = reactive({
     firstName: '',
     lastName: '',
+    schoolName: '',
     phone: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   })
 
   const step2Data = reactive({
-    modules: [] as string[]
-  })
-
-  const step3Data = reactive({
     region: '',
     prefecture: '',
     sousPrefecture: '',
-    address: ''
+    address: '',
+  })
+
+  const step3Data = reactive({
+    plan: 'starter',
   })
 
   const step1Schema = computed(() => z.object({
     firstName: z.string().min(2, t('inscription.validation.required')),
     lastName: z.string().min(2, t('inscription.validation.required')),
-    phone: z.string().regex(/^\+224\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/, t('inscription.validation.phoneFormat')),
+    phone: z.string().regex(/^\+\d{3}\s?\d{3}\s?\d{2}\s?\d{2}\s?\d{2}$/, t('inscription.validation.phoneFormat')),
     email: z.string().email(t('inscription.validation.emailFormat')).or(z.literal('')),
     password: z.string().min(8, t('inscription.validation.passwordMin')),
-    confirmPassword: z.string()
+    confirmPassword: z.string(),
   }).refine(data => data.password === data.confirmPassword, {
     message: t('inscription.validation.passwordMatch'),
-    path: ['confirmPassword']
+    path: ['confirmPassword'],
   }))
 
   const totalSteps = 4
@@ -63,9 +65,10 @@ export function useRegistration() {
         step1: step1Data,
         step2: step2Data,
         step3: step3Data,
-        currentStep: currentStep.value
+        currentStep: currentStep.value,
       }))
-    } catch {
+    }
+    catch {
       // sessionStorage unavailable
     }
   }
@@ -80,9 +83,26 @@ export function useRegistration() {
         Object.assign(step3Data, data.step3 || {})
         currentStep.value = data.currentStep || 1
       }
-    } catch {
+    }
+    catch {
       // sessionStorage unavailable
     }
+  }
+
+  function formatPhone(raw: string): string {
+    const digits = raw.replace(/[\s\-.]/g, '')
+    if (digits.startsWith('+224') && digits.length === 13) {
+      const num = digits.slice(4)
+      return `+224 ${num.slice(0, 3)} ${num.slice(3, 5)} ${num.slice(5, 7)} ${num.slice(7, 9)}`
+    }
+    if (digits.startsWith('224') && digits.length === 12) {
+      const num = digits.slice(3)
+      return `+224 ${num.slice(0, 3)} ${num.slice(3, 5)} ${num.slice(5, 7)} ${num.slice(7, 9)}`
+    }
+    if (/^\d{9}$/.test(digits)) {
+      return `+224 ${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)}`
+    }
+    return raw
   }
 
   async function submit() {
@@ -92,22 +112,31 @@ export function useRegistration() {
       const payload: RegistrationPayload = {
         firstName: step1Data.firstName,
         lastName: step1Data.lastName,
-        phoneNumber: step1Data.phone,
+        phoneNumber: formatPhone(step1Data.phone),
         email: step1Data.email || undefined,
         password: step1Data.password,
-        modules: step2Data.modules,
-        region: step3Data.region || undefined,
-        prefecture: step3Data.prefecture || undefined,
-        sousPrefecture: step3Data.sousPrefecture || undefined,
-        address: step3Data.address || undefined
+        modules: MODULE_SLUGS,
+        schoolName: step1Data.schoolName || undefined,
+        region: step2Data.region || undefined,
+        prefecture: step2Data.prefecture || undefined,
+        sousPrefecture: step2Data.sousPrefecture || undefined,
+        address: step2Data.address || undefined,
       }
       await $fetch('/api/auth/register', { method: 'POST', body: payload })
       success.value = true
       sessionStorage.removeItem(STORAGE_KEY)
-    } catch (e: unknown) {
-      const err = e as { data?: { message?: string } }
-      error.value = err?.data?.message || t('inscription.confirmation.error')
-    } finally {
+    }
+    catch (e: unknown) {
+      const err = e as { data?: { message?: string, errors?: Record<string, string[]>, title?: string } }
+      if (err?.data?.errors) {
+        const messages = Object.values(err.data.errors).flat()
+        error.value = messages.join('. ')
+      }
+      else {
+        error.value = err?.data?.message || err?.data?.title || t('inscription.confirmation.error')
+      }
+    }
+    finally {
       loading.value = false
     }
   }
@@ -126,6 +155,6 @@ export function useRegistration() {
     prevStep,
     submit,
     loadFromSession,
-    saveToSession
+    saveToSession,
   }
 }

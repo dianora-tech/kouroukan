@@ -32,6 +32,14 @@
         <div class="hidden lg:flex items-center gap-3">
           <LayoutLanguageSwitcher :scrolled="scrolled" />
           <UButton
+            :href="`${appUrl}/connexion`"
+            variant="outline"
+            size="sm"
+            external
+          >
+            {{ $t('nav.login') }}
+          </UButton>
+          <UButton
             :to="localePath('/inscription')"
             color="primary"
             size="sm"
@@ -57,6 +65,7 @@
 
 <script setup lang="ts">
 const localePath = useLocalePath()
+const { appUrl } = useRuntimeConfig().public
 
 const scrolled = ref(false)
 const mobileMenuOpen = ref(false)

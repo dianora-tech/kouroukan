@@ -48,6 +48,15 @@
         <div class="p-4 border-t border-gray-200 dark:border-gray-800 space-y-3">
           <LayoutLanguageSwitcher :scrolled="true" />
           <UButton
+            :href="`${appUrl}/connexion`"
+            variant="outline"
+            block
+            external
+            @click="close"
+          >
+            {{ $t('nav.login') }}
+          </UButton>
+          <UButton
             :to="localePath('/inscription')"
             color="primary"
             block
@@ -63,6 +72,7 @@
 
 <script setup lang="ts">
 const localePath = useLocalePath()
+const { appUrl } = useRuntimeConfig().public
 
 const props = defineProps<{
   open: boolean

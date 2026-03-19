@@ -35,6 +35,25 @@ public sealed class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// Inscrit un nouvel etablissement (directeur + company) et retourne les tokens JWT.
+    /// </summary>
+    /// <param name="request">Donnees d'inscription du wizard portail.</param>
+    /// <param name="cancellationToken">Token d'annulation.</param>
+    /// <returns>Access token et refresh token.</returns>
+    [HttpPost("register")]
+    [AllowAnonymous]
+    [EnableRateLimiting("auth")]
+    [ProducesResponseType(typeof(ApiResponse<AuthTokensDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
+    {
+        var tokens = await _tokenService.RegisterAsync(request, cancellationToken);
+
+        return Ok(ApiResponse<AuthTokensDto>.Ok(tokens, "Inscription reussie."));
+    }
+
+    /// <summary>
     /// Authentifie un utilisateur et retourne les tokens JWT.
     /// </summary>
     /// <param name="request">Email et mot de passe.</param>

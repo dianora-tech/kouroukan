@@ -91,7 +91,7 @@ describe('RBAC - Roles et Permissions', () => {
     // ─── administration ───
     it('seuls super_admin et admin_it gerent les utilisateurs', () => {
       const usersManage = PERMISSIONS['users:manage']
-      expect(usersManage).toEqual(['super_admin', 'admin_it'])
+      expect(usersManage).toEqual(['super_admin', 'admin_it', 'directeur'])
     })
 
     // ─── fondateur = lecture seule ───

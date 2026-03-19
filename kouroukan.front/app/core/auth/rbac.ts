@@ -85,7 +85,7 @@ export const PERMISSIONS = {
   'support:manage': ['super_admin', 'admin_it', 'directeur'],
 
   // Administration
-  'users:manage': ['super_admin', 'admin_it'],
+  'users:manage': ['super_admin', 'admin_it', 'directeur'],
   'cache:reload': ['super_admin', 'admin_it'],
   'settings:manage': ['super_admin', 'admin_it', 'directeur'],
   'audit:read': ['super_admin', 'fondateur', 'admin_it', 'directeur'],
