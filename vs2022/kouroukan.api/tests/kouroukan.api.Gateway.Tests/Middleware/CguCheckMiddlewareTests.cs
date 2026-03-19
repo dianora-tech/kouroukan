@@ -67,6 +67,8 @@ public class CguCheckMiddlewareTests
 
         _cacheMock.Setup(x => x.GetAsync("cgu:active_version", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Encoding.UTF8.GetBytes("1.0"));
+        _cacheMock.Setup(x => x.GetAsync("cgu:user:1", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Encoding.UTF8.GetBytes("1.0"));
 
         // Act
         await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object, _dbConnectionFactoryMock.Object);
@@ -85,6 +87,8 @@ public class CguCheckMiddlewareTests
 
         _cacheMock.Setup(x => x.GetAsync("cgu:active_version", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Encoding.UTF8.GetBytes("1.0"));
+        _cacheMock.Setup(x => x.GetAsync("cgu:user:1", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Encoding.UTF8.GetBytes("0.9"));
 
         // Act
         await middleware.InvokeAsync(context, _cacheMock.Object, _tokenServiceMock.Object, _dbConnectionFactoryMock.Object);
