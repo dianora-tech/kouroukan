@@ -3,7 +3,7 @@ import { marked } from 'marked'
 import { useAuthStore } from '~/core/stores/auth.store'
 
 definePageMeta({
-  layout: 'default',
+  layout: 'cgu',
 })
 
 const { t } = useI18n()
