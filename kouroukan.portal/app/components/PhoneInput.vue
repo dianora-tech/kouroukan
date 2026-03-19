@@ -72,8 +72,10 @@ onMounted(() => {
 })
 
 function formatFullNumber(): string {
-  const digits = localNumber.value.replace(/\D/g, '')
+  let digits = localNumber.value.replace(/\D/g, '')
   if (!digits) return ''
+  // Limit to 8 digits for Guinea format
+  digits = digits.slice(0, 8)
   const formatted = digits.match(/.{1,2}/g)?.join(' ') || digits
   return `${selectedCountry.value} ${formatted}`
 }
@@ -82,7 +84,13 @@ watch(selectedCountry, () => {
   emit('update:modelValue', formatFullNumber())
 })
 
-watch(localNumber, () => {
+watch(localNumber, (val) => {
+  // Strip non-digits and limit to 8 digits
+  const digits = val.replace(/\D/g, '').slice(0, 8)
+  const formatted = digits.match(/.{1,2}/g)?.join(' ') || digits
+  if (formatted !== val) {
+    localNumber.value = formatted
+  }
   emit('update:modelValue', formatFullNumber())
 })
 </script>
