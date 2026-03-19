@@ -122,6 +122,16 @@ public sealed class TokenService : ITokenService
         var roles = await GetRolesForUserAsync(connection, userId);
         var permissions = await GetPermissionsForUserAsync(connection, userId);
 
+        var companies = (await connection.QueryAsync<CompanyDto>(
+            """
+            SELECT c.id, c.name, uc.role
+            FROM auth.companies c
+            INNER JOIN auth.user_companies uc ON uc.company_id = c.id
+            WHERE uc.user_id = @UserId AND uc.is_deleted = FALSE AND c.is_deleted = FALSE
+            ORDER BY c.name
+            """,
+            new { UserId = userId })).AsList();
+
         return new UserProfileDto
         {
             Id = user.Id,
@@ -132,7 +142,8 @@ public sealed class TokenService : ITokenService
             Roles = roles,
             Permissions = permissions,
             CguVersion = user.CguVersion,
-            CguAcceptedAt = user.CguAcceptedAt
+            CguAcceptedAt = user.CguAcceptedAt,
+            Companies = companies
         };
     }
 

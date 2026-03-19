@@ -1,4 +1,6 @@
 using System.Text.Json;
+using Dapper;
+using GnDapper.Connection;
 using Microsoft.Extensions.Caching.Distributed;
 using Kouroukan.Api.Gateway.Auth;
 
@@ -28,6 +30,8 @@ public sealed class CguCheckMiddleware
         "/api/auth/logout",
         "/api/auth/me",
         "/api/auth/cgu",
+        "/api/users",
+        "/api/geo",
         "/health",
         "/ready"
     ];
@@ -44,7 +48,7 @@ public sealed class CguCheckMiddleware
     /// <summary>
     /// Verifie l'acceptation des CGU pour les requetes authentifiees.
     /// </summary>
-    public async Task InvokeAsync(HttpContext context, IDistributedCache cache, ITokenService tokenService)
+    public async Task InvokeAsync(HttpContext context, IDistributedCache cache, ITokenService tokenService, IDbConnectionFactory connectionFactory)
     {
         // Passer si l'utilisateur n'est pas authentifie
         if (context.User.Identity?.IsAuthenticated != true)
@@ -70,8 +74,16 @@ public sealed class CguCheckMiddleware
             return;
         }
 
-        // Recuperer la version CGU du token utilisateur
-        var userCguVersion = context.User.FindFirst("cguVersion")?.Value;
+        // Recuperer la version CGU de l'utilisateur (BDD)
+        var userIdClaim = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+                       ?? context.User.FindFirst("sub")?.Value;
+        if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
+        {
+            await _next(context);
+            return;
+        }
+
+        var userCguVersion = await GetUserCguVersionAsync(cache, connectionFactory, userId);
 
         if (userCguVersion != activeCguVersion)
         {
@@ -124,5 +136,28 @@ public sealed class CguCheckMiddleware
         });
 
         return activeCgu.Version;
+    }
+
+    private static async Task<string?> GetUserCguVersionAsync(IDistributedCache cache, IDbConnectionFactory connectionFactory, int userId)
+    {
+        var cacheKey = $"cgu:user:{userId}";
+        var cached = await cache.GetStringAsync(cacheKey);
+        if (!string.IsNullOrEmpty(cached))
+            return cached;
+
+        using var connection = connectionFactory.CreateConnection();
+        var cguVersion = await connection.ExecuteScalarAsync<string?>(
+            "SELECT cgu_version FROM auth.users WHERE id = @UserId AND is_deleted = FALSE",
+            new { UserId = userId });
+
+        if (cguVersion is null)
+            return null;
+
+        await cache.SetStringAsync(cacheKey, cguVersion, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+        });
+
+        return cguVersion;
     }
 }

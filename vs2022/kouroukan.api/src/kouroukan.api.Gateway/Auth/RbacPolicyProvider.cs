@@ -90,7 +90,8 @@ public sealed class PermissionAuthorizationHandler
         AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {
-        var userIdClaim = context.User.FindFirst("sub")?.Value
+        var userIdClaim = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            ?? context.User.FindFirst("sub")?.Value
             ?? context.User.FindFirst("user_id")?.Value;
 
         if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))

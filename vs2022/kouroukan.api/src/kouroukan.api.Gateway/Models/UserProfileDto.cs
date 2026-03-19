@@ -31,4 +31,7 @@ public class UserProfileDto
 
     /// <summary>Date d'acceptation des CGU.</summary>
     public DateTime? CguAcceptedAt { get; set; }
+
+    /// <summary>Etablissements lies a l'utilisateur.</summary>
+    public IReadOnlyList<CompanyDto> Companies { get; set; } = [];
 }
