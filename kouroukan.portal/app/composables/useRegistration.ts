@@ -107,8 +107,13 @@ export function useRegistration() {
       success.value = true
       sessionStorage.removeItem(STORAGE_KEY)
     } catch (e: unknown) {
-      const err = e as { data?: { message?: string } }
-      error.value = err?.data?.message || t('inscription.confirmation.error')
+      const err = e as { data?: { message?: string; errors?: Record<string, string[]>; title?: string } }
+      if (err?.data?.errors) {
+        const messages = Object.values(err.data.errors).flat()
+        error.value = messages.join('. ')
+      } else {
+        error.value = err?.data?.message || err?.data?.title || t('inscription.confirmation.error')
+      }
     } finally {
       loading.value = false
     }
