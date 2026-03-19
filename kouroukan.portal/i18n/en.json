@@ -143,8 +143,8 @@
     "subtitle": "Get started in minutes",
     "steps": {
       "profile": "Information",
-      "activity": "Activity",
       "location": "Location",
+      "pricing": "Plan",
       "confirmation": "Confirmation"
     },
     "step1": {
@@ -173,6 +173,11 @@
       "sousPrefecture": "Sub-prefecture",
       "sousPrefecturePlaceholder": "Select a sub-prefecture",
       "address": "Address (optional)"
+    },
+    "stepPricing": {
+      "title": "Choose your plan",
+      "subtitle": "You can change your plan anytime from your dashboard.",
+      "recommended": "Recommended"
     },
     "confirmation": {
       "title": "Confirmation",

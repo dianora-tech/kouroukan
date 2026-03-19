@@ -7,7 +7,7 @@
         </div>
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('inscription.confirmation.success') }}</h2>
         <UButton
-          href="https://app.kouroukan.gn"
+          :href="`${appUrl}/connexion`"
           color="primary"
           size="lg"
           class="mt-6"
@@ -30,20 +30,16 @@
           <p v-if="step1.email" class="text-gray-600 dark:text-gray-400 text-sm">{{ step1.email }}</p>
         </div>
 
-        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
-          <h3 class="text-sm font-semibold text-gray-500 mb-2">{{ $t('inscription.steps.activity') }}</h3>
-          <div class="flex flex-wrap gap-2">
-            <UBadge v-for="slug in step2.modules" :key="slug" color="primary" variant="subtle">
-              {{ slug }}
-            </UBadge>
-          </div>
-        </div>
-
-        <div v-if="step3.region" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+        <div v-if="step2.region" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
           <h3 class="text-sm font-semibold text-gray-500 mb-2">{{ $t('inscription.steps.location') }}</h3>
           <p class="text-gray-900 dark:text-white">{{ regionName }}</p>
-          <p v-if="step3.prefecture" class="text-gray-600 dark:text-gray-400 text-sm">{{ prefectureName }}</p>
-          <p v-if="step3.address" class="text-gray-600 dark:text-gray-400 text-sm">{{ step3.address }}</p>
+          <p v-if="step2.prefecture" class="text-gray-600 dark:text-gray-400 text-sm">{{ prefectureName }}</p>
+          <p v-if="step2.address" class="text-gray-600 dark:text-gray-400 text-sm">{{ step2.address }}</p>
+        </div>
+
+        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
+          <h3 class="text-sm font-semibold text-gray-500 mb-2">{{ $t('inscription.steps.pricing') }}</h3>
+          <p class="text-gray-900 dark:text-white">{{ $t(planName) }}</p>
         </div>
       </div>
 
@@ -53,24 +49,31 @@
 </template>
 
 <script setup lang="ts">
-import { GUINEA_REGIONS, GUINEA_PREFECTURES } from '~/utils/constants'
+import { GUINEA_REGIONS, GUINEA_PREFECTURES, PRICING_PLANS } from '~/utils/constants'
+
+const { appUrl } = useRuntimeConfig().public
 
 const props = defineProps<{
   step1: { firstName: string; lastName: string; phone: string; email: string }
-  step2: { modules: string[] }
-  step3: { region: string; prefecture: string; address: string }
+  step2: { region: string; prefecture: string; address: string }
+  step3: { plan: string }
   success: boolean
   error: string | null
 }>()
 
 const regionName = computed(() => {
-  const region = GUINEA_REGIONS.find(r => r.code === props.step3.region)
-  return region?.name || props.step3.region
+  const region = GUINEA_REGIONS.find(r => r.code === props.step2.region)
+  return region?.name || props.step2.region
 })
 
 const prefectureName = computed(() => {
-  const prefectures = GUINEA_PREFECTURES[props.step3.region] ?? []
-  const prefecture = prefectures.find(p => p.code === props.step3.prefecture)
-  return prefecture?.name || props.step3.prefecture
+  const prefectures = GUINEA_PREFECTURES[props.step2.region] ?? []
+  const prefecture = prefectures.find(p => p.code === props.step2.prefecture)
+  return prefecture?.name || props.step2.prefecture
+})
+
+const planName = computed(() => {
+  const plan = PRICING_PLANS.find(p => p.key === props.step3.plan)
+  return plan?.name || props.step3.plan
 })
 </script>

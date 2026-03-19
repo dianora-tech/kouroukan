@@ -307,8 +307,8 @@
     "subtitle": "Lancez-vous en quelques minutes",
     "steps": {
       "profile": "Informations",
-      "activity": "Activite",
       "location": "Localisation",
+      "pricing": "Forfait",
       "confirmation": "Confirmation"
     },
     "step1": {
@@ -338,6 +338,11 @@
       "sousPrefecture": "Sous-prefecture",
       "sousPrefecturePlaceholder": "Selectionnez une sous-prefecture",
       "address": "Adresse (optionnel)"
+    },
+    "stepPricing": {
+      "title": "Choisissez votre forfait",
+      "subtitle": "Vous pouvez changer de forfait a tout moment depuis votre espace.",
+      "recommended": "Recommande"
     },
     "confirmation": {
       "title": "Confirmation",
