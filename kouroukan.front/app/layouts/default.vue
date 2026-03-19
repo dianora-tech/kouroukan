@@ -165,6 +165,16 @@ async function handleLogout(): Promise<void> {
 
           <template v-if="!ui.sidebarCollapsed && isActiveModule('parametres')">
             <NuxtLink
+              to="/parametres/etablissement"
+              class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"
+              :class="route.path === '/parametres/etablissement'
+                ? 'text-indigo-600 dark:text-indigo-400'
+                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
+            >
+              <UIcon name="i-heroicons-building-office-2" class="h-4 w-4 shrink-0" />
+              <span>{{ $t('nav.establishment') }}</span>
+            </NuxtLink>
+            <NuxtLink
               v-if="auth.hasPermission('users:manage')"
               to="/parametres/utilisateurs"
               class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"

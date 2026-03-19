@@ -20,6 +20,7 @@
     "supportAide": "Base de connaissances",
     "supportAideIA": "Aide IA",
     "settings": "Paramètres",
+    "establishment": "Établissement",
     "users": "Utilisateurs"
   },
   "dashboard": {
@@ -1736,5 +1737,12 @@
     "save": "Enregistrer",
     "delete": "Supprimer",
     "confirm": "Confirmer"
+  },
+  "etablissement": {
+    "title": "Mon établissement",
+    "subtitle": "Gérez vos établissements et basculez entre eux",
+    "empty": "Aucun établissement lié à votre compte",
+    "select": "Sélectionner",
+    "active": "Actif"
   }
 }
