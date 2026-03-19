@@ -7,7 +7,8 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "echo 'no lint configured'"
   },
   "dependencies": {
     "@nuxt/content": "^3.0.0",
