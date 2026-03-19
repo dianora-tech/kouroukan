@@ -17,10 +17,10 @@ public class RegisterRequest
     [MinLength(2)]
     public string LastName { get; set; } = string.Empty;
 
-    /// <summary>Numero de telephone guineens (+224 XX XX XX XX).</summary>
+    /// <summary>Numero de telephone guineens (+224 XXX XX XX XX).</summary>
     [Required]
-    [RegularExpression(@"^\+224\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$",
-        ErrorMessage = "Le numero de telephone doit etre au format +224 XX XX XX XX.")]
+    [RegularExpression(@"^\+224\s?\d{3}\s?\d{2}\s?\d{2}\s?\d{2}$",
+        ErrorMessage = "Le numero de telephone doit etre au format +224 XXX XX XX XX.")]
     public string PhoneNumber { get; set; } = string.Empty;
 
     /// <summary>Adresse email (optionnelle).</summary>

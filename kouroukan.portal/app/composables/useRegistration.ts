@@ -34,7 +34,7 @@ export function useRegistration() {
   const step1Schema = computed(() => z.object({
     firstName: z.string().min(2, t('inscription.validation.required')),
     lastName: z.string().min(2, t('inscription.validation.required')),
-    phone: z.string().regex(/^\+224\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}$/, t('inscription.validation.phoneFormat')),
+    phone: z.string().regex(/^\+\d{3}\s?\d{3}\s?\d{2}\s?\d{2}\s?\d{2}$/, t('inscription.validation.phoneFormat')),
     email: z.string().email(t('inscription.validation.emailFormat')).or(z.literal('')),
     password: z.string().min(8, t('inscription.validation.passwordMin')),
     confirmPassword: z.string()
@@ -89,19 +89,19 @@ export function useRegistration() {
   function formatPhone(raw: string): string {
     // Remove all spaces, dashes, dots
     const digits = raw.replace(/[\s\-\.]/g, '')
-    // If already starts with +224, format with spaces
-    if (digits.startsWith('+224') && digits.length === 12) {
+    // If already starts with +224, format with spaces (9 digits)
+    if (digits.startsWith('+224') && digits.length === 13) {
       const num = digits.slice(4)
-      return `+224 ${num.slice(0, 2)} ${num.slice(2, 4)} ${num.slice(4, 6)} ${num.slice(6, 8)}`
+      return `+224 ${num.slice(0, 3)} ${num.slice(3, 5)} ${num.slice(5, 7)} ${num.slice(7, 9)}`
     }
     // If starts with 224 (without +)
-    if (digits.startsWith('224') && digits.length === 11) {
+    if (digits.startsWith('224') && digits.length === 12) {
       const num = digits.slice(3)
-      return `+224 ${num.slice(0, 2)} ${num.slice(2, 4)} ${num.slice(4, 6)} ${num.slice(6, 8)}`
+      return `+224 ${num.slice(0, 3)} ${num.slice(3, 5)} ${num.slice(5, 7)} ${num.slice(7, 9)}`
     }
-    // If just 8 digits (local number), prepend +224
-    if (/^\d{8}$/.test(digits)) {
-      return `+224 ${digits.slice(0, 2)} ${digits.slice(2, 4)} ${digits.slice(4, 6)} ${digits.slice(6, 8)}`
+    // If just 9 digits (local number), prepend +224
+    if (/^\d{9}$/.test(digits)) {
+      return `+224 ${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)}`
     }
     // Return as-is, API will validate
     return raw
