@@ -18,7 +18,9 @@
     "supportTickets": "Tickets",
     "supportSuggestions": "Suggestions",
     "supportAide": "Base de connaissances",
-    "supportAideIA": "Aide IA"
+    "supportAideIA": "Aide IA",
+    "settings": "Paramètres",
+    "users": "Utilisateurs"
   },
   "dashboard": {
     "welcome": "Bienvenue, {name}",
