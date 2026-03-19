@@ -9,6 +9,7 @@ interface AuthState {
   lastLoginAt: string | null
   cguAccepted: boolean
   cguVersion: string | null
+  activeCompanyId: number | null
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -19,6 +20,7 @@ export const useAuthStore = defineStore('auth', {
     lastLoginAt: null,
     cguAccepted: false,
     cguVersion: null,
+    activeCompanyId: null,
   }),
 
   getters: {
@@ -182,6 +184,6 @@ export const useAuthStore = defineStore('auth', {
   },
 
   persist: {
-    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion'],
+    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion', 'activeCompanyId'],
   },
 })

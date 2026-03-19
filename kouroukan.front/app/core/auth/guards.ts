@@ -16,6 +16,7 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionKey> = {
   '/documents': 'documents:read',
   '/services-premium': 'services-premium:read',
   '/support': 'support:read',
+  '/parametres/utilisateurs': 'users:manage',
 }
 
 /** Routes accessible without authentication */

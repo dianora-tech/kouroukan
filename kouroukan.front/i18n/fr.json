@@ -1683,5 +1683,56 @@
       "thinking": "L'IA réfléchit...",
       "emptyState": "Posez une question pour commencer"
     }
+  },
+  "roles": {
+    "super_admin": "Super Admin",
+    "fondateur": "Fondateur",
+    "admin_it": "Admin IT",
+    "directeur": "Directeur",
+    "censeur": "Censeur",
+    "intendant": "Intendant",
+    "responsable_admissions": "Resp. Admissions",
+    "chef_departement": "Chef Département",
+    "enseignant": "Enseignant",
+    "personnel_admin": "Personnel Admin",
+    "responsable_bde": "Resp. BDE",
+    "parent": "Parent",
+    "eleve": "Élève"
+  },
+  "users": {
+    "title": "Gestion des utilisateurs",
+    "subtitle": "Créez et gérez les comptes de votre établissement",
+    "add": "Ajouter un utilisateur",
+    "addTitle": "Nouvel utilisateur",
+    "name": "Nom",
+    "role": "Rôle",
+    "roleLabel": "Rôle à attribuer",
+    "phone": "Téléphone",
+    "email": "Email",
+    "actions": "Actions",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "empty": "Aucun utilisateur dans votre établissement",
+    "create": "Créer",
+    "created": "Utilisateur créé avec succès",
+    "createError": "Erreur lors de la création",
+    "deleted": "Utilisateur supprimé",
+    "linked": "Utilisateur lié à votre établissement",
+    "searchFondateur": "Rechercher un fondateur existant",
+    "searchPlaceholder": "Téléphone ou email du fondateur",
+    "search": "Rechercher",
+    "linkUser": "Lier cet utilisateur",
+    "notFound": "Aucun utilisateur trouvé. Remplissez le formulaire pour créer un nouveau compte.",
+    "linkingExisting": "L'utilisateur {name} sera lié à votre établissement en tant que fondateur.",
+    "passwordInfo": "Voici le mot de passe temporaire pour {name}. Communiquez-le de manière sécurisée.",
+    "passwordWarning": "Ce mot de passe ne sera plus affiché. Notez-le maintenant.",
+    "passwordCopied": "Mot de passe copié"
+  },
+  "common": {
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "confirm": "Confirmer"
   }
 }

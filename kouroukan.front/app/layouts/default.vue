@@ -173,6 +173,8 @@ async function handleLogout(): Promise<void> {
         </div>
 
         <div class="flex items-center gap-3">
+          <!-- Company Switcher -->
+          <CompanySwitcher />
           <!-- Language Switcher -->
           <LanguageSwitcher />
 
