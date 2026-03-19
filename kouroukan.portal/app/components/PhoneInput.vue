@@ -2,28 +2,22 @@
   <div class="flex gap-2">
     <USelect
       v-model="selectedCountry"
-      :items="countries"
-      value-key="dial"
+      :items="countryOptions"
       class="w-36 shrink-0"
-    >
-      <template #leading="{ modelValue }">
-        <UIcon v-if="currentFlag" :name="currentFlag" class="h-4 w-4 rounded-full" />
-      </template>
-    </USelect>
+    />
 
     <UInput
       v-model="localNumber"
       type="tel"
       :placeholder="currentPlaceholder"
       class="w-full"
-      @input="onInput"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 interface Country {
-  label: string
+  name: string
   dial: string
   flag: string
   placeholder: string
@@ -38,22 +32,23 @@ const emit = defineEmits<{
 }>()
 
 const countries: Country[] = [
-  { label: '🇬🇳 +224', dial: '+224', flag: 'i-circle-flags-gn', placeholder: '62 00 00 00' },
-  { label: '🇸🇳 +221', dial: '+221', flag: 'i-circle-flags-sn', placeholder: '77 000 00 00' },
-  { label: '🇲🇱 +223', dial: '+223', flag: 'i-circle-flags-ml', placeholder: '70 00 00 00' },
-  { label: '🇨🇮 +225', dial: '+225', flag: 'i-circle-flags-ci', placeholder: '07 00 00 00 00' },
-  { label: '🇸🇱 +232', dial: '+232', flag: 'i-circle-flags-sl', placeholder: '76 000 000' },
-  { label: '🇱🇷 +231', dial: '+231', flag: 'i-circle-flags-lr', placeholder: '77 000 0000' },
-  { label: '🇬🇼 +245', dial: '+245', flag: 'i-circle-flags-gw', placeholder: '955 00 00' },
+  { name: 'GN', dial: '+224', flag: 'i-circle-flags-gn', placeholder: '62 00 00 00' },
+  { name: 'SN', dial: '+221', flag: 'i-circle-flags-sn', placeholder: '77 000 00 00' },
+  { name: 'ML', dial: '+223', flag: 'i-circle-flags-ml', placeholder: '70 00 00 00' },
+  { name: 'CI', dial: '+225', flag: 'i-circle-flags-ci', placeholder: '07 00 00 00 00' },
+  { name: 'SL', dial: '+232', flag: 'i-circle-flags-sl', placeholder: '76 000 000' },
+  { name: 'LR', dial: '+231', flag: 'i-circle-flags-lr', placeholder: '77 000 0000' },
+  { name: 'GW', dial: '+245', flag: 'i-circle-flags-gw', placeholder: '955 00 00' },
 ]
+
+const countryOptions = countries.map(c => ({
+  label: `${c.name} ${c.dial}`,
+  value: c.dial,
+  icon: c.flag,
+}))
 
 const selectedCountry = ref('+224')
 const localNumber = ref('')
-
-const currentFlag = computed(() => {
-  const country = countries.find(c => c.dial === selectedCountry.value)
-  return country?.flag
-})
 
 const currentPlaceholder = computed(() => {
   const country = countries.find(c => c.dial === selectedCountry.value)
@@ -79,13 +74,8 @@ onMounted(() => {
 function formatFullNumber(): string {
   const digits = localNumber.value.replace(/\D/g, '')
   if (!digits) return ''
-  // Format with spaces (groups of 2)
   const formatted = digits.match(/.{1,2}/g)?.join(' ') || digits
   return `${selectedCountry.value} ${formatted}`
-}
-
-function onInput() {
-  emit('update:modelValue', formatFullNumber())
 }
 
 watch(selectedCountry, () => {

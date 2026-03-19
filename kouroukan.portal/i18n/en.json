@@ -151,6 +151,8 @@
       "title": "Your information",
       "firstName": "First name",
       "lastName": "Last name",
+      "schoolName": "School name",
+      "schoolNamePlaceholder": "E.g. Kouroukan School",
       "phone": "Phone",
       "phonePlaceholder": "+224 XX XX XX XX",
       "email": "Email (optional)",

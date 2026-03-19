@@ -315,6 +315,8 @@
       "title": "Vos informations",
       "firstName": "Prenom",
       "lastName": "Nom",
+      "schoolName": "Nom de l'etablissement",
+      "schoolNamePlaceholder": "Ex: Groupe Scolaire Kouroukan",
       "phone": "Telephone",
       "phonePlaceholder": "+224 XX XX XX XX",
       "email": "Email (optionnel)",
