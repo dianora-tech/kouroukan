@@ -21,7 +21,7 @@
       </UFormField>
 
       <UFormField :label="$t('inscription.step1.phone')" name="phone" required>
-        <UInput v-model="data.phone" :placeholder="$t('inscription.step1.phonePlaceholder')" class="w-full" />
+        <PhoneInput v-model="data.phone" />
       </UFormField>
 
       <UFormField :label="$t('inscription.step1.email')" name="email">

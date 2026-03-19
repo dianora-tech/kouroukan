@@ -86,6 +86,27 @@ export function useRegistration() {
     }
   }
 
+  function formatPhone(raw: string): string {
+    // Remove all spaces, dashes, dots
+    const digits = raw.replace(/[\s\-\.]/g, '')
+    // If already starts with +224, format with spaces
+    if (digits.startsWith('+224') && digits.length === 12) {
+      const num = digits.slice(4)
+      return `+224 ${num.slice(0, 2)} ${num.slice(2, 4)} ${num.slice(4, 6)} ${num.slice(6, 8)}`
+    }
+    // If starts with 224 (without +)
+    if (digits.startsWith('224') && digits.length === 11) {
+      const num = digits.slice(3)
+      return `+224 ${num.slice(0, 2)} ${num.slice(2, 4)} ${num.slice(4, 6)} ${num.slice(6, 8)}`
+    }
+    // If just 8 digits (local number), prepend +224
+    if (/^\d{8}$/.test(digits)) {
+      return `+224 ${digits.slice(0, 2)} ${digits.slice(2, 4)} ${digits.slice(4, 6)} ${digits.slice(6, 8)}`
+    }
+    // Return as-is, API will validate
+    return raw
+  }
+
   async function submit() {
     loading.value = true
     error.value = null
@@ -93,7 +114,7 @@ export function useRegistration() {
       const payload: RegistrationPayload = {
         firstName: step1Data.firstName,
         lastName: step1Data.lastName,
-        phoneNumber: step1Data.phone,
+        phoneNumber: formatPhone(step1Data.phone),
         email: step1Data.email || undefined,
         password: step1Data.password,
         modules: step2Data.modules,
