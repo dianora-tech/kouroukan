@@ -184,7 +184,7 @@ async function handleLogout(): Promise<void> {
                 { label: $t('user.settings'), icon: 'i-heroicons-cog-6-tooth', to: '/parametres' },
               ],
               [
-                { label: $t('user.logout'), icon: 'i-heroicons-arrow-right-on-rectangle', click: handleLogout },
+                { label: $t('user.logout'), icon: 'i-heroicons-arrow-right-on-rectangle', onSelect: handleLogout },
               ],
             ]"
           >

@@ -90,8 +90,18 @@ export const useAuthStore = defineStore('auth', {
         // Ignore logout errors
       }
       finally {
+        // Clear sidebase/nuxt-auth token
+        try {
+          const { signOut } = useAuth()
+          await signOut({ callbackUrl: '/connexion', redirect: false })
+        }
+        catch {
+          // sidebase auth not available, clear manual token
+          useState('auth-token').value = null
+        }
+
         this.$reset()
-        navigateTo('/connexion')
+        await navigateTo('/connexion', { replace: true })
       }
     },
 
