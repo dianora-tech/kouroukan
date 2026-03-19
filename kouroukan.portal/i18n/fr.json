@@ -332,6 +332,7 @@
       "regionPlaceholder": "Selectionnez une region",
       "prefecture": "Prefecture",
       "prefecturePlaceholder": "Selectionnez une prefecture",
+      "commune": "Commune",
       "sousPrefecture": "Sous-prefecture",
       "sousPrefecturePlaceholder": "Selectionnez une sous-prefecture",
       "address": "Adresse (optionnel)"

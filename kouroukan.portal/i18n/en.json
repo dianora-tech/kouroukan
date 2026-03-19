@@ -166,6 +166,10 @@
       "title": "Your location",
       "region": "Region",
       "prefecture": "Prefecture",
+      "prefecturePlaceholder": "Select a prefecture",
+      "commune": "Commune",
+      "sousPrefecture": "Sub-prefecture",
+      "sousPrefecturePlaceholder": "Select a sub-prefecture",
       "address": "Address (optional)"
     },
     "confirmation": {

@@ -42,7 +42,7 @@
         <div v-if="step3.region" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
           <h3 class="text-sm font-semibold text-gray-500 mb-2">{{ $t('inscription.steps.location') }}</h3>
           <p class="text-gray-900 dark:text-white">{{ regionName }}</p>
-          <p v-if="step3.prefecture" class="text-gray-600 dark:text-gray-400 text-sm">{{ step3.prefecture }}</p>
+          <p v-if="step3.prefecture" class="text-gray-600 dark:text-gray-400 text-sm">{{ prefectureName }}</p>
           <p v-if="step3.address" class="text-gray-600 dark:text-gray-400 text-sm">{{ step3.address }}</p>
         </div>
       </div>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { GUINEA_REGIONS } from '~/utils/constants'
+import { GUINEA_REGIONS, GUINEA_PREFECTURES } from '~/utils/constants'
 
 const props = defineProps<{
   step1: { firstName: string; lastName: string; phone: string; email: string }
@@ -66,5 +66,11 @@ const props = defineProps<{
 const regionName = computed(() => {
   const region = GUINEA_REGIONS.find(r => r.code === props.step3.region)
   return region?.name || props.step3.region
+})
+
+const prefectureName = computed(() => {
+  const prefectures = GUINEA_PREFECTURES[props.step3.region] ?? []
+  const prefecture = prefectures.find(p => p.code === props.step3.prefecture)
+  return prefecture?.name || props.step3.prefecture
 })
 </script>
