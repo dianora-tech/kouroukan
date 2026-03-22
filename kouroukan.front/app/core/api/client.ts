@@ -189,7 +189,7 @@ export class ApiClient {
       offline.enqueue({ method: 'DELETE', url })
       return {
         success: true,
-        data: undefined as void,
+        data: undefined as unknown as void,
         message: 'queued_for_sync',
         errors: null,
       }

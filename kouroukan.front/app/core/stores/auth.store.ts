@@ -3,6 +3,15 @@ import type { User } from '~/types/user'
 import type { RoleName, PermissionKey } from '~/core/auth/rbac'
 import { extractErrorMessage } from '~/core/api/client'
 
+function showError(msg: string): void {
+  try {
+    useToast().add({ title: msg, color: 'error', icon: 'i-heroicons-exclamation-triangle' })
+  }
+  catch {
+    // toast non disponible (SSR)
+  }
+}
+
 interface AuthState {
   user: User | null
   roles: RoleName[]
@@ -57,13 +66,13 @@ export const useAuthStore = defineStore('auth', {
       }
       catch (error) {
         const msg = extractErrorMessage(error)
-        try { useToast().add({ title: msg, color: 'error', icon: 'i-heroicons-exclamation-triangle' }) } catch {}
+        showError(msg)
         throw error
       }
 
       if (!loginResponse?.success || !loginResponse.data?.accessToken) {
         const msg = 'Identifiants incorrects.'
-        try { useToast().add({ title: msg, color: 'error', icon: 'i-heroicons-exclamation-triangle' }) } catch {}
+        showError(msg)
         throw new Error(msg)
       }
 
@@ -153,7 +162,7 @@ export const useAuthStore = defineStore('auth', {
       }
       catch (error) {
         const msg = extractErrorMessage(error)
-        try { useToast().add({ title: msg, color: 'error', icon: 'i-heroicons-exclamation-triangle' }) } catch {}
+        showError(msg)
         throw error
       }
     },
@@ -212,7 +221,9 @@ export const useAuthStore = defineStore('auth', {
             const tokenCookie = useCookie('auth.token')
             tokenCookie.value = response.data.accessToken
           }
-          catch {}
+          catch {
+            // cookie non disponible
+          }
         }
 
         this.cguVersion = version
@@ -220,7 +231,7 @@ export const useAuthStore = defineStore('auth', {
       }
       catch (error) {
         const msg = extractErrorMessage(error)
-        try { useToast().add({ title: msg, color: 'error', icon: 'i-heroicons-exclamation-triangle' }) } catch {}
+        showError(msg)
         throw error
       }
     },
