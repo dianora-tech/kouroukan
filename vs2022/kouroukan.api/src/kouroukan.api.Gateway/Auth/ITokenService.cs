@@ -58,4 +58,9 @@ public interface ITokenService
     /// <param name="cancellationToken">Token d'annulation.</param>
     /// <returns>Les tokens d'authentification du directeur inscrit.</returns>
     Task<AuthTokensDto> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Met a jour les preferences utilisateur (langue, theme).
+    /// </summary>
+    Task UpdatePreferencesAsync(int userId, string locale, string theme, CancellationToken cancellationToken = default);
 }

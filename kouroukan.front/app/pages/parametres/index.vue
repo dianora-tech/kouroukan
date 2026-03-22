@@ -1,13 +1,28 @@
 <script setup lang="ts">
+import { useAuthStore } from '~/core/stores/auth.store'
+
 definePageMeta({
   layout: 'default',
 })
 
-const { t, locale, availableLocales } = useI18n()
+const { t, locale, setLocale, availableLocales } = useI18n()
 const colorMode = useColorMode()
+const auth = useAuthStore()
+const toast = useToast()
 
 const notifEmail = ref(true)
 const notifPush = ref(false)
+const saving = ref(false)
+
+const selectedLocale = ref(locale.value)
+
+watch(selectedLocale, async (newLocale) => {
+  if (newLocale !== locale.value) {
+    await setLocale(newLocale)
+    const langCookie = useCookie('kouroukan_lang', { maxAge: 365 * 24 * 60 * 60 })
+    langCookie.value = newLocale
+  }
+})
 
 const themeOptions = computed(() => [
   { label: t('parametres.themeLight'), value: 'light' },
@@ -18,6 +33,20 @@ const themeOptions = computed(() => [
 const languageOptions = computed(() =>
   availableLocales.map(l => ({ label: l.toUpperCase(), value: l })),
 )
+
+async function handleSave() {
+  saving.value = true
+  try {
+    await auth.updatePreferences(selectedLocale.value, colorMode.preference)
+    toast.add({ title: t('profil.updateSuccess'), color: 'success', icon: 'i-heroicons-check-circle' })
+  }
+  catch {
+    // Toast d'erreur affiche par le store
+  }
+  finally {
+    saving.value = false
+  }
+}
 </script>
 
 <template>
@@ -49,7 +78,7 @@ const languageOptions = computed(() =>
           </UFormField>
           <UFormField :label="$t('parametres.language')">
             <USelect
-              v-model="locale"
+              v-model="selectedLocale"
               :items="languageOptions"
               value-key="value"
               label-key="label"
@@ -78,7 +107,7 @@ const languageOptions = computed(() =>
     </div>
 
     <div class="flex justify-end">
-      <UButton color="primary" icon="i-heroicons-check">
+      <UButton color="primary" icon="i-heroicons-check" :loading="saving" @click="handleSave">
         {{ $t('parametres.saveChanges') }}
       </UButton>
     </div>

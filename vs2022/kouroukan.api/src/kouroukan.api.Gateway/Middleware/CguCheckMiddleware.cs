@@ -31,6 +31,7 @@ public sealed class CguCheckMiddleware
         "/api/auth/me",
         "/api/auth/cgu",
         "/api/auth/change-password",
+        "/api/auth/preferences",
         "/api/users",
         "/api/geo",
         "/health",

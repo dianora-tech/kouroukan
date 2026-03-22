@@ -37,4 +37,10 @@ public class UserProfileDto
 
     /// <summary>Etablissements lies a l'utilisateur.</summary>
     public IReadOnlyList<CompanyDto> Companies { get; set; } = [];
+
+    /// <summary>Langue preferee (fr, en).</summary>
+    public string PreferredLocale { get; set; } = "fr";
+
+    /// <summary>Theme prefere (light, dark, system).</summary>
+    public string PreferredTheme { get; set; } = "system";
 }

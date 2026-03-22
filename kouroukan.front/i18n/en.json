@@ -18,7 +18,10 @@
     "supportTickets": "Tickets",
     "supportSuggestions": "Suggestions",
     "supportAide": "Knowledge Base",
-    "supportAideIA": "AI Help"
+    "supportAideIA": "AI Help",
+    "settings": "Settings",
+    "establishment": "Establishment",
+    "users": "Users"
   },
   "dashboard": {
     "welcome": "Welcome, {name}",
@@ -736,6 +739,245 @@
       "deleteError": "Error deleting badge scan"
     }
   },
+  "finances": {
+    "subtitle": "Invoicing, payments, expenses and teacher compensation",
+    "facture": {
+      "title": "Invoices",
+      "titleSingle": "Invoice",
+      "description": "Invoice management and payment tracking",
+      "add": "New invoice",
+      "edit": "Edit invoice",
+      "deleteTitle": "Delete invoice",
+      "deleteConfirm": "Are you sure you want to delete this invoice?",
+      "emptyTitle": "No invoices",
+      "emptyDescription": "No invoices recorded.",
+      "eleveNom": "Student",
+      "type": "Type",
+      "typeId": "Invoice type",
+      "typePlaceholder": "Select a type",
+      "numeroFacture": "Invoice #",
+      "numeroFacturePlaceholder": "Unique invoice number",
+      "montantTotal": "Total amount (GNF)",
+      "montantPaye": "Amount paid (GNF)",
+      "solde": "Balance (GNF)",
+      "dateEmission": "Issue date",
+      "dateEcheance": "Due date",
+      "statutFacture": "Status",
+      "paye": "Paid",
+      "resteAPayer": "Outstanding",
+      "echeance": "Due date",
+      "statut": {
+        "Emise": "Issued",
+        "PartPaye": "Partially paid",
+        "Payee": "Paid",
+        "Echue": "Overdue",
+        "Annulee": "Cancelled"
+      },
+      "filters": {
+        "allStatuts": "All statuses",
+        "allTypes": "All types",
+        "dateFrom": "From date",
+        "dateTo": "To date",
+        "reset": "Reset"
+      },
+      "stats": {
+        "total": "Total invoices",
+        "montantTotal": "Total amount",
+        "montantPaye": "Amount paid",
+        "echues": "Overdue"
+      },
+      "fetchError": "Error loading invoices",
+      "createSuccess": "Invoice created successfully",
+      "createError": "Error creating invoice",
+      "updateSuccess": "Invoice updated successfully",
+      "updateError": "Error updating invoice",
+      "deleteSuccess": "Invoice deleted successfully",
+      "deleteError": "Error deleting invoice"
+    },
+    "paiement": {
+      "title": "Payments",
+      "titleSingle": "Payment",
+      "description": "Payment recording and tracking",
+      "add": "New payment",
+      "edit": "Edit payment",
+      "deleteTitle": "Delete payment",
+      "deleteConfirm": "Are you sure you want to delete this payment?",
+      "emptyTitle": "No payments",
+      "emptyDescription": "No payments recorded.",
+      "type": "Type",
+      "typeId": "Payment type",
+      "typePlaceholder": "Select a type",
+      "facture": "Invoice",
+      "factureNumero": "Invoice #",
+      "montantPaye": "Amount (GNF)",
+      "datePaiement": "Date",
+      "moyenPaiement": "Payment method",
+      "referenceMobileMoney": "Mobile Money ref.",
+      "referencePlaceholder": "Transaction reference",
+      "statutPaiement": "Status",
+      "numeroRecu": "Receipt #",
+      "numeroRecuPlaceholder": "Sequential receipt number",
+      "moyen": {
+        "OrangeMoney": "Orange Money",
+        "SoutraMoney": "Soutra Money",
+        "MTNMoMo": "MTN MoMo",
+        "Especes": "Cash"
+      },
+      "statut": {
+        "EnAttente": "Pending",
+        "Confirme": "Confirmed",
+        "Echec": "Failed",
+        "Rembourse": "Refunded"
+      },
+      "filters": {
+        "allStatuts": "All statuses",
+        "allTypes": "All types",
+        "allMoyens": "All methods",
+        "reset": "Reset"
+      },
+      "stats": {
+        "total": "Total payments",
+        "montantTotal": "Total amount",
+        "confirmes": "Confirmed",
+        "mobileMoney": "Mobile Money"
+      },
+      "fetchError": "Error loading payments",
+      "createSuccess": "Payment recorded successfully",
+      "createError": "Error recording payment",
+      "updateSuccess": "Payment updated successfully",
+      "updateError": "Error updating payment",
+      "deleteSuccess": "Payment deleted successfully",
+      "deleteError": "Error deleting payment"
+    },
+    "depense": {
+      "title": "Expenses",
+      "titleSingle": "Expense",
+      "description": "Expense management and receipts",
+      "add": "New expense",
+      "edit": "Edit expense",
+      "deleteTitle": "Delete expense",
+      "deleteConfirm": "Are you sure you want to delete this expense?",
+      "emptyTitle": "No expenses",
+      "emptyDescription": "No expenses recorded.",
+      "type": "Type",
+      "typeId": "Expense type",
+      "typePlaceholder": "Select a type",
+      "montant": "Amount (GNF)",
+      "motifDepense": "Reason",
+      "motifPlaceholder": "Describe the reason for the expense",
+      "categorie_label": "Category",
+      "beneficiaireNom": "Beneficiary",
+      "beneficiaireNomPlaceholder": "Beneficiary name",
+      "beneficiaireTelephone": "Phone",
+      "telephonePlaceholder": "+224 xxx xxx xxx",
+      "beneficiaireNIF": "TIN",
+      "nifPlaceholder": "Tax identification number",
+      "statutDepense": "Status",
+      "dateDemande": "Request date",
+      "pieceJointeUrl": "Attachment",
+      "numeroJustificatif": "Receipt #",
+      "numeroJustificatifPlaceholder": "Unique receipt number",
+      "categorie": {
+        "Personnel": "Personnel",
+        "Fournitures": "Supplies",
+        "Maintenance": "Maintenance",
+        "Evenements": "Events",
+        "BDE": "Student Life",
+        "Equipements": "Equipment"
+      },
+      "statut": {
+        "Demande": "Requested",
+        "ValideN1": "Level 1 approved",
+        "ValideFinance": "Finance approved",
+        "ValideDirection": "Management approved",
+        "Executee": "Executed",
+        "Archivee": "Archived"
+      },
+      "filters": {
+        "allStatuts": "All statuses",
+        "allTypes": "All types",
+        "allCategories": "All categories",
+        "reset": "Reset"
+      },
+      "stats": {
+        "total": "Total expenses",
+        "montantTotal": "Total amount",
+        "executees": "Executed",
+        "enAttente": "Pending"
+      },
+      "fetchError": "Error loading expenses",
+      "createSuccess": "Expense created successfully",
+      "createError": "Error creating expense",
+      "updateSuccess": "Expense updated successfully",
+      "updateError": "Error updating expense",
+      "deleteSuccess": "Expense deleted successfully",
+      "deleteError": "Error deleting expense"
+    },
+    "remuneration": {
+      "title": "Teacher compensation",
+      "titleSingle": "Compensation",
+      "description": "Teacher compensation and payroll management",
+      "add": "New compensation",
+      "edit": "Edit compensation",
+      "deleteTitle": "Delete compensation",
+      "deleteConfirm": "Are you sure you want to delete this compensation?",
+      "emptyTitle": "No compensation records",
+      "emptyDescription": "No compensation records found.",
+      "enseignantNom": "Teacher",
+      "mois_label": "Month",
+      "annee": "Year",
+      "modeRemuneration": "Mode",
+      "montantForfait": "Monthly fixed rate (GNF)",
+      "nombreHeures": "Hours worked",
+      "tauxHoraire": "Hourly rate (GNF)",
+      "montantTotal": "Total amount (GNF)",
+      "statutPaiement": "Status",
+      "mode": {
+        "Forfait": "Fixed rate",
+        "Heures": "Hourly",
+        "Mixte": "Mixed"
+      },
+      "statut": {
+        "EnAttente": "Pending",
+        "Valide": "Approved",
+        "Paye": "Paid"
+      },
+      "mois": {
+        "1": "January",
+        "2": "February",
+        "3": "March",
+        "4": "April",
+        "5": "May",
+        "6": "June",
+        "7": "July",
+        "8": "August",
+        "9": "September",
+        "10": "October",
+        "11": "November",
+        "12": "December"
+      },
+      "filters": {
+        "allStatuts": "All statuses",
+        "allModes": "All modes",
+        "allMois": "All months",
+        "allAnnees": "All years",
+        "reset": "Reset"
+      },
+      "stats": {
+        "total": "Total compensation",
+        "montantTotal": "Total amount",
+        "payes": "Paid",
+        "heuresTotal": "Total hours"
+      },
+      "fetchError": "Error loading compensation records",
+      "createSuccess": "Compensation created successfully",
+      "createError": "Error creating compensation",
+      "updateSuccess": "Compensation updated successfully",
+      "updateError": "Error updating compensation",
+      "deleteSuccess": "Compensation deleted successfully",
+      "deleteError": "Error deleting compensation"
+    }
+  },
   "communication": {
     "subtitle": "Internal messaging, notifications and announcements",
     "message": {
@@ -1384,7 +1626,8 @@
     "confirmPassword": "Confirm New Password",
     "saveChanges": "Save Changes",
     "updateSuccess": "Profile updated successfully",
-    "updateError": "Error updating profile"
+    "updateError": "Error updating profile",
+    "currentPasswordRequired": "Please enter your current password"
   },
   "parametres": {
     "title": "Settings",
@@ -1429,5 +1672,78 @@
       "thinking": "AI is thinking...",
       "emptyState": "Ask a question to get started"
     }
+  },
+  "roles": {
+    "super_admin": "Super Admin",
+    "fondateur": "Founder",
+    "admin_it": "IT Admin",
+    "directeur": "Director",
+    "censeur": "Dean",
+    "intendant": "Bursar",
+    "responsable_admissions": "Admissions Manager",
+    "chef_departement": "Department Head",
+    "enseignant": "Teacher",
+    "personnel_admin": "Admin Staff",
+    "responsable_bde": "Student Life Manager",
+    "parent": "Parent",
+    "eleve": "Student"
+  },
+  "users": {
+    "title": "User Management",
+    "subtitle": "Create and manage accounts for your institution",
+    "add": "Add user",
+    "addTitle": "New user",
+    "name": "Name",
+    "role": "Role",
+    "roleLabel": "Role to assign",
+    "phone": "Phone",
+    "email": "Email",
+    "actions": "Actions",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "empty": "No users in your institution",
+    "create": "Create",
+    "created": "User created successfully",
+    "createError": "Error creating user",
+    "deleted": "User deleted",
+    "linked": "User linked to your institution",
+    "searchFondateur": "Search for an existing founder",
+    "searchPlaceholder": "Founder phone or email",
+    "search": "Search",
+    "linkUser": "Link this user",
+    "notFound": "No user found. Fill in the form to create a new account.",
+    "linkingExisting": "User {name} will be linked to your institution as founder.",
+    "passwordInfo": "Here is the temporary password for {name}. Share it securely.",
+    "passwordWarning": "This password will not be shown again. Save it now.",
+    "passwordCopied": "Password copied"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "etablissement": {
+    "title": "My Institution",
+    "subtitle": "Manage your institutions and switch between them",
+    "empty": "No institution linked to your account",
+    "select": "Select",
+    "active": "Active"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "subtitle": "For security reasons, please change your temporary password.",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Your temporary password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "At least 8 characters",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Repeat the new password",
+    "minLength": "Password must be at least 8 characters",
+    "mismatch": "Passwords do not match",
+    "submit": "Change Password",
+    "success": "Password changed successfully",
+    "error": "Error changing password"
   }
 }

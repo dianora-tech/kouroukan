@@ -14,6 +14,8 @@ export interface User {
   cguAcceptedAt: string | null
   mustChangePassword: boolean
   companies: { id: number, name: string, role: string }[]
+  preferredLocale?: string
+  preferredTheme?: string
 }
 
 export interface LoginPayload {

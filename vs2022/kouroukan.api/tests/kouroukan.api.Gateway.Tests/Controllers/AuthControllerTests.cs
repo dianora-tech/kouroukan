@@ -84,7 +84,7 @@ public class AuthControllerTests
     public async Task Logout_Authenticated_ReturnsOk()
     {
         // Arrange
-        var request = new RefreshRequest { RefreshToken = "token-to-revoke" };
+        var request = new LogoutRequest { RefreshToken = "token-to-revoke" };
         SetupAuthenticatedUser(1);
 
         _refreshTokenServiceMock.Setup(x => x.RevokeAsync(request.RefreshToken, It.IsAny<CancellationToken>()))

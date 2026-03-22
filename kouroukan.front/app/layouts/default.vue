@@ -5,6 +5,7 @@ import { MODULE_COLORS } from '~/core/theme/tokens'
 import type { PermissionKey } from '~/core/auth/rbac'
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 const auth = useAuthStore()
 const ui = useUiStore()
 const route = useRoute()
@@ -39,10 +40,10 @@ const supportModule: NavModule = {
 }
 
 const supportSubItems = computed(() => [
-  { label: t('nav.supportTickets'), to: '/support/tickets', icon: 'i-heroicons-ticket' },
-  { label: t('nav.supportSuggestions'), to: '/support/suggestions', icon: 'i-heroicons-light-bulb' },
-  { label: t('nav.supportAide'), to: '/support/aide', icon: 'i-heroicons-book-open' },
-  { label: t('nav.supportAideIA'), to: '/support/aide-ia', icon: 'i-heroicons-cpu-chip' },
+  { label: t('nav.supportTickets'), to: localePath('/support/tickets'), icon: 'i-heroicons-ticket' },
+  { label: t('nav.supportSuggestions'), to: localePath('/support/suggestions'), icon: 'i-heroicons-light-bulb' },
+  { label: t('nav.supportAide'), to: localePath('/support/aide'), icon: 'i-heroicons-book-open' },
+  { label: t('nav.supportAideIA'), to: localePath('/support/aide-ia'), icon: 'i-heroicons-cpu-chip' },
 ])
 
 const visibleModules = computed(() =>
@@ -52,7 +53,9 @@ const visibleModules = computed(() =>
 const showSupport = computed(() => auth.hasPermission(supportModule.permission))
 
 const isActiveModule = (slug: string): boolean => {
-  return route.path.startsWith(`/${slug}`)
+  // Supporte les chemins avec ou sans prefixe de locale (ex: /en/parametres)
+  const path = route.path.replace(/^\/[a-z]{2}\//, '/')
+  return path.startsWith(`/${slug}`)
 }
 
 const userName = computed(() => {
@@ -94,9 +97,9 @@ async function handleLogout(): Promise<void> {
       <nav class="flex-1 space-y-1 overflow-y-auto p-2">
         <!-- Dashboard -->
         <NuxtLink
-          to="/"
+          :to="localePath('/')"
           class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-          :class="route.path === '/' ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
+          :class="route.path === localePath('/') ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
         >
           <UIcon name="i-heroicons-home" class="h-5 w-5 shrink-0" />
           <span v-if="!ui.sidebarCollapsed">{{ $t('nav.dashboard') }}</span>
@@ -107,7 +110,7 @@ async function handleLogout(): Promise<void> {
         <!-- Module links -->
         <template v-for="mod in visibleModules" :key="mod.slug">
           <NuxtLink
-            :to="`/${mod.slug}`"
+            :to="localePath(`/${mod.slug}`)"
             class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
             :class="isActiveModule(mod.slug)
               ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
@@ -122,7 +125,7 @@ async function handleLogout(): Promise<void> {
         <template v-if="showSupport">
           <div class="my-2 border-t border-gray-200 dark:border-gray-700" />
           <NuxtLink
-            to="/support"
+            :to="localePath('/support')"
             class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
             :class="isActiveModule('support')
               ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
@@ -153,7 +156,7 @@ async function handleLogout(): Promise<void> {
         <template v-if="auth.hasPermission('settings:manage') || auth.hasPermission('users:manage')">
           <div class="my-2 border-t border-gray-200 dark:border-gray-700" />
           <NuxtLink
-            to="/parametres"
+            :to="localePath('/parametres')"
             class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
             :class="isActiveModule('parametres')
               ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
@@ -165,9 +168,9 @@ async function handleLogout(): Promise<void> {
 
           <template v-if="!ui.sidebarCollapsed && isActiveModule('parametres')">
             <NuxtLink
-              to="/parametres/etablissement"
+              :to="localePath('/parametres/etablissement')"
               class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"
-              :class="route.path === '/parametres/etablissement'
+              :class="route.path === localePath('/parametres/etablissement')
                 ? 'text-indigo-600 dark:text-indigo-400'
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
             >
@@ -176,9 +179,9 @@ async function handleLogout(): Promise<void> {
             </NuxtLink>
             <NuxtLink
               v-if="auth.hasPermission('users:manage')"
-              to="/parametres/utilisateurs"
+              :to="localePath('/parametres/utilisateurs')"
               class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"
-              :class="route.path === '/parametres/utilisateurs'
+              :class="route.path === localePath('/parametres/utilisateurs')
                 ? 'text-indigo-600 dark:text-indigo-400'
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
             >
@@ -221,8 +224,8 @@ async function handleLogout(): Promise<void> {
           <UDropdownMenu
             :items="[
               [
-                { label: $t('user.profile'), icon: 'i-heroicons-user-circle', to: '/profil' },
-                { label: $t('user.settings'), icon: 'i-heroicons-cog-6-tooth', to: '/parametres' },
+                { label: $t('user.profile'), icon: 'i-heroicons-user-circle', to: localePath('/profil') },
+                { label: $t('user.settings'), icon: 'i-heroicons-cog-6-tooth', to: localePath('/parametres') },
               ],
               [
                 { label: $t('user.logout'), icon: 'i-heroicons-arrow-right-on-rectangle', onSelect: handleLogout },
