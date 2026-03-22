@@ -35,6 +35,9 @@ public class AuthUser
     /// <summary>Version des CGU acceptees.</summary>
     public string? CguVersion { get; set; }
 
+    /// <summary>Doit changer le mot de passe a la prochaine connexion.</summary>
+    public bool MustChangePassword { get; set; }
+
     /// <summary>Suppression logique.</summary>
     public bool IsDeleted { get; set; }
 }

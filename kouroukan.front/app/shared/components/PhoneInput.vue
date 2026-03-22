@@ -46,7 +46,7 @@ const selectedCountry = ref('+224')
 const localNumber = ref('')
 
 const currentCountry = computed(() =>
-  countries.find(c => c.dial === selectedCountry.value) || countries[0]
+  countries.find(c => c.dial === selectedCountry.value) || countries[0],
 )
 
 const currentPlaceholder = computed(() => currentCountry.value.placeholder)
@@ -55,8 +55,8 @@ const currentPlaceholder = computed(() => currentCountry.value.placeholder)
 function formatDigits(digits: string): string {
   if (!digits) return ''
   if (digits.length <= 3) return digits
-  let result = digits.slice(0, 3)
-  let rest = digits.slice(3)
+  const result = digits.slice(0, 3)
+  const rest = digits.slice(3)
   const groups = rest.match(/.{1,2}/g) || []
   return [result, ...groups].join(' ')
 }
@@ -64,15 +64,18 @@ function formatDigits(digits: string): string {
 // Parse initial value
 onMounted(() => {
   if (props.modelValue) {
+    // Try to match a dial code prefix
     const match = props.modelValue.match(/^(\+\d{3})\s?(.*)$/)
     if (match) {
       const dial = match[1]
       if (countries.some(c => c.dial === dial)) {
         selectedCountry.value = dial
       }
-      localNumber.value = match[2]
-    } else {
-      localNumber.value = props.modelValue
+      localNumber.value = formatDigits(match[2].replace(/\D/g, ''))
+    }
+    else {
+      // Raw digits
+      localNumber.value = formatDigits(props.modelValue.replace(/\D/g, ''))
     }
   }
 })
@@ -80,7 +83,7 @@ onMounted(() => {
 function formatFullNumber(): string {
   const digits = localNumber.value.replace(/\D/g, '').slice(0, currentCountry.value.maxDigits)
   if (!digits) return ''
-  // Emettre uniquement les chiffres bruts (9 chiffres, sans indicatif ni espaces)
+  // Emettre uniquement les chiffres bruts (sans indicatif ni espaces)
   return digits
 }
 

@@ -93,12 +93,8 @@ async function handleCreate() {
 
     resetForm()
   }
-  catch (e: unknown) {
-    const err = e as { data?: { message?: string } }
-    toast.add({
-      title: err?.data?.message || t('users.createError'),
-      color: 'error',
-    })
+  catch {
+    // Le toast d'erreur est affiche automatiquement par apiClient
   }
 }
 
@@ -236,7 +232,7 @@ onMounted(() => {
                 </UFormField>
               </div>
               <UFormField :label="$t('users.phone')">
-                <UInput v-model="form.phoneNumber" placeholder="+224 6XX XX XX XX" class="w-full" />
+                <PhoneInput v-model="form.phoneNumber" />
               </UFormField>
               <UFormField :label="$t('users.email')">
                 <UInput v-model="form.email" type="email" class="w-full" />

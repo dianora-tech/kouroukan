@@ -21,16 +21,36 @@ const form = reactive({
 })
 
 async function handleSave(): Promise<void> {
-  if (form.newPassword && form.newPassword !== form.confirmPassword) {
-    toast.add({ title: t('profil.updateError'), color: 'error' })
-    return
+  // Validate password fields if user wants to change password
+  if (form.newPassword || form.currentPassword) {
+    if (!form.currentPassword) {
+      toast.add({ title: t('profil.currentPasswordRequired'), color: 'error' })
+      return
+    }
+    if (form.newPassword.length < 8) {
+      toast.add({ title: t('changePassword.minLength'), color: 'error' })
+      return
+    }
+    if (form.newPassword !== form.confirmPassword) {
+      toast.add({ title: t('changePassword.mismatch'), color: 'error' })
+      return
+    }
   }
+
   saving.value = true
   try {
+    // Change password if fields are filled
+    if (form.currentPassword && form.newPassword) {
+      await auth.changePassword(form.currentPassword, form.newPassword)
+      form.currentPassword = ''
+      form.newPassword = ''
+      form.confirmPassword = ''
+    }
+
     toast.add({ title: t('profil.updateSuccess'), color: 'success' })
   }
   catch {
-    toast.add({ title: t('profil.updateError'), color: 'error' })
+    // Le toast d'erreur est affiche par le auth store
   }
   finally {
     saving.value = false

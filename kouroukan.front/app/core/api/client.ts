@@ -20,6 +20,43 @@ function buildQueryString(params: PaginationParams): string {
   return str ? `?${str}` : ''
 }
 
+/**
+ * Extrait le message d'erreur lisible depuis une FetchError ou une erreur quelconque.
+ * Le backend retourne toujours un ApiResponse avec un champ `message`.
+ */
+export function extractErrorMessage(error: unknown): string {
+  // FetchError de $fetch — le body JSON est dans error.data
+  const data = (error as { data?: { message?: string, errors?: string[] } })?.data
+  if (data?.message) return data.message
+  if (data?.errors?.length) return data.errors.join(', ')
+
+  // Fallback : message HTTP standard
+  const statusMessage = (error as { statusMessage?: string })?.statusMessage
+  if (statusMessage) return statusMessage
+
+  // Fallback : Error standard
+  if (error instanceof Error && error.message) return error.message
+
+  return 'Une erreur inattendue est survenue.'
+}
+
+/**
+ * Affiche un toast d'erreur via useToast() de Nuxt UI.
+ */
+function showErrorToast(error: unknown): void {
+  try {
+    const toast = useToast()
+    toast.add({
+      title: extractErrorMessage(error),
+      color: 'error',
+      icon: 'i-heroicons-exclamation-triangle',
+    })
+  }
+  catch {
+    // toast non disponible (SSR)
+  }
+}
+
 async function fetchWithRetry<T>(
   url: string,
   options: Parameters<typeof $fetch>[1],
@@ -33,9 +70,13 @@ async function fetchWithRetry<T>(
       const status = (error as { statusCode?: number })?.statusCode
       // Don't retry client errors (4xx) except 408 (timeout) and 429 (rate limit)
       if (status && status >= 400 && status < 500 && status !== 408 && status !== 429) {
+        showErrorToast(error)
         throw error
       }
-      if (attempt === retries) throw error
+      if (attempt === retries) {
+        showErrorToast(error)
+        throw error
+      }
       await delay(RETRY_DELAY_MS * (attempt + 1))
     }
   }
@@ -54,18 +95,21 @@ export class ApiClient {
       'Content-Type': 'application/json',
     }
 
+    let token: string | null = null
+
+    // Lire le token depuis le store Pinia (persiste dans localStorage)
     try {
-      const { getToken } = useAuth()
-      const token = getToken()
-      if (token) {
-        headers.Authorization = `Bearer ${token}`
+      const auth = useAuthStore()
+      if (auth.accessToken) {
+        token = auth.accessToken
       }
     }
     catch {
-      const token = useState<string | null>('auth-token').value
-      if (token) {
-        headers.Authorization = `Bearer ${token}`
-      }
+      // Store non disponible
+    }
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
     }
 
     return headers

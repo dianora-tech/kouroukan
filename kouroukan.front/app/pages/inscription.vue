@@ -95,13 +95,7 @@ async function handleRegister(): Promise<void> {
       </UFormField>
 
       <UFormField :label="$t('auth.phone')">
-        <UInput
-          v-model="form.phoneNumber"
-          type="tel"
-          placeholder="+224 XX XX XX XX"
-          icon="i-heroicons-phone"
-          required
-        />
+        <PhoneInput v-model="form.phoneNumber" />
       </UFormField>
 
       <UFormField :label="$t('auth.password')">

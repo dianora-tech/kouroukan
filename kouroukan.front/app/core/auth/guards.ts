@@ -32,6 +32,7 @@ export const CGU_EXEMPT_ROUTES = [
   '/connexion',
   '/inscription',
   '/legal/cgu',
+  '/changer-mot-de-passe',
 ] as const
 
 /**
