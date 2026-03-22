@@ -21,6 +21,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       description: t('cgu.mustAccept'),
       color: 'warning',
     })
-    return navigateTo('/support/cgu')
+    const localePath = useLocalePath()
+    return navigateTo(localePath('/support/cgu'))
   }
 })

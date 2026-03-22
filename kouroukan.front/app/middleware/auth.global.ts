@@ -6,37 +6,40 @@ export default defineNuxtRouteMiddleware((to) => {
   const { $i18n } = useNuxtApp()
   const t = $i18n.t.bind($i18n)
   const toast = useToast()
-  const path = to.path
+  const localePath = useLocalePath()
+
+  // Normaliser le path (supprimer le prefixe de locale /en/, /fr/)
+  const rawPath = to.path.replace(/^\/[a-z]{2}(?=\/|$)/, '') || '/'
 
   // Public routes — skip auth
-  if (isPublicRoute(path)) return
+  if (isPublicRoute(rawPath)) return
 
   // Dashboard root — always accessible to authenticated users
-  if (path === '/' || path === '/fr' || path === '/en') {
+  if (rawPath === '/') {
     if (!auth.isAuthenticated) {
-      return navigateTo('/connexion')
+      return navigateTo(localePath('/connexion'))
     }
     return
   }
 
   // Not authenticated → redirect to login
   if (!auth.isAuthenticated) {
-    return navigateTo('/connexion')
+    return navigateTo(localePath('/connexion'))
   }
 
   // Must change password → redirect to change password page
-  if (auth.mustChangePassword && path !== '/changer-mot-de-passe') {
-    return navigateTo('/changer-mot-de-passe')
+  if (auth.mustChangePassword && rawPath !== '/changer-mot-de-passe') {
+    return navigateTo(localePath('/changer-mot-de-passe'))
   }
 
   // Check required permission for the route
-  const requiredPermission = getRequiredPermission(path)
+  const requiredPermission = getRequiredPermission(rawPath)
   if (requiredPermission && !auth.hasPermission(requiredPermission)) {
     toast.add({
       title: t('errors.forbidden'),
       description: t('errors.insufficientPermissions'),
       color: 'error',
     })
-    return navigateTo('/')
+    return navigateTo(localePath('/'))
   }
 })

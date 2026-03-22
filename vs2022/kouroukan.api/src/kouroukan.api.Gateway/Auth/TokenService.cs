@@ -132,6 +132,15 @@ public sealed class TokenService : ITokenService
             """,
             new { UserId = userId })).AsList();
 
+        // Lire les preferences utilisateur (table separee)
+        var prefs = await connection.QuerySingleOrDefaultAsync<(string Locale, string Theme)?>(
+            """
+            SELECT preferred_locale, preferred_theme
+            FROM auth.user_preferences
+            WHERE user_id = @UserId
+            """,
+            new { UserId = userId });
+
         return new UserProfileDto
         {
             Id = user.Id,
@@ -144,7 +153,9 @@ public sealed class TokenService : ITokenService
             CguVersion = user.CguVersion,
             CguAcceptedAt = user.CguAcceptedAt,
             MustChangePassword = user.MustChangePassword,
-            Companies = companies
+            Companies = companies,
+            PreferredLocale = prefs?.Locale ?? "fr",
+            PreferredTheme = prefs?.Theme ?? "system"
         };
     }
 
@@ -411,5 +422,22 @@ public sealed class TokenService : ITokenService
             new { UserId = userId });
 
         return permissions.ToList();
+    }
+
+    /// <inheritdoc />
+    public async Task UpdatePreferencesAsync(int userId, string locale, string theme, CancellationToken cancellationToken = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var affected = await connection.ExecuteAsync(
+            """
+            INSERT INTO auth.user_preferences (user_id, preferred_locale, preferred_theme, updated_at)
+            VALUES (@UserId, @Locale, @Theme, NOW())
+            ON CONFLICT (user_id)
+            DO UPDATE SET preferred_locale = @Locale, preferred_theme = @Theme, updated_at = NOW()
+            """,
+            new { UserId = userId, Locale = locale, Theme = theme });
+
+        _logger.LogInformation("Preferences mises a jour pour l'utilisateur {UserId}: locale={Locale}, theme={Theme}", userId, locale, theme);
     }
 }

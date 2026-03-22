@@ -5,9 +5,11 @@ definePageMeta({
   layout: 'auth',
 })
 
-const { t } = useI18n()
+const { t, setLocale } = useI18n()
+const localePath = useLocalePath()
 const auth = useAuthStore()
 const toast = useToast()
+const colorMode = useColorMode()
 
 const form = reactive({
   email: '',
@@ -30,6 +32,16 @@ async function handleLogin(): Promise<void> {
   try {
     await auth.login(form.email, form.password)
 
+    // Appliquer les preferences utilisateur (langue et theme)
+    if (auth.user?.preferredLocale) {
+      await setLocale(auth.user.preferredLocale)
+      const langCookie = useCookie('kouroukan_lang', { maxAge: 365 * 24 * 60 * 60 })
+      langCookie.value = auth.user.preferredLocale
+    }
+    if (auth.user?.preferredTheme) {
+      colorMode.preference = auth.user.preferredTheme
+    }
+
     // Must change password (first login with temporary password)
     if (auth.mustChangePassword) {
       toast.add({
@@ -37,7 +49,7 @@ async function handleLogin(): Promise<void> {
         description: t('changePassword.subtitle'),
         color: 'warning',
       })
-      await navigateTo('/changer-mot-de-passe')
+      await navigateTo(localePath('/changer-mot-de-passe'))
       return
     }
 
@@ -49,7 +61,7 @@ async function handleLogin(): Promise<void> {
         description: t('cgu.mustAccept'),
         color: 'warning',
       })
-      await navigateTo('/support/cgu')
+      await navigateTo(localePath('/support/cgu'))
       return
     }
 
@@ -57,7 +69,7 @@ async function handleLogin(): Promise<void> {
       title: t('auth.loginSuccess'),
       color: 'success',
     })
-    await navigateTo('/')
+    await navigateTo(localePath('/'))
   }
   catch {
     toast.add({

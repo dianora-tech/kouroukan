@@ -99,18 +99,23 @@ public sealed class AuthController : ControllerBase
 
     /// <summary>
     /// Revoque le refresh token de l'utilisateur (deconnexion).
+    /// Le body est optionnel : si aucun refreshToken n'est fourni,
+    /// la deconnexion est effectuee sans revoquer de token specifique.
     /// </summary>
-    /// <param name="request">Refresh token a revoquer.</param>
-    /// <param name="cancellationToken">Token d'annulation.</param>
     [HttpPost("logout")]
     [Authorize]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Logout([FromBody] RefreshRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Logout([FromBody] LogoutRequest? request, CancellationToken cancellationToken)
     {
-        await _refreshTokenService.RevokeAsync(request.RefreshToken, cancellationToken);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                  ?? User.FindFirst("sub")?.Value;
 
-        _logger.LogInformation("Deconnexion de l'utilisateur {UserId}",
-            User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value);
+        if (!string.IsNullOrEmpty(request?.RefreshToken))
+        {
+            await _refreshTokenService.RevokeAsync(request.RefreshToken, cancellationToken);
+        }
+
+        _logger.LogInformation("Deconnexion de l'utilisateur {UserId}", userId);
 
         return Ok(ApiResponse<object>.Ok(null!, "Deconnexion reussie."));
     }
@@ -208,5 +213,25 @@ public sealed class AuthController : ControllerBase
         {
             return BadRequest(ApiResponse<object>.Fail(ex.Message));
         }
+    }
+
+    /// <summary>
+    /// Met a jour les preferences utilisateur (langue, theme).
+    /// </summary>
+    [HttpPut("preferences")]
+    [Authorize]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdatePreferences([FromBody] UpdatePreferencesRequest request, CancellationToken cancellationToken)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                  ?? User.FindFirst("sub")?.Value;
+
+        if (userId is null)
+            return Unauthorized(ApiResponse<object>.Fail("Token invalide."));
+
+        await _tokenService.UpdatePreferencesAsync(int.Parse(userId), request.Locale, request.Theme, cancellationToken);
+
+        return Ok(ApiResponse<object>.Ok(null!, "Preferences mises a jour."));
     }
 }

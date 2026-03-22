@@ -81,7 +81,12 @@ export default defineNuxtConfig({
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'kouroukan_lang',
+      cookieSecure: false,
+      cookieDomain: '',
+      cookieMaxAge: 365 * 24 * 60 * 60,
       fallbackLocale: 'fr',
+      alwaysRedirect: true,
+      redirectOn: 'all',
     },
   },
 

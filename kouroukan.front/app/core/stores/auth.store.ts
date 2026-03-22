@@ -111,20 +111,26 @@ export const useAuthStore = defineStore('auth', {
 
     async logout(): Promise<void> {
       try {
-        await $fetch('/api/auth/logout', { method: 'POST' })
+        await $fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
+          },
+          body: {},
+        })
       }
       catch {
         // Ignore logout errors
       }
       finally {
-        // Clear sidebase/nuxt-auth token
+        // Nettoyage local uniquement (pas de 2eme appel API via sidebase)
         try {
-          const { signOut } = useAuth()
-          await signOut({ callbackUrl: '/connexion', redirect: false })
+          const tokenCookie = useCookie('auth.token')
+          tokenCookie.value = null
         }
         catch {
-          // sidebase auth not available, clear manual token
-          useState('auth-token').value = null
+          // cookie non disponible
         }
         this.$reset()
         await navigateTo('/connexion', { replace: true })
@@ -228,6 +234,28 @@ export const useAuthStore = defineStore('auth', {
 
         this.cguVersion = version
         this.cguAccepted = true
+      }
+      catch (error) {
+        const msg = extractErrorMessage(error)
+        showError(msg)
+        throw error
+      }
+    },
+
+    async updatePreferences(locale: string, theme: string): Promise<void> {
+      try {
+        await $fetch('/api/auth/preferences', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
+          },
+          body: { locale, theme },
+        })
+        if (this.user) {
+          this.user.preferredLocale = locale
+          this.user.preferredTheme = theme
+        }
       }
       catch (error) {
         const msg = extractErrorMessage(error)
