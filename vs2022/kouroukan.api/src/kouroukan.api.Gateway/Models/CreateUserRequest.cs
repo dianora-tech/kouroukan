@@ -16,8 +16,8 @@ public class CreateUserRequest
     public string LastName { get; set; } = string.Empty;
 
     [Required]
-    [RegularExpression(@"^\+224\s?\d{3}\s?\d{2}\s?\d{2}\s?\d{2}$",
-        ErrorMessage = "Le numero de telephone doit etre au format +224 XXX XX XX XX.")]
+    [RegularExpression(@"^(\+224)?\s?\d{9}$",
+        ErrorMessage = "Le numero de telephone doit contenir 9 chiffres (ex: 629817970 ou +224629817970).")]
     public string PhoneNumber { get; set; } = string.Empty;
 
     [EmailAddress]

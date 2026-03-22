@@ -111,7 +111,7 @@ public sealed class TokenService : ITokenService
         var user = await connection.QuerySingleOrDefaultAsync<AuthUser>(
             """
             SELECT id, first_name, last_name, email, phone_number,
-                   is_active, cgu_accepted_at, cgu_version
+                   is_active, cgu_accepted_at, cgu_version, must_change_password
             FROM auth.users
             WHERE id = @UserId AND is_deleted = FALSE
             """,
@@ -143,6 +143,7 @@ public sealed class TokenService : ITokenService
             Permissions = permissions,
             CguVersion = user.CguVersion,
             CguAcceptedAt = user.CguAcceptedAt,
+            MustChangePassword = user.MustChangePassword,
             Companies = companies
         };
     }
@@ -211,6 +212,33 @@ public sealed class TokenService : ITokenService
             AccessTokenExpiresAt = tokenResult.AccessTokenExpiresAt,
             RefreshTokenExpiresAt = tokenResult.RefreshTokenExpiresAt
         };
+    }
+
+    /// <inheritdoc />
+    public async Task ChangePasswordAsync(int userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var user = await connection.QuerySingleOrDefaultAsync<AuthUser>(
+            "SELECT id, password_hash FROM auth.users WHERE id = @UserId AND is_deleted = FALSE",
+            new { UserId = userId });
+
+        if (user is null)
+            throw new UnauthorizedAccessException("Utilisateur introuvable.");
+
+        var isPasswordValid = await _passwordHasher.VerifyAsync(currentPassword, user.PasswordHash, cancellationToken);
+        if (!isPasswordValid)
+            throw new UnauthorizedAccessException("Mot de passe actuel incorrect.");
+
+        var newHash = await _passwordHasher.HashAsync(newPassword, cancellationToken);
+
+        await connection.ExecuteAsync(
+            """
+            UPDATE auth.users
+            SET password_hash = @Hash, must_change_password = FALSE
+            WHERE id = @UserId
+            """,
+            new { Hash = newHash, UserId = userId });
     }
 
     /// <inheritdoc />

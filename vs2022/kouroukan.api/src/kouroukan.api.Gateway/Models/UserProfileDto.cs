@@ -32,6 +32,9 @@ public class UserProfileDto
     /// <summary>Date d'acceptation des CGU.</summary>
     public DateTime? CguAcceptedAt { get; set; }
 
+    /// <summary>Indique si l'utilisateur doit changer son mot de passe (premiere connexion).</summary>
+    public bool MustChangePassword { get; set; }
+
     /// <summary>Etablissements lies a l'utilisateur.</summary>
     public IReadOnlyList<CompanyDto> Companies { get; set; } = [];
 }

@@ -24,6 +24,11 @@ export default defineNuxtRouteMiddleware((to) => {
     return navigateTo('/connexion')
   }
 
+  // Must change password → redirect to change password page
+  if (auth.mustChangePassword && path !== '/changer-mot-de-passe') {
+    return navigateTo('/changer-mot-de-passe')
+  }
+
   // Check required permission for the route
   const requiredPermission = getRequiredPermission(path)
   if (requiredPermission && !auth.hasPermission(requiredPermission)) {

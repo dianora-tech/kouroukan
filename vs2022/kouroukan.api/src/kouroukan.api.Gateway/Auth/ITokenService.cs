@@ -42,6 +42,15 @@ public interface ITokenService
     Task<AuthTokensDto> AcceptCguAsync(int userId, string cguVersion, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Change le mot de passe de l'utilisateur et desactive le flag must_change_password.
+    /// </summary>
+    /// <param name="userId">Identifiant de l'utilisateur.</param>
+    /// <param name="currentPassword">Mot de passe actuel.</param>
+    /// <param name="newPassword">Nouveau mot de passe.</param>
+    /// <param name="cancellationToken">Token d'annulation.</param>
+    Task ChangePasswordAsync(int userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Inscrit un nouvel etablissement : cree l'utilisateur directeur, l'etablissement,
     /// assigne le role et optionnellement enregistre la localisation.
     /// </summary>

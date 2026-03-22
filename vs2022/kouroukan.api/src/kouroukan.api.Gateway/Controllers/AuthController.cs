@@ -180,4 +180,33 @@ public sealed class AuthController : ControllerBase
 
         return Ok(ApiResponse<AuthTokensDto>.Ok(tokens, "CGU acceptees avec succes."));
     }
+
+    /// <summary>
+    /// Change le mot de passe de l'utilisateur authentifie.
+    /// Desactive le flag must_change_password apres le changement.
+    /// </summary>
+    [HttpPost("change-password")]
+    [Authorize]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                       ?? User.FindFirst("sub")?.Value;
+        if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<object>.Fail("Token invalide."));
+
+        if (request.NewPassword.Length < 8)
+            return BadRequest(ApiResponse<object>.Fail("Le nouveau mot de passe doit contenir au moins 8 caracteres."));
+
+        try
+        {
+            await _tokenService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword, cancellationToken);
+            return Ok(ApiResponse<object>.Ok(null!, "Mot de passe modifie avec succes."));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return BadRequest(ApiResponse<object>.Fail(ex.Message));
+        }
+    }
 }

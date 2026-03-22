@@ -106,7 +106,7 @@ async function onSubmit(): Promise<void> {
       </UFormField>
 
       <UFormField :label="t('finances.depense.beneficiaireTelephone')" name="beneficiaireTelephone">
-        <UInput v-model="state.beneficiaireTelephone" :placeholder="t('finances.depense.telephonePlaceholder')" class="w-full" />
+        <PhoneInput v-model="state.beneficiaireTelephone" />
       </UFormField>
     </div>
 

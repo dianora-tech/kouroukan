@@ -35,7 +35,7 @@ export function useRegistration() {
   const step1Schema = computed(() => z.object({
     firstName: z.string().min(2, t('inscription.validation.required')),
     lastName: z.string().min(2, t('inscription.validation.required')),
-    phone: z.string().regex(/^\+\d{3}\s?\d{3}\s?\d{2}\s?\d{2}\s?\d{2}$/, t('inscription.validation.phoneFormat')),
+    phone: z.string().min(1, t('inscription.validation.required')),
     email: z.string().email(t('inscription.validation.emailFormat')).or(z.literal('')),
     password: z.string().min(8, t('inscription.validation.passwordMin')),
     confirmPassword: z.string(),
@@ -90,19 +90,14 @@ export function useRegistration() {
   }
 
   function formatPhone(raw: string): string {
-    const digits = raw.replace(/[\s\-.]/g, '')
-    if (digits.startsWith('+224') && digits.length === 13) {
-      const num = digits.slice(4)
-      return `+224 ${num.slice(0, 3)} ${num.slice(3, 5)} ${num.slice(5, 7)} ${num.slice(7, 9)}`
-    }
+    // Extraire uniquement les chiffres
+    const digits = raw.replace(/\D/g, '')
+    // Si commence par 224 (indicatif), le retirer
     if (digits.startsWith('224') && digits.length === 12) {
-      const num = digits.slice(3)
-      return `+224 ${num.slice(0, 3)} ${num.slice(3, 5)} ${num.slice(5, 7)} ${num.slice(7, 9)}`
+      return digits.slice(3)
     }
-    if (/^\d{9}$/.test(digits)) {
-      return `+224 ${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)}`
-    }
-    return raw
+    // Retourner les 9 chiffres bruts
+    return digits
   }
 
   async function submit() {

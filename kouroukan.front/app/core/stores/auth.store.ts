@@ -1,6 +1,16 @@
 import { defineStore } from 'pinia'
 import type { User } from '~/types/user'
 import type { RoleName, PermissionKey } from '~/core/auth/rbac'
+import { extractErrorMessage } from '~/core/api/client'
+
+function showError(msg: string): void {
+  try {
+    useToast().add({ title: msg, color: 'error', icon: 'i-heroicons-exclamation-triangle' })
+  }
+  catch {
+    // toast non disponible (SSR)
+  }
+}
 
 interface AuthState {
   user: User | null
@@ -9,7 +19,9 @@ interface AuthState {
   lastLoginAt: string | null
   cguAccepted: boolean
   cguVersion: string | null
+  mustChangePassword: boolean
   activeCompanyId: number | null
+  accessToken: string | null
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -20,7 +32,9 @@ export const useAuthStore = defineStore('auth', {
     lastLoginAt: null,
     cguAccepted: false,
     cguVersion: null,
+    mustChangePassword: false,
     activeCompanyId: null,
+    accessToken: null,
   }),
 
   getters: {
@@ -36,26 +50,42 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(email: string, password: string): Promise<void> {
-      // 1. Login — get tokens
-      const loginResponse = await $fetch<{
-        success: boolean
-        data: {
-          accessToken: string
-          refreshToken: string
-        }
-      }>('/api/auth/login', {
-        method: 'POST',
-        body: { email, password },
-      })
-
-      if (!loginResponse?.success || !loginResponse.data?.accessToken) {
-        throw new Error('Login failed')
+      let loginResponse: { success: boolean, data: { accessToken: string, refreshToken: string } }
+      try {
+        // 1. Login — get tokens
+        loginResponse = await $fetch<{
+          success: boolean
+          data: {
+            accessToken: string
+            refreshToken: string
+          }
+        }>('/api/auth/login', {
+          method: 'POST',
+          body: { email, password },
+        })
+      }
+      catch (error) {
+        const msg = extractErrorMessage(error)
+        showError(msg)
+        throw error
       }
 
-      // Store the token in the sidebase cookie
+      if (!loginResponse?.success || !loginResponse.data?.accessToken) {
+        const msg = 'Identifiants incorrects.'
+        showError(msg)
+        throw new Error(msg)
+      }
+
+      // Store the token in Pinia state (persisted) and cookie
       const token = loginResponse.data.accessToken
-      const tokenCookie = useCookie('auth.token')
-      tokenCookie.value = token
+      this.accessToken = token
+      try {
+        const tokenCookie = useCookie('auth.token')
+        tokenCookie.value = token
+      }
+      catch {
+        // cookie not available
+      }
 
       // 2. Fetch user profile with the token
       const profileResponse = await $fetch<{
@@ -75,6 +105,7 @@ export const useAuthStore = defineStore('auth', {
         this.lastLoginAt = new Date().toISOString()
         this.cguVersion = user.cguVersion ?? null
         this.cguAccepted = !!user.cguAcceptedAt
+        this.mustChangePassword = user.mustChangePassword ?? false
       }
     },
 
@@ -95,7 +126,6 @@ export const useAuthStore = defineStore('auth', {
           // sidebase auth not available, clear manual token
           useState('auth-token').value = null
         }
-
         this.$reset()
         await navigateTo('/connexion', { replace: true })
       }
@@ -114,6 +144,26 @@ export const useAuthStore = defineStore('auth', {
         this.permissions = (user.permissions ?? []) as PermissionKey[]
         this.cguVersion = user.cguVersion ?? null
         this.cguAccepted = !!user.cguAcceptedAt
+        this.mustChangePassword = user.mustChangePassword ?? false
+      }
+    },
+
+    async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+      try {
+        await $fetch('/api/auth/change-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
+          },
+          body: { currentPassword, newPassword },
+        })
+        this.mustChangePassword = false
+      }
+      catch (error) {
+        const msg = extractErrorMessage(error)
+        showError(msg)
+        throw error
       }
     },
 
@@ -148,29 +198,42 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async acceptCgu(version: string): Promise<void> {
-      const tokenCookie = useCookie('auth.token')
-      const token = tokenCookie.value
+      try {
+        const token = this.accessToken
 
-      const response = await $fetch<{
-        success: boolean
-        data: {
-          accessToken: string
-          refreshToken: string
+        const response = await $fetch<{
+          success: boolean
+          data: {
+            accessToken: string
+            refreshToken: string
+          }
+        }>('/api/auth/cgu/accept', {
+          method: 'POST',
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        })
+
+        // Update token with new cguVersion claim
+        if (response?.success && response.data?.accessToken) {
+          this.accessToken = response.data.accessToken
+          try {
+            const tokenCookie = useCookie('auth.token')
+            tokenCookie.value = response.data.accessToken
+          }
+          catch {
+            // cookie non disponible
+          }
         }
-      }>('/api/auth/cgu/accept', {
-        method: 'POST',
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      })
 
-      // Update token with new cguVersion claim
-      if (response?.success && response.data?.accessToken) {
-        tokenCookie.value = response.data.accessToken
+        this.cguVersion = version
+        this.cguAccepted = true
       }
-
-      this.cguVersion = version
-      this.cguAccepted = true
+      catch (error) {
+        const msg = extractErrorMessage(error)
+        showError(msg)
+        throw error
+      }
     },
 
     hasPermission(permission: PermissionKey): boolean {
@@ -184,6 +247,6 @@ export const useAuthStore = defineStore('auth', {
   },
 
   persist: {
-    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion', 'activeCompanyId'],
+    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion', 'mustChangePassword', 'activeCompanyId', 'accessToken'],
   },
 })

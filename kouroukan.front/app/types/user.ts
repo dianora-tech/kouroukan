@@ -12,6 +12,7 @@ export interface User {
   permissions: PermissionKey[]
   cguVersion: string | null
   cguAcceptedAt: string | null
+  mustChangePassword: boolean
   companies: { id: number, name: string, role: string }[]
 }
 

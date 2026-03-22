@@ -30,6 +30,17 @@ async function handleLogin(): Promise<void> {
   try {
     await auth.login(form.email, form.password)
 
+    // Must change password (first login with temporary password)
+    if (auth.mustChangePassword) {
+      toast.add({
+        title: t('changePassword.title'),
+        description: t('changePassword.subtitle'),
+        color: 'warning',
+      })
+      await navigateTo('/changer-mot-de-passe')
+      return
+    }
+
     // Check CGU after login
     const cguUpToDate = await auth.checkCgu()
     if (!cguUpToDate) {

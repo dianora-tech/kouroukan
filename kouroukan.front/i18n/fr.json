@@ -1641,7 +1641,8 @@
     "confirmPassword": "Confirmer le nouveau mot de passe",
     "saveChanges": "Enregistrer les modifications",
     "updateSuccess": "Profil mis à jour avec succès",
-    "updateError": "Erreur lors de la mise à jour du profil"
+    "updateError": "Erreur lors de la mise à jour du profil",
+    "currentPasswordRequired": "Veuillez saisir votre mot de passe actuel"
   },
   "parametres": {
     "title": "Paramètres",
@@ -1744,5 +1745,20 @@
     "empty": "Aucun établissement lié à votre compte",
     "select": "Sélectionner",
     "active": "Actif"
+  },
+  "changePassword": {
+    "title": "Changement de mot de passe",
+    "subtitle": "Pour des raisons de sécurité, veuillez changer votre mot de passe temporaire.",
+    "currentPassword": "Mot de passe actuel",
+    "currentPasswordPlaceholder": "Votre mot de passe temporaire",
+    "newPassword": "Nouveau mot de passe",
+    "newPasswordPlaceholder": "Au moins 8 caractères",
+    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "confirmPasswordPlaceholder": "Répétez le nouveau mot de passe",
+    "minLength": "Le mot de passe doit contenir au moins 8 caractères",
+    "mismatch": "Les mots de passe ne correspondent pas",
+    "submit": "Changer le mot de passe",
+    "success": "Mot de passe modifié avec succès",
+    "error": "Erreur lors du changement de mot de passe"
   }
 }

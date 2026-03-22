@@ -12,7 +12,7 @@ namespace Kouroukan.Api.Gateway.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/users")]
-[Authorize(Policy = "RequirePermission:users:manage")]
+[Authorize]
 public sealed class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -31,6 +31,7 @@ public sealed class UsersController : ControllerBase
     /// Liste les utilisateurs de l'etablissement du directeur connecte.
     /// </summary>
     [HttpGet]
+    [Authorize(Policy = "RequirePermission:users:manage")]
     [ProducesResponseType(typeof(ApiResponse<List<UserListItemDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> List(CancellationToken ct)
     {
@@ -43,6 +44,7 @@ public sealed class UsersController : ControllerBase
     /// Genere un mot de passe temporaire retourne dans la reponse.
     /// </summary>
     [HttpPost]
+    [Authorize(Policy = "RequirePermission:users:manage")]
     [ProducesResponseType(typeof(ApiResponse<CreateUserResultDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request, CancellationToken ct)
@@ -55,6 +57,7 @@ public sealed class UsersController : ControllerBase
     /// Recherche un utilisateur existant par telephone ou email (pour lier un fondateur).
     /// </summary>
     [HttpGet("search")]
+    [Authorize(Policy = "RequirePermission:users:manage")]
     [ProducesResponseType(typeof(ApiResponse<UserSearchResultDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Search([FromQuery] string q, CancellationToken ct)
@@ -71,9 +74,9 @@ public sealed class UsersController : ControllerBase
 
     /// <summary>
     /// Retourne les etablissements lies a l'utilisateur connecte.
+    /// Accessible a tout utilisateur authentifie (pas besoin de users:manage).
     /// </summary>
     [HttpGet("companies")]
-    [Authorize]
     [ProducesResponseType(typeof(ApiResponse<List<CompanyDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Companies(CancellationToken ct)
     {
@@ -85,6 +88,7 @@ public sealed class UsersController : ControllerBase
     /// Supprime (soft-delete) un utilisateur de l'etablissement.
     /// </summary>
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "RequirePermission:users:manage")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
