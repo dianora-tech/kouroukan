@@ -16,6 +16,7 @@ export interface User {
   companies: { id: number, name: string, role: string }[]
   preferredLocale?: string
   preferredTheme?: string
+  avatarUrl?: string | null
 }
 
 export interface LoginPayload {

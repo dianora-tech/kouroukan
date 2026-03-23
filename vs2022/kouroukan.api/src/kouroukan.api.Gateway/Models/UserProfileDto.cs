@@ -43,4 +43,7 @@ public class UserProfileDto
 
     /// <summary>Theme prefere (light, dark, system).</summary>
     public string PreferredTheme { get; set; } = "system";
+
+    /// <summary>URL de la photo de profil (avatar).</summary>
+    public string? AvatarUrl { get; set; }
 }

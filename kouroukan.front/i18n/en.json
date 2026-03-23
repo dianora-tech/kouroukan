@@ -1627,7 +1627,12 @@
     "saveChanges": "Save Changes",
     "updateSuccess": "Profile updated successfully",
     "updateError": "Error updating profile",
-    "currentPasswordRequired": "Please enter your current password"
+    "currentPasswordRequired": "Please enter your current password",
+    "clickToChangeAvatar": "Click to change photo",
+    "avatarUpdated": "Profile photo updated",
+    "avatarFormatError": "Unsupported format. Use JPEG, PNG or WebP.",
+    "avatarSizeError": "File must not exceed 2 MB.",
+    "saveToApply": "Click Save to apply"
   },
   "parametres": {
     "title": "Settings",

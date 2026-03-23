@@ -10,6 +10,13 @@ const auth = useAuthStore()
 const toast = useToast()
 
 const saving = ref(false)
+const uploadingAvatar = ref(false)
+
+const userInitials = computed(() => {
+  const first = auth.user?.firstName?.[0] ?? ''
+  const last = auth.user?.lastName?.[0] ?? ''
+  return `${first}${last}`.toUpperCase()
+})
 
 const form = reactive({
   firstName: auth.user?.firstName ?? '',
@@ -20,8 +27,65 @@ const form = reactive({
   confirmPassword: '',
 })
 
+function triggerAvatarUpload() {
+  const input = document.getElementById('avatar-file-input') as HTMLInputElement
+  if (input) {
+    input.value = ''
+    input.click()
+  }
+}
+
+async function handleAvatarChange(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+  if (!allowedTypes.includes(file.type)) {
+    toast.add({ title: t('profil.avatarFormatError'), color: 'error' })
+    return
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    toast.add({ title: t('profil.avatarSizeError'), color: 'error' })
+    return
+  }
+
+  // Upload immediatement avec fetch natif
+  uploadingAvatar.value = true
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await window.fetch('/api/auth/avatar', {
+      method: 'POST',
+      headers: {
+        ...(auth.accessToken ? { Authorization: `Bearer ${auth.accessToken}` } : {}),
+      },
+      body: formData,
+    })
+
+    const data = await response.json()
+
+    if (response.ok && data?.success && data?.data?.avatarUrl) {
+      if (auth.user) {
+        auth.user.avatarUrl = data.data.avatarUrl
+      }
+      toast.add({ title: t('profil.avatarUpdated'), color: 'success' })
+    }
+    else {
+      toast.add({ title: data?.message || t('profil.updateError'), color: 'error' })
+    }
+  }
+  catch (e) {
+    console.error('Avatar upload error:', e)
+    toast.add({ title: t('profil.updateError'), color: 'error' })
+  }
+  finally {
+    uploadingAvatar.value = false
+  }
+}
+
 async function handleSave(): Promise<void> {
-  // Validate password fields if user wants to change password
   if (form.newPassword || form.currentPassword) {
     if (!form.currentPassword) {
       toast.add({ title: t('profil.currentPasswordRequired'), color: 'error' })
@@ -39,7 +103,6 @@ async function handleSave(): Promise<void> {
 
   saving.value = true
   try {
-    // Change password if fields are filled
     if (form.currentPassword && form.newPassword) {
       await auth.changePassword(form.currentPassword, form.newPassword)
       form.currentPassword = ''
@@ -69,12 +132,46 @@ async function handleSave(): Promise<void> {
       </p>
     </div>
 
+    <!-- Input file global -->
+    <input
+      id="avatar-file-input"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      style="display: none;"
+      @change="handleAvatarChange"
+    >
+
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
       <!-- Avatar -->
       <div class="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
-        <div class="flex h-24 w-24 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/30">
-          <UIcon name="i-heroicons-user-circle" class="h-16 w-16 text-indigo-600 dark:text-indigo-400" />
+        <div
+          class="group relative cursor-pointer"
+          @click="triggerAvatarUpload"
+        >
+          <span v-if="auth.user?.avatarUrl" class="inline-flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full">
+            <img :src="auth.user.avatarUrl" alt="avatar" class="h-full w-full object-cover">
+          </span>
+          <span v-else class="inline-flex h-24 w-24 items-center justify-center rounded-full bg-indigo-100 text-2xl font-bold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+            {{ userInitials }}
+          </span>
+          <div class="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+            <UIcon
+              :name="uploadingAvatar ? 'i-heroicons-arrow-path' : 'i-heroicons-camera'"
+              :class="['h-8 w-8 text-white', uploadingAvatar ? 'animate-spin' : '']"
+            />
+          </div>
         </div>
+
+        <UButton
+          variant="soft"
+          size="xs"
+          icon="i-heroicons-camera"
+          :loading="uploadingAvatar"
+          @click="triggerAvatarUpload"
+        >
+          {{ $t('profil.clickToChangeAvatar') }}
+        </UButton>
+
         <div class="text-center">
           <p class="font-semibold text-gray-900 dark:text-white">
             {{ auth.user?.firstName }} {{ auth.user?.lastName }}

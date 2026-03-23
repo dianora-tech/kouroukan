@@ -111,7 +111,7 @@ public sealed class TokenService : ITokenService
         var user = await connection.QuerySingleOrDefaultAsync<AuthUser>(
             """
             SELECT id, first_name, last_name, email, phone_number,
-                   is_active, cgu_accepted_at, cgu_version, must_change_password
+                   is_active, cgu_accepted_at, cgu_version, must_change_password, avatar_url
             FROM auth.users
             WHERE id = @UserId AND is_deleted = FALSE
             """,
@@ -155,7 +155,8 @@ public sealed class TokenService : ITokenService
             MustChangePassword = user.MustChangePassword,
             Companies = companies,
             PreferredLocale = prefs?.Locale ?? "fr",
-            PreferredTheme = prefs?.Theme ?? "system"
+            PreferredTheme = prefs?.Theme ?? "system",
+            AvatarUrl = user.AvatarUrl
         };
     }
 

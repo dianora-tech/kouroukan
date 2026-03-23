@@ -233,7 +233,10 @@ async function handleLogout(): Promise<void> {
             ]"
           >
             <UButton variant="ghost" class="gap-2">
-              <UAvatar :text="userInitials" size="sm" />
+              <span v-if="auth.user?.avatarUrl" class="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                <img :src="auth.user.avatarUrl" alt="avatar" class="h-full w-full object-cover">
+              </span>
+              <UAvatar v-else :text="userInitials" size="sm" />
               <span class="hidden text-sm font-medium sm:inline">{{ userName }}</span>
             </UButton>
           </UDropdownMenu>

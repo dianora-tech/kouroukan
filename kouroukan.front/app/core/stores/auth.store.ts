@@ -12,6 +12,65 @@ function showError(msg: string): void {
   }
 }
 
+/**
+ * $fetch authentifie : ajoute le Bearer token automatiquement.
+ * Si 401, tente un refresh puis re-essaie une fois.
+ */
+async function authFetch<T>(
+  url: string,
+  options: { method?: string, body?: unknown, headers?: Record<string, string> } = {},
+): Promise<T> {
+  const auth = useAuthStore()
+
+  const makeHeaders = (): Record<string, string> => ({
+    'Content-Type': 'application/json',
+    ...(auth.accessToken ? { Authorization: `Bearer ${auth.accessToken}` } : {}),
+    ...(options.headers ?? {}),
+  })
+
+  try {
+    return await $fetch<T>(url, {
+      method: options.method as 'POST' | 'PUT' | 'GET' | 'DELETE' ?? 'GET',
+      headers: makeHeaders(),
+      body: options.body,
+    })
+  }
+  catch (error: unknown) {
+    const status = (error as { statusCode?: number })?.statusCode
+    if (status !== 401) throw error
+
+    // Tenter un refresh
+    try {
+      const refreshResponse = await $fetch<{
+        success: boolean
+        data: { accessToken: string, refreshToken: string }
+      }>('/api/auth/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: { refreshToken: auth.accessToken ?? '' },
+      })
+
+      if (refreshResponse?.success && refreshResponse.data?.accessToken) {
+        auth.accessToken = refreshResponse.data.accessToken
+        // Re-essayer avec le nouveau token
+        return await $fetch<T>(url, {
+          method: options.method as 'POST' | 'PUT' | 'GET' | 'DELETE' ?? 'GET',
+          headers: makeHeaders(),
+          body: options.body,
+        })
+      }
+    }
+    catch {
+      // Refresh echoue
+    }
+
+    // Deconnecter l'utilisateur
+    auth.$reset()
+    await navigateTo('/connexion', { replace: true })
+    throw error
+  }
+}
+
 interface AuthState {
   user: User | null
   roles: RoleName[]
@@ -156,12 +215,8 @@ export const useAuthStore = defineStore('auth', {
 
     async changePassword(currentPassword: string, newPassword: string): Promise<void> {
       try {
-        await $fetch('/api/auth/change-password', {
+        await authFetch('/api/auth/change-password', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
-          },
           body: { currentPassword, newPassword },
         })
         this.mustChangePassword = false
@@ -205,9 +260,7 @@ export const useAuthStore = defineStore('auth', {
 
     async acceptCgu(version: string): Promise<void> {
       try {
-        const token = this.accessToken
-
-        const response = await $fetch<{
+        const response = await authFetch<{
           success: boolean
           data: {
             accessToken: string
@@ -215,9 +268,6 @@ export const useAuthStore = defineStore('auth', {
           }
         }>('/api/auth/cgu/accept', {
           method: 'POST',
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
         })
 
         // Update token with new cguVersion claim
@@ -244,12 +294,8 @@ export const useAuthStore = defineStore('auth', {
 
     async updatePreferences(locale: string, theme: string): Promise<void> {
       try {
-        await $fetch('/api/auth/preferences', {
+        await authFetch('/api/auth/preferences', {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
-          },
           body: { locale, theme },
         })
         if (this.user) {
@@ -271,6 +317,38 @@ export const useAuthStore = defineStore('auth', {
 
     hasRole(role: RoleName): boolean {
       return this.roles.includes(role)
+    },
+
+    async uploadAvatar(file: File): Promise<string> {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      try {
+        const response = await $fetch<{
+          success: boolean
+          data: { avatarUrl: string }
+          message: string
+        }>('/api/auth/avatar', {
+          method: 'POST',
+          headers: {
+            ...(this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {}),
+          },
+          body: formData,
+        })
+
+        if (response?.success && response.data?.avatarUrl) {
+          if (this.user) {
+            this.user.avatarUrl = response.data.avatarUrl
+          }
+          return response.data.avatarUrl
+        }
+        throw new Error('Upload echoue')
+      }
+      catch (error) {
+        const msg = extractErrorMessage(error)
+        showError(msg)
+        throw error
+      }
     },
   },
 
