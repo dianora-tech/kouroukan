@@ -2,10 +2,10 @@ import { useAuthStore } from '~/core/stores/auth.store'
 import { isPublicRoute, getRequiredPermission } from '~/core/auth/guards'
 
 export default defineNuxtRouteMiddleware((to) => {
+  // Ne pas executer les checks cote serveur (pas de state Pinia persistee en SSR)
+  if (import.meta.server) return
+
   const auth = useAuthStore()
-  const { $i18n } = useNuxtApp()
-  const t = $i18n.t.bind($i18n)
-  const toast = useToast()
   const localePath = useLocalePath()
 
   // Normaliser le path (supprimer le prefixe de locale /en/, /fr/)
@@ -35,11 +35,18 @@ export default defineNuxtRouteMiddleware((to) => {
   // Check required permission for the route
   const requiredPermission = getRequiredPermission(rawPath)
   if (requiredPermission && !auth.hasPermission(requiredPermission)) {
-    toast.add({
-      title: t('errors.forbidden'),
-      description: t('errors.insufficientPermissions'),
-      color: 'error',
-    })
+    try {
+      const { $i18n } = useNuxtApp()
+      const t = $i18n.t.bind($i18n)
+      useToast().add({
+        title: t('errors.forbidden'),
+        description: t('errors.insufficientPermissions'),
+        color: 'error',
+      })
+    }
+    catch {
+      // toast non disponible
+    }
     return navigateTo(localePath('/'))
   }
 })

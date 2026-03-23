@@ -57,6 +57,52 @@ function showErrorToast(error: unknown): void {
   }
 }
 
+/**
+ * Tente de rafraichir le token via /api/auth/refresh.
+ * Retourne true si le refresh a reussi, false sinon.
+ */
+let refreshPromise: Promise<boolean> | null = null
+
+async function tryRefreshToken(): Promise<boolean> {
+  // Eviter plusieurs refresh simultanes
+  if (refreshPromise) return refreshPromise
+
+  refreshPromise = (async () => {
+    try {
+      const auth = useAuthStore()
+      const response = await $fetch<{
+        success: boolean
+        data: { accessToken: string, refreshToken: string }
+      }>('/api/auth/refresh', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: { refreshToken: auth.accessToken ?? '' },
+      })
+
+      if (response?.success && response.data?.accessToken) {
+        auth.accessToken = response.data.accessToken
+        try {
+          const tokenCookie = useCookie('auth.token')
+          tokenCookie.value = response.data.accessToken
+        }
+        catch {
+          // cookie non disponible
+        }
+        return true
+      }
+      return false
+    }
+    catch {
+      return false
+    }
+    finally {
+      refreshPromise = null
+    }
+  })()
+
+  return refreshPromise
+}
+
 async function fetchWithRetry<T>(
   url: string,
   options: Parameters<typeof $fetch>[1],
@@ -68,6 +114,38 @@ async function fetchWithRetry<T>(
     }
     catch (error: unknown) {
       const status = (error as { statusCode?: number })?.statusCode
+
+      // Sur 401, tenter un refresh du token (une seule fois)
+      if (status === 401 && attempt === 0) {
+        const refreshed = await tryRefreshToken()
+        if (refreshed) {
+          // Re-essayer avec le nouveau token
+          const auth = useAuthStore()
+          const newHeaders = {
+            ...(options?.headers as Record<string, string> ?? {}),
+            Authorization: `Bearer ${auth.accessToken}`,
+          }
+          try {
+            return await $fetch<T>(url, { ...options, headers: newHeaders })
+          }
+          catch (retryError) {
+            showErrorToast(retryError)
+            throw retryError
+          }
+        }
+        // Refresh echoue → deconnecter l'utilisateur
+        try {
+          const auth = useAuthStore()
+          auth.$reset()
+          await navigateTo('/connexion', { replace: true })
+        }
+        catch {
+          // ignore
+        }
+        showErrorToast(error)
+        throw error
+      }
+
       // Don't retry client errors (4xx) except 408 (timeout) and 429 (rate limit)
       if (status && status >= 400 && status < 500 && status !== 408 && status !== 429) {
         showErrorToast(error)

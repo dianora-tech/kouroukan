@@ -48,8 +48,9 @@ export default defineNuxtConfig({
       },
     },
     session: {
-      enableRefreshOnWindowFocus: true,
-      enableRefreshPeriodically: 5 * 60 * 1000, // 5 min
+      enableRefreshOnWindowFocus: false,
+      enableRefreshPeriodically: false, // On gere le refresh manuellement via apiClient
+      enableOnNuxtReady: false, // Ne pas declencher getSession automatiquement au ready
     },
     globalAppMiddleware: {
       isEnabled: false, // We handle this manually in guards.ts
@@ -144,6 +145,7 @@ export default defineNuxtConfig({
   image: {
     quality: 70,
     formats: ['webp', 'avif'],
+    domains: ['localhost', 'minio'],
   },
 
   // --------------- Icon ---------------

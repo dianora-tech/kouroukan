@@ -8,6 +8,7 @@ using Kouroukan.Api.Gateway.Auth;
 using Kouroukan.Api.Gateway.Services;
 using Kouroukan.Api.Gateway.HealthChecks;
 using Kouroukan.Api.Gateway.Middleware;
+using Minio;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
@@ -62,6 +63,20 @@ try
 
     // Service de gestion des utilisateurs
     builder.Services.AddScoped<IUserService, UserService>();
+
+    // MinIO (stockage fichiers S3-compatible)
+    builder.Services.AddSingleton<IMinioClient>(sp =>
+    {
+        var config = sp.GetRequiredService<IConfiguration>();
+        var endpoint = config["MinIO:Endpoint"] ?? "minio:9000";
+        var accessKey = config["MinIO:AccessKey"] ?? "kouroukan";
+        var secretKey = config["MinIO:SecretKey"] ?? "kouroukan";
+        return new MinioClient()
+            .WithEndpoint(endpoint)
+            .WithCredentials(accessKey, secretKey)
+            .Build();
+    });
+    builder.Services.AddSingleton<IMinioStorageService, MinioStorageService>();
 
     // 4. GnDapper (Data Access Layer — PostgreSQL via Npgsql)
     builder.Services.AddDataAccessLayer(builder.Configuration);

@@ -38,6 +38,9 @@ public class AuthUser
     /// <summary>Doit changer le mot de passe a la prochaine connexion.</summary>
     public bool MustChangePassword { get; set; }
 
+    /// <summary>URL de la photo de profil.</summary>
+    public string? AvatarUrl { get; set; }
+
     /// <summary>Suppression logique.</summary>
     public bool IsDeleted { get; set; }
 }

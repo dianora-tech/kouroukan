@@ -1642,7 +1642,12 @@
     "saveChanges": "Enregistrer les modifications",
     "updateSuccess": "Profil mis à jour avec succès",
     "updateError": "Erreur lors de la mise à jour du profil",
-    "currentPasswordRequired": "Veuillez saisir votre mot de passe actuel"
+    "currentPasswordRequired": "Veuillez saisir votre mot de passe actuel",
+    "clickToChangeAvatar": "Cliquez pour changer la photo",
+    "avatarUpdated": "Photo de profil mise à jour",
+    "avatarFormatError": "Format non supporté. Utilisez JPEG, PNG ou WebP.",
+    "avatarSizeError": "Le fichier ne doit pas dépasser 2 Mo.",
+    "saveToApply": "Cliquez sur Enregistrer pour appliquer"
   },
   "parametres": {
     "title": "Paramètres",
