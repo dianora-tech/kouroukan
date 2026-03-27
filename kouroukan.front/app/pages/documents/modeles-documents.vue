@@ -11,6 +11,7 @@ import ModeleDocumentStats from '~/modules/documents/components/ModeleDocumentSt
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -148,7 +149,7 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           </UBadge>
         </template>
         <template #cell-createdAt="{ row }">
-          {{ (row as ModeleDocument).createdAt?.split('T')[0] }}
+          {{ formatDateShort((row as ModeleDocument).createdAt) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">

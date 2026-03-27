@@ -11,6 +11,7 @@ import BadgeageStats from '~/modules/presences/components/BadgeageStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -145,6 +146,9 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       >
         <template #cell-eleveNom="{ row }">
           {{ (row as Badgeage).eleveNom ?? `#${(row as Badgeage).eleveId}` }}
+        </template>
+        <template #cell-dateBadgeage="{ row }">
+          {{ formatDateShort((row as Badgeage).dateBadgeage) }}
         </template>
         <template #cell-pointAcces="{ row }">
           {{ $t(`presences.badgeage.pointAcces.${(row as Badgeage).pointAcces}`) }}

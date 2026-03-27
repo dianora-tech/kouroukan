@@ -11,6 +11,7 @@ import InscriptionStats from '~/modules/inscriptions/components/InscriptionStats
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -158,6 +159,9 @@ function getStatutColor(statut: string): string {
       >
         <template #cell-montantInscription="{ row }">
           {{ formatMontant((row as Inscription).montantInscription) }}
+        </template>
+        <template #cell-dateInscription="{ row }">
+          {{ formatDateShort((row as Inscription).dateInscription) }}
         </template>
         <template #cell-statutInscription="{ row }">
           <UBadge :color="getStatutColor((row as Inscription).statutInscription)" variant="subtle" size="sm">

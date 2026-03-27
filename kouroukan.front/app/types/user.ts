@@ -13,10 +13,12 @@ export interface User {
   cguVersion: string | null
   cguAcceptedAt: string | null
   mustChangePassword: boolean
-  companies: { id: number, name: string, role: string }[]
+  companies: { id: number, name: string, role: string, modules?: string[] }[]
   preferredLocale?: string
   preferredTheme?: string
   avatarUrl?: string | null
+  onboardingStep: number
+  onboardingCompletedAt: string | null
 }
 
 export interface LoginPayload {

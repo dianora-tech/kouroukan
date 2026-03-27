@@ -35,47 +35,83 @@ services:
   inscriptions-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   pedagogie-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   evaluations-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   presences-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   finances-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   personnel-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   communication-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   bde-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   documents-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   services-premium-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   support-service:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
 
   cache:
     environment:
       - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}

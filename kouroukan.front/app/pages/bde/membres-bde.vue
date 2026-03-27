@@ -12,6 +12,7 @@ import MembreBDEStats from '~/modules/bde/components/MembreBDEStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -157,6 +158,9 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         </template>
         <template #cell-montantCotisation="{ row }">
           {{ (row as MembreBDE).montantCotisation ? formatMontant((row as MembreBDE).montantCotisation!) : '-' }}
+        </template>
+        <template #cell-dateAdhesion="{ row }">
+          {{ formatDateShort((row as MembreBDE).dateAdhesion) }}
         </template>
         <template #cell-estActif="{ row }">
           <UBadge :color="(row as MembreBDE).estActif ? 'success' : 'neutral'" variant="subtle" size="sm">

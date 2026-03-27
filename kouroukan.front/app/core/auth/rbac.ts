@@ -23,6 +23,12 @@ export const PERMISSIONS = {
   'inscriptions:update': ['super_admin', 'directeur', 'responsable_admissions', 'personnel_admin'],
   'inscriptions:delete': ['super_admin', 'directeur'],
 
+  // Annees scolaires (CRUD reserve au super_admin)
+  'annees-scolaires:read': ['super_admin', 'fondateur', 'admin_it', 'directeur', 'censeur', 'responsable_admissions', 'personnel_admin'],
+  'annees-scolaires:create': ['super_admin'],
+  'annees-scolaires:update': ['super_admin'],
+  'annees-scolaires:delete': ['super_admin'],
+
   // Module pedagogie
   'pedagogie:read': ['super_admin', 'fondateur', 'admin_it', 'directeur', 'censeur', 'chef_departement', 'enseignant'],
   'pedagogie:create': ['super_admin', 'directeur', 'censeur'],

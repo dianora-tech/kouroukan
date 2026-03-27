@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 
 function getMoyenneColor(moyenne: number): string {
   if (moyenne >= 14) return 'success'
@@ -42,7 +43,7 @@ function getMoyenneColor(moyenne: number): string {
       </p>
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ bulletin.dateGeneration?.split('T')[0] }}
+        {{ formatDateShort(bulletin.dateGeneration) }}
       </p>
       <p>
         <UBadge v-if="bulletin.estPublie" color="success" variant="subtle" size="xs">

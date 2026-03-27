@@ -41,10 +41,9 @@ export const useAnneeScolaireStore = defineStore('inscriptions-annee-scolaire', 
   getters: {
     isEmpty: (state): boolean => state.items.length === 0,
     hasFilters: (state): boolean =>
-      !!(state.filters.search || state.filters.estActive !== undefined
-        || state.filters.dateFrom || state.filters.dateTo),
+      !!(state.filters.search || state.filters.dateFrom || state.filters.dateTo),
     activeYear: (state): AnneeScolaire | undefined =>
-      state.items.find(a => a.estActive),
+      state.items.find(a => a.statut === 'active'),
   },
 
   actions: {
@@ -55,7 +54,7 @@ export const useAnneeScolaireStore = defineStore('inscriptions-annee-scolaire', 
           page: params?.page ?? this.pagination.page,
           pageSize: params?.pageSize ?? this.pagination.pageSize,
           search: params?.search ?? this.filters.search,
-          orderBy: 'dateDebut',
+          orderBy: 'date_debut',
           orderDirection: 'desc',
         })
         if (response.success && response.data) {

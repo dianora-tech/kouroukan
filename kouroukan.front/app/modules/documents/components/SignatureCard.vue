@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 
 function getStatutColor(statut: string): string {
   const colors: Record<string, string> = {
@@ -50,7 +51,7 @@ function getStatutColor(statut: string): string {
       </p>
       <p v-if="signature.dateSignature">
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ signature.dateSignature?.split('T')[0] }}
+        {{ formatDateShort(signature.dateSignature) }}
       </p>
     </div>
 

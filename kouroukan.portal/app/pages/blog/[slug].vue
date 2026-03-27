@@ -56,7 +56,5 @@ if (article.value) {
   useSeoMeta({ title: article.value.title, description: article.value.description })
 }
 
-function formatDate(date: string): string {
-  return new Intl.DateTimeFormat('fr-GN', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date))
-}
+const { formatDate } = useFormatDate()
 </script>

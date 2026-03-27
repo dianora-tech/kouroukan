@@ -69,6 +69,13 @@ async function handleLogin(): Promise<void> {
       title: t('auth.loginSuccess'),
       color: 'success',
     })
+
+    // Director with incomplete onboarding → redirect to onboarding wizard
+    if (!auth.onboardingCompleted && auth.roles.includes('directeur')) {
+      await navigateTo(localePath('/onboarding'))
+      return
+    }
+
     await navigateTo(localePath('/'))
   }
   catch {

@@ -75,18 +75,37 @@ function scrollTo(index: number) {
   if (!carouselRef.value) return
   const cards = carouselRef.value.children
   if (cards[index]) {
-    (cards[index] as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+    const card = cards[index] as HTMLElement
+    const container = carouselRef.value
+    // Utiliser scrollLeft au lieu de scrollIntoView pour eviter de scroller la page entiere
+    container.scrollTo({
+      left: card.offsetLeft - container.offsetLeft - (container.clientWidth - card.clientWidth) / 2,
+      behavior: 'smooth',
+    })
     currentIndex.value = index
   }
 }
 
 let autoplayInterval: ReturnType<typeof setInterval> | null = null
+const carouselVisible = ref(false)
 
 onMounted(() => {
-  autoplayInterval = setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % TESTIMONIALS.length
-    scrollTo(currentIndex.value)
-  }, 5000)
+  // Ne demarrer l'autoplay que quand le carousel est visible dans le viewport
+  if (!carouselRef.value) return
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting && !carouselVisible.value) {
+        carouselVisible.value = true
+        autoplayInterval = setInterval(() => {
+          currentIndex.value = (currentIndex.value + 1) % TESTIMONIALS.length
+          scrollTo(currentIndex.value)
+        }, 5000)
+        observer.disconnect()
+      }
+    },
+    { threshold: 0.3 },
+  )
+  observer.observe(carouselRef.value)
 })
 
 onUnmounted(() => {

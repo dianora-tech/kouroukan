@@ -11,6 +11,7 @@ import NoteStats from '~/modules/evaluations/components/NoteStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -156,7 +157,7 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           </UBadge>
         </template>
         <template #cell-dateSaisie="{ row }">
-          {{ (row as Note).dateSaisie?.split('T')[0] }}
+          {{ formatDateShort((row as Note).dateSaisie) }}
         </template>
         <template #cell-commentaire="{ row }">
           <span class="max-w-[200px] truncate">{{ (row as Note).commentaire ?? '-' }}</span>

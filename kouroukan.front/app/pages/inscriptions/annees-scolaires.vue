@@ -7,8 +7,13 @@ import AnneeScolaireForm from '~/modules/inscriptions/components/AnneeScolaireFo
 import AnneeScolaireCard from '~/modules/inscriptions/components/AnneeScolaireCard.vue'
 import AnneeScolaireFiltersComponent from '~/modules/inscriptions/components/AnneeScolaireFilters.vue'
 import AnneeScolaireStats from '~/modules/inscriptions/components/AnneeScolaireStats.vue'
+import { useAuthStore } from '~/core/stores/auth.store'
 
 definePageMeta({ layout: 'default' })
+
+const { formatDateShort } = useFormatDate()
+const auth = useAuthStore()
+const isSuperAdmin = computed(() => auth.roles.includes('super_admin'))
 
 const { t } = useI18n()
 const {
@@ -33,11 +38,26 @@ const editingEntity = ref<AnneeScolaire | null>(null)
 const showDeleteDialog = ref(false)
 const deletingEntity = ref<AnneeScolaire | null>(null)
 
+const statutColorMap: Record<string, string> = {
+  preparation: 'warning',
+  active: 'success',
+  cloturee: 'info',
+  archivee: 'neutral',
+}
+
+const statutLabelMap: Record<string, string> = {
+  preparation: 'En préparation',
+  active: 'Active',
+  cloturee: 'Clôturée',
+  archivee: 'Archivée',
+}
+
 const columns: Column[] = [
   { key: 'libelle', label: t('inscriptions.anneeScolaire.libelle'), sortable: true },
   { key: 'dateDebut', label: t('inscriptions.anneeScolaire.dateDebut'), sortable: true },
   { key: 'dateFin', label: t('inscriptions.anneeScolaire.dateFin'), sortable: true },
-  { key: 'estActive', label: t('inscriptions.anneeScolaire.estActive'), sortable: true },
+  { key: 'statut', label: 'Statut', sortable: true },
+  { key: 'periodes', label: 'Périodes', sortable: false },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
 
@@ -117,7 +137,7 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           @click="viewMode = 'grid'"
         />
         <UButton
-          v-permission="'inscriptions:create'"
+          v-if="isSuperAdmin"
           color="primary"
           icon="i-heroicons-plus"
           @click="openCreate"
@@ -140,26 +160,33 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
         @page-change="changePage"
         @sort="handleSort"
       >
-        <template #cell-estActive="{ row }">
+        <template #cell-dateDebut="{ row }">
+          {{ formatDateShort((row as AnneeScolaire).dateDebut) }}
+        </template>
+        <template #cell-dateFin="{ row }">
+          {{ formatDateShort((row as AnneeScolaire).dateFin) }}
+        </template>
+        <template #cell-statut="{ row }">
           <UBadge
-            :color="(row as AnneeScolaire).estActive ? 'success' : 'neutral'"
+            :color="statutColorMap[(row as AnneeScolaire).statut] ?? 'neutral'"
             variant="subtle"
             size="sm"
           >
-            {{ (row as AnneeScolaire).estActive ? $t('inscriptions.anneeScolaire.active') : $t('inscriptions.anneeScolaire.inactive') }}
+            {{ statutLabelMap[(row as AnneeScolaire).statut] ?? (row as AnneeScolaire).statut }}
           </UBadge>
         </template>
+        <template #cell-periodes="{ row }">
+          {{ (row as AnneeScolaire).nombrePeriodes }} {{ (row as AnneeScolaire).typePeriode === 'semestre' ? 'Semestres' : 'Trimestres' }}
+        </template>
         <template #cell-actions="{ row }">
-          <div class="flex gap-1">
+          <div v-if="isSuperAdmin" class="flex gap-1">
             <UButton
-              v-permission="'inscriptions:update'"
               variant="ghost"
               size="xs"
               icon="i-heroicons-pencil-square"
               @click="openEdit(row as AnneeScolaire)"
             />
             <UButton
-              v-permission="'inscriptions:delete'"
               variant="ghost"
               size="xs"
               color="error"

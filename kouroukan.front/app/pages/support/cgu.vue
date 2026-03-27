@@ -29,6 +29,8 @@ else {
   cguVersion.value = config.public.cguVersion as string
 }
 
+const localePath = useLocalePath()
+
 async function handleAccept(): Promise<void> {
   loading.value = true
   try {
@@ -37,7 +39,14 @@ async function handleAccept(): Promise<void> {
       title: t('cgu.accepted'),
       color: 'success',
     })
-    await navigateTo('/')
+
+    // Director with incomplete onboarding → redirect to onboarding wizard
+    if (!auth.onboardingCompleted && auth.roles.includes('directeur')) {
+      await navigateTo(localePath('/onboarding'))
+    }
+    else {
+      await navigateTo(localePath('/'))
+    }
   }
   catch {
     toast.add({

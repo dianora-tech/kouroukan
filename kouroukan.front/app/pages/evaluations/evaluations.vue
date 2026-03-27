@@ -11,6 +11,7 @@ import EvaluationStats from '~/modules/evaluations/components/EvaluationStats.vu
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -145,6 +146,9 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
         @page-change="changePage"
         @sort="handleSort"
       >
+        <template #cell-dateEvaluation="{ row }">
+          {{ formatDateShort((row as Evaluation).dateEvaluation) }}
+        </template>
         <template #cell-trimestre="{ row }">
           <UBadge color="primary" variant="subtle" size="sm">
             {{ $t(`evaluations.evaluation.trimestre.${(row as Evaluation).trimestre}`) }}

@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 
 function getStatutColor(statut: string): string {
   const colors: Record<string, string> = {
@@ -50,8 +51,8 @@ function formatMontant(montant: number): string {
       </p>
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ souscription.dateDebut }}
-        <span v-if="souscription.dateFin"> — {{ souscription.dateFin }}</span>
+        {{ formatDateShort(souscription.dateDebut) }}
+        <span v-if="souscription.dateFin"> — {{ formatDateShort(souscription.dateFin) }}</span>
       </p>
       <p v-if="souscription.renouvellementAuto">
         <UIcon name="i-heroicons-arrow-path" class="mr-1 inline h-4 w-4" />

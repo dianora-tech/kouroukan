@@ -11,6 +11,7 @@ import EnseignantStats from '~/modules/personnel/components/EnseignantStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -155,6 +156,9 @@ function getStatutColor(statut: string): string {
         @page-change="changePage"
         @sort="handleSort"
       >
+        <template #cell-dateEmbauche="{ row }">
+          {{ formatDateShort((row as Enseignant).dateEmbauche) }}
+        </template>
         <template #cell-statutEnseignant="{ row }">
           <UBadge :color="getStatutColor((row as Enseignant).statutEnseignant)" variant="subtle" size="sm">
             {{ $t(`personnel.enseignant.statut.${(row as Enseignant).statutEnseignant}`) }}

@@ -6,6 +6,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const { formatDateTime } = useFormatDate()
 const auth = useAuthStore()
 const toast = useToast()
 
@@ -194,7 +195,7 @@ async function handleSave(): Promise<void> {
         <div class="w-full border-t border-gray-100 pt-4 dark:border-gray-800">
           <p class="text-center text-xs text-gray-400 dark:text-gray-500">
             {{ $t('profil.lastLogin') }}:
-            {{ auth.lastLoginAt ? new Date(auth.lastLoginAt).toLocaleString() : '—' }}
+            {{ formatDateTime(auth.lastLoginAt) }}
           </p>
         </div>
       </div>

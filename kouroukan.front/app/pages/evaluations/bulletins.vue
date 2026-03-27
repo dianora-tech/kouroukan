@@ -11,6 +11,7 @@ import BulletinStats from '~/modules/evaluations/components/BulletinStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -171,7 +172,7 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           </UBadge>
         </template>
         <template #cell-dateGeneration="{ row }">
-          {{ (row as Bulletin).dateGeneration?.split('T')[0] }}
+          {{ formatDateShort((row as Bulletin).dateGeneration) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">

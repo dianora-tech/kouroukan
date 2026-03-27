@@ -124,7 +124,7 @@ public sealed class TokenService : ITokenService
 
         var companies = (await connection.QueryAsync<CompanyDto>(
             """
-            SELECT c.id, c.name, uc.role
+            SELECT c.id, c.name, uc.role, c.modules
             FROM auth.companies c
             INNER JOIN auth.user_companies uc ON uc.company_id = c.id
             WHERE uc.user_id = @UserId AND uc.is_deleted = FALSE AND c.is_deleted = FALSE
@@ -138,6 +138,18 @@ public sealed class TokenService : ITokenService
             SELECT preferred_locale, preferred_theme
             FROM auth.user_preferences
             WHERE user_id = @UserId
+            """,
+            new { UserId = userId });
+
+        // Lire le statut d'onboarding de l'etablissement principal
+        var onboarding = await connection.QuerySingleOrDefaultAsync<(int Step, DateTime? CompletedAt)?>(
+            """
+            SELECT c.onboarding_step, c.onboarding_completed_at
+            FROM auth.companies c
+            INNER JOIN auth.user_companies uc ON uc.company_id = c.id
+            WHERE uc.user_id = @UserId AND uc.is_deleted = FALSE AND c.is_deleted = FALSE
+            ORDER BY c.id
+            LIMIT 1
             """,
             new { UserId = userId });
 
@@ -156,7 +168,9 @@ public sealed class TokenService : ITokenService
             Companies = companies,
             PreferredLocale = prefs?.Locale ?? "fr",
             PreferredTheme = prefs?.Theme ?? "system",
-            AvatarUrl = user.AvatarUrl
+            AvatarUrl = user.AvatarUrl,
+            OnboardingStep = onboarding?.Step ?? 0,
+            OnboardingCompletedAt = onboarding?.CompletedAt
         };
     }
 
@@ -440,5 +454,95 @@ public sealed class TokenService : ITokenService
             new { UserId = userId, Locale = locale, Theme = theme });
 
         _logger.LogInformation("Preferences mises a jour pour l'utilisateur {UserId}: locale={Locale}, theme={Theme}", userId, locale, theme);
+    }
+
+    /// <inheritdoc />
+    public async Task<OnboardingStatusDto?> GetOnboardingStatusAsync(int userId, CancellationToken cancellationToken = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        return await connection.QuerySingleOrDefaultAsync<OnboardingStatusDto>(
+            """
+            SELECT c.onboarding_step AS CurrentStep, c.onboarding_completed_at AS CompletedAt
+            FROM auth.companies c
+            INNER JOIN auth.user_companies uc ON uc.company_id = c.id
+            WHERE uc.user_id = @UserId AND uc.is_deleted = FALSE AND c.is_deleted = FALSE
+            ORDER BY c.id
+            LIMIT 1
+            """,
+            new { UserId = userId });
+    }
+
+    /// <inheritdoc />
+    public async Task UpdateOnboardingStepAsync(int userId, int step, CancellationToken cancellationToken = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(
+            """
+            UPDATE auth.companies c
+            SET onboarding_step = @Step, updated_at = NOW()
+            FROM auth.user_companies uc
+            WHERE uc.company_id = c.id
+              AND uc.user_id = @UserId
+              AND uc.is_deleted = FALSE
+              AND c.is_deleted = FALSE
+            """,
+            new { UserId = userId, Step = step });
+
+        _logger.LogInformation("Onboarding etape {Step} pour l'utilisateur {UserId}", step, userId);
+    }
+
+    /// <inheritdoc />
+    public async Task CompleteOnboardingAsync(int userId, CancellationToken cancellationToken = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(
+            """
+            UPDATE auth.companies c
+            SET onboarding_completed_at = NOW(), updated_at = NOW()
+            FROM auth.user_companies uc
+            WHERE uc.company_id = c.id
+              AND uc.user_id = @UserId
+              AND uc.is_deleted = FALSE
+              AND c.is_deleted = FALSE
+            """,
+            new { UserId = userId });
+
+        _logger.LogInformation("Onboarding termine pour l'utilisateur {UserId}", userId);
+    }
+
+    /// <inheritdoc />
+    public async Task UpdateCompanyAsync(int userId, UpdateCompanyRequest request, CancellationToken cancellationToken = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        await connection.ExecuteAsync(
+            """
+            UPDATE auth.companies c
+            SET name = COALESCE(@Name, c.name),
+                description = COALESCE(@Description, c.description),
+                address = COALESCE(@Address, c.address),
+                phone_number = COALESCE(@PhoneNumber, c.phone_number),
+                email = COALESCE(@Email, c.email),
+                updated_at = NOW()
+            FROM auth.user_companies uc
+            WHERE uc.company_id = c.id
+              AND uc.user_id = @UserId
+              AND uc.is_deleted = FALSE
+              AND c.is_deleted = FALSE
+            """,
+            new
+            {
+                UserId = userId,
+                request.Name,
+                request.Description,
+                request.Address,
+                request.PhoneNumber,
+                request.Email
+            });
+
+        _logger.LogInformation("Etablissement mis a jour par l'utilisateur {UserId}", userId);
     }
 }

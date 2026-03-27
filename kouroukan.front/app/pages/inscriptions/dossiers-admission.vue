@@ -11,6 +11,7 @@ import DossierAdmissionStats from '~/modules/inscriptions/components/DossierAdmi
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -162,6 +163,9 @@ function getStatutColor(statut: string): string {
         </template>
         <template #cell-etapeActuelle="{ row }">
           {{ $t(`inscriptions.dossierAdmission.etape.${(row as DossierAdmission).etapeActuelle}`) }}
+        </template>
+        <template #cell-dateDemande="{ row }">
+          {{ formatDateShort((row as DossierAdmission).dateDemande) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">

@@ -11,6 +11,7 @@ import DepenseStats from '~/modules/finances/components/DepenseStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -167,6 +168,9 @@ function getStatutColor(statut: string): string {
           <UBadge color="neutral" variant="subtle" size="sm">
             {{ $t(`finances.depense.categorie.${(row as Depense).categorie}`) }}
           </UBadge>
+        </template>
+        <template #cell-dateDemande="{ row }">
+          {{ formatDateShort((row as Depense).dateDemande) }}
         </template>
         <template #cell-statutDepense="{ row }">
           <UBadge :color="getStatutColor((row as Depense).statutDepense)" variant="subtle" size="sm">

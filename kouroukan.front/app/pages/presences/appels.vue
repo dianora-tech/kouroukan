@@ -11,6 +11,7 @@ import AppelStats from '~/modules/presences/components/AppelStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -146,6 +147,9 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         </template>
         <template #cell-enseignantNom="{ row }">
           {{ (row as Appel).enseignantNom ?? `#${(row as Appel).enseignantId}` }}
+        </template>
+        <template #cell-dateAppel="{ row }">
+          {{ formatDateShort((row as Appel).dateAppel) }}
         </template>
         <template #cell-estCloture="{ row }">
           <UBadge :color="(row as Appel).estCloture ? 'success' : 'warning'" variant="subtle" size="sm">

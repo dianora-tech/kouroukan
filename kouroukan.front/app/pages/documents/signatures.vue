@@ -11,6 +11,7 @@ import SignatureStats from '~/modules/documents/components/SignatureStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -165,7 +166,7 @@ function getStatutColor(statut: string): string {
           </UBadge>
         </template>
         <template #cell-dateSignature="{ row }">
-          {{ (row as Signature).dateSignature?.split('T')[0] ?? '-' }}
+          {{ formatDateShort((row as Signature).dateSignature) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">

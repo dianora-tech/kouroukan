@@ -3,13 +3,8 @@
 
 <template>
   <div class="relative min-h-screen">
-    <!-- Background image with blur -->
-    <div
-      class="fixed inset-0 z-0 bg-cover bg-center"
-      style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&q=80');"
-    >
-      <div class="absolute inset-0 bg-white/70 backdrop-blur-sm dark:bg-gray-900/80" />
-    </div>
+    <!-- Background gradient -->
+    <div class="fixed inset-0 z-0 bg-gradient-to-br from-green-50 via-white to-green-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" />
 
     <!-- Content -->
     <div class="relative z-10 flex min-h-screen flex-col items-center justify-center p-4">

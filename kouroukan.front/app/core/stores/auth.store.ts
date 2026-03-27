@@ -13,10 +13,45 @@ function showError(msg: string): void {
 }
 
 /**
- * $fetch authentifie : ajoute le Bearer token automatiquement.
- * Si 401, tente un refresh puis re-essaie une fois.
+ * Mutex pour éviter les refresh concurrents.
+ * Quand plusieurs requêtes reçoivent 401 simultanément,
+ * seule la première lance le refresh, les autres attendent.
  */
-async function authFetch<T>(
+let refreshPromise: Promise<boolean> | null = null
+
+async function doRefresh(): Promise<boolean> {
+  const auth = useAuthStore()
+  if (!auth.refreshToken) return false
+
+  try {
+    const response = await $fetch<{
+      success: boolean
+      data: { accessToken: string, refreshToken: string }
+    }>('/api/auth/refresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: { refreshToken: auth.refreshToken },
+    })
+
+    if (response?.success && response.data?.accessToken) {
+      auth.accessToken = response.data.accessToken
+      if (response.data.refreshToken) {
+        auth.refreshToken = response.data.refreshToken
+      }
+      return true
+    }
+  }
+  catch {
+    // Refresh echoue
+  }
+  return false
+}
+
+/**
+ * $fetch authentifie : ajoute le Bearer token automatiquement.
+ * Si 401, tente un refresh (avec mutex) puis re-essaie une fois.
+ */
+export async function authFetch<T>(
   url: string,
   options: { method?: string, body?: unknown, headers?: Record<string, string> } = {},
 ): Promise<T> {
@@ -30,7 +65,7 @@ async function authFetch<T>(
 
   try {
     return await $fetch<T>(url, {
-      method: options.method as 'POST' | 'PUT' | 'GET' | 'DELETE' ?? 'GET',
+      method: (options.method as 'POST' | 'PUT' | 'GET' | 'DELETE') ?? 'GET',
       headers: makeHeaders(),
       body: options.body,
     })
@@ -39,29 +74,20 @@ async function authFetch<T>(
     const status = (error as { statusCode?: number })?.statusCode
     if (status !== 401) throw error
 
-    // Tenter un refresh
-    try {
-      const refreshResponse = await $fetch<{
-        success: boolean
-        data: { accessToken: string, refreshToken: string }
-      }>('/api/auth/refresh', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: { refreshToken: auth.accessToken ?? '' },
-      })
-
-      if (refreshResponse?.success && refreshResponse.data?.accessToken) {
-        auth.accessToken = refreshResponse.data.accessToken
-        // Re-essayer avec le nouveau token
-        return await $fetch<T>(url, {
-          method: options.method as 'POST' | 'PUT' | 'GET' | 'DELETE' ?? 'GET',
-          headers: makeHeaders(),
-          body: options.body,
-        })
-      }
+    // Mutex : si un refresh est déjà en cours, attendre son résultat
+    if (!refreshPromise) {
+      refreshPromise = doRefresh().finally(() => { refreshPromise = null })
     }
-    catch {
-      // Refresh echoue
+
+    const refreshed = await refreshPromise
+
+    if (refreshed) {
+      // Re-essayer avec le nouveau token
+      return await $fetch<T>(url, {
+        method: (options.method as 'POST' | 'PUT' | 'GET' | 'DELETE') ?? 'GET',
+        headers: makeHeaders(),
+        body: options.body,
+      })
     }
 
     // Deconnecter l'utilisateur
@@ -81,6 +107,9 @@ interface AuthState {
   mustChangePassword: boolean
   activeCompanyId: number | null
   accessToken: string | null
+  refreshToken: string | null
+  onboardingStep: number
+  onboardingCompleted: boolean
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -94,6 +123,9 @@ export const useAuthStore = defineStore('auth', {
     mustChangePassword: false,
     activeCompanyId: null,
     accessToken: null,
+    refreshToken: null,
+    onboardingStep: 0,
+    onboardingCompleted: false,
   }),
 
   getters: {
@@ -104,6 +136,14 @@ export const useAuthStore = defineStore('auth', {
     isCguUpToDate(): boolean {
       const config = useRuntimeConfig()
       return this.cguVersion === config.public.cguVersion
+    },
+    /** Modules souscrits par l'etablissement actif. */
+    activeCompanyModules(): string[] {
+      if (!this.user?.companies?.length) return []
+      const company = this.activeCompanyId
+        ? this.user.companies.find(c => c.id === this.activeCompanyId)
+        : this.user.companies[0]
+      return company?.modules ?? []
     },
   },
 
@@ -135,9 +175,10 @@ export const useAuthStore = defineStore('auth', {
         throw new Error(msg)
       }
 
-      // Store the token in Pinia state (persisted) and cookie
+      // Store tokens in Pinia state (persisted) and cookie
       const token = loginResponse.data.accessToken
       this.accessToken = token
+      this.refreshToken = loginResponse.data.refreshToken ?? null
       try {
         const tokenCookie = useCookie('auth.token')
         tokenCookie.value = token
@@ -165,6 +206,8 @@ export const useAuthStore = defineStore('auth', {
         this.cguVersion = user.cguVersion ?? null
         this.cguAccepted = !!user.cguAcceptedAt
         this.mustChangePassword = user.mustChangePassword ?? false
+        this.onboardingStep = user.onboardingStep ?? 0
+        this.onboardingCompleted = !!user.onboardingCompletedAt
       }
     },
 
@@ -210,6 +253,8 @@ export const useAuthStore = defineStore('auth', {
         this.cguVersion = user.cguVersion ?? null
         this.cguAccepted = !!user.cguAcceptedAt
         this.mustChangePassword = user.mustChangePassword ?? false
+        this.onboardingStep = user.onboardingStep ?? 0
+        this.onboardingCompleted = !!user.onboardingCompletedAt
       }
     },
 
@@ -270,9 +315,12 @@ export const useAuthStore = defineStore('auth', {
           method: 'POST',
         })
 
-        // Update token with new cguVersion claim
+        // Update tokens with new cguVersion claim
         if (response?.success && response.data?.accessToken) {
           this.accessToken = response.data.accessToken
+          if (response.data.refreshToken) {
+            this.refreshToken = response.data.refreshToken
+          }
           try {
             const tokenCookie = useCookie('auth.token')
             tokenCookie.value = response.data.accessToken
@@ -319,6 +367,15 @@ export const useAuthStore = defineStore('auth', {
       return this.roles.includes(role)
     },
 
+    /** Verifie si le module est souscrit par l'etablissement actif. */
+    hasModule(slug: string): boolean {
+      // Super admins ont acces a tout
+      if (this.roles.includes('super_admin')) return true
+      // Support est toujours accessible
+      if (slug === 'support') return true
+      return this.activeCompanyModules.includes(slug)
+    },
+
     async uploadAvatar(file: File): Promise<string> {
       const formData = new FormData()
       formData.append('file', file)
@@ -353,6 +410,6 @@ export const useAuthStore = defineStore('auth', {
   },
 
   persist: {
-    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion', 'mustChangePassword', 'activeCompanyId', 'accessToken'],
+    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion', 'mustChangePassword', 'activeCompanyId', 'accessToken', 'refreshToken', 'onboardingStep', 'onboardingCompleted'],
   },
 })

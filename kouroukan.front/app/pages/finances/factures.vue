@@ -11,6 +11,7 @@ import FactureStats from '~/modules/finances/components/FactureStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -166,6 +167,9 @@ function getStatutColor(statut: string): string {
           <span :class="(row as Facture).solde > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'">
             {{ formatMontant((row as Facture).solde) }}
           </span>
+        </template>
+        <template #cell-dateEcheance="{ row }">
+          {{ formatDateShort((row as Facture).dateEcheance) }}
         </template>
         <template #cell-statutFacture="{ row }">
           <UBadge :color="getStatutColor((row as Facture).statutFacture)" variant="subtle" size="sm">

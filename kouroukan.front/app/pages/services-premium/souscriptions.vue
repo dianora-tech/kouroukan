@@ -11,6 +11,7 @@ import SouscriptionStats from '~/modules/services-premium/components/Souscriptio
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -162,8 +163,11 @@ function getStatutColor(statut: string): string {
         <template #cell-parentNom="{ row }">
           {{ (row as Souscription).parentNom ?? `#${(row as Souscription).parentId}` }}
         </template>
+        <template #cell-dateDebut="{ row }">
+          {{ formatDateShort((row as Souscription).dateDebut) }}
+        </template>
         <template #cell-dateFin="{ row }">
-          <span v-if="(row as Souscription).dateFin">{{ (row as Souscription).dateFin }}</span>
+          <span v-if="(row as Souscription).dateFin">{{ formatDateShort((row as Souscription).dateFin) }}</span>
           <span v-else class="text-gray-400">—</span>
         </template>
         <template #cell-montantPaye="{ row }">

@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 
 function getStatutColor(statut: string): string {
   const colors: Record<string, string> = {
@@ -56,7 +57,7 @@ function getStatutColor(statut: string): string {
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
         <UIcon name="i-heroicons-cake" class="mr-1 inline h-4 w-4" />
-        {{ eleve.dateNaissance }} - {{ eleve.lieuNaissance }}
+        {{ formatDateShort(eleve.dateNaissance) }} - {{ eleve.lieuNaissance }}
       </p>
       <p v-if="eleve.niveauClasseName">
         <UIcon name="i-heroicons-academic-cap" class="mr-1 inline h-4 w-4" />

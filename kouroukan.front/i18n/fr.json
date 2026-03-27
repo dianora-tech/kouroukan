@@ -21,7 +21,9 @@
     "supportAideIA": "Aide IA",
     "settings": "Paramètres",
     "establishment": "Établissement",
-    "users": "Utilisateurs"
+    "users": "Utilisateurs",
+    "moduleDisabled": "Module non inclus dans votre forfait",
+    "onboardingRequired": "Veuillez d'abord terminer la configuration de votre établissement"
   },
   "dashboard": {
     "welcome": "Bienvenue, {name}",
@@ -36,7 +38,9 @@
     "bdeDesc": "Associations et événements",
     "documentsDesc": "Modèles et documents générés",
     "servicesPremiumDesc": "Services à valeur ajoutée",
-    "supportDesc": "Tickets, aide et suggestions"
+    "supportDesc": "Tickets, aide et suggestions",
+    "moduleDisabled": "Module non inclus dans votre forfait",
+    "onboardingRequired": "Veuillez d'abord terminer la configuration de votre établissement"
   },
   "auth": {
     "loginTitle": "Connexion",
@@ -307,11 +311,9 @@
       "libellePlaceholder": "Ex: 2025-2026",
       "dateDebut": "Date de début",
       "dateFin": "Date de fin",
-      "estActive": "Active",
       "active": "Active",
       "inactive": "Inactive",
       "filters": {
-        "allStatuts": "Toutes",
         "reset": "Réinitialiser"
       },
       "stats": {
@@ -1765,5 +1767,109 @@
     "submit": "Changer le mot de passe",
     "success": "Mot de passe modifié avec succès",
     "error": "Erreur lors du changement de mot de passe"
+  },
+  "onboarding": {
+    "title": "Configuration de votre établissement",
+    "subtitle": "Suivez ces étapes pour rendre votre école opérationnelle",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "skip": "Passer",
+    "finish": "Terminer",
+    "finishLater": "Terminer plus tard",
+    "dataSaved": "Données sauvegardées avec succès",
+    "saving": "Enregistrement en cours...",
+    "completed": "Configuration terminée !",
+    "stepOf": "Étape {current}/{total}",
+    "validation": {
+      "required": "Ce champ est requis",
+      "emailFormat": "Format d'email invalide"
+    },
+    "steps": {
+      "establishment": "Établissement",
+      "schoolYear": "Année scolaire",
+      "classes": "Classes",
+      "subjects": "Matières"
+    },
+    "banner": {
+      "title": "Configurez votre établissement",
+      "description": "Vous êtes à l'étape {step}/{total} de la configuration",
+      "start": "Commencer",
+      "resume": "Reprendre"
+    },
+    "establishment": {
+      "title": "Informations de l'établissement",
+      "description": "Complétez les informations de votre école pour personnaliser la plateforme.",
+      "name": "Nom de l'établissement",
+      "namePlaceholder": "Ex: École Primaire de Conakry",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Brève description de votre établissement",
+      "phone": "Téléphone",
+      "phonePlaceholder": "Ex: 622 00 00 00",
+      "email": "Email",
+      "emailPlaceholder": "contact{'@'}ecole.gn",
+      "address": "Adresse",
+      "addressPlaceholder": "Adresse complète",
+      "type": "Type d'établissement",
+      "typePlaceholder": "Sélectionnez le type",
+      "types": {
+        "preuniversitaire": "Pré-universitaire (Primaire, Collège, Lycée)",
+        "universitaire": "Universitaire (Licence, Master, Doctorat)",
+        "formationPro": "Formation Professionnelle (CAP, BEP, BTS)",
+        "francoArabe": "Franco-Arabe",
+        "public": "Public",
+        "priveLaique": "Privé Laïque",
+        "communautaire": "Communautaire"
+      },
+      "saved": "Informations de l'établissement enregistrées"
+    },
+    "schoolYear": {
+      "title": "Année scolaire",
+      "description": "Sélectionnez l'année scolaire pour laquelle vous souhaitez configurer votre établissement.",
+      "selectLabel": "Année scolaire",
+      "selectPlaceholder": "Choisir une année scolaire",
+      "codeLabel": "Code",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "effectiveStart": "Date de rentrée",
+      "periods": "Périodes",
+      "trimesters": "trimestres",
+      "semesters": "semestres",
+      "statusPreparation": "En préparation",
+      "statusActive": "Active",
+      "statusClosed": "Clôturée",
+      "statusArchived": "Archivée",
+      "noYearsAvailable": "Aucune année scolaire disponible",
+      "contactAdmin": "Contactez votre administrateur pour créer une année scolaire.",
+      "saved": "Année scolaire sélectionnée"
+    },
+    "classes": {
+      "title": "Niveaux et classes",
+      "description": "Sélectionnez les niveaux enseignés et créez vos classes. Cliquez sur un niveau pour ajouter une classe.",
+      "addedClasses": "Classes ajoutées",
+      "capacity": "places",
+      "empty": "Cliquez sur les niveaux ci-dessus pour ajouter des classes",
+      "existing": "Classes déjà enregistrées",
+      "saved": "Classes créées"
+    },
+    "subjects": {
+      "title": "Matières enseignées",
+      "description": "Sélectionnez les matières par cycle et ajustez les coefficients. Chaque coefficient est adapté au niveau de classe.",
+      "coefficient": "coeff.",
+      "addCustom": "Ajouter une matière personnalisée",
+      "addCustomHint": "La matière sera ajoutée à tous les cycles avec un coefficient par défaut de 2.",
+      "code": "Code",
+      "name": "Nom",
+      "namePlaceholder": "Nom de la matière",
+      "add": "Ajouter",
+      "existing": "Matières déjà enregistrées",
+      "suggested": "Matières suggérées",
+      "noLevels": "Aucun niveau de classe n'a été créé. Veuillez d'abord créer des classes à l'étape précédente.",
+      "saved": "Matières configurées"
+    },
+    "complete": {
+      "title": "Votre établissement est prêt !",
+      "description": "Félicitations ! Vous avez terminé la configuration de votre école. Vous pouvez maintenant accéder à tous les modules depuis le tableau de bord.",
+      "goToDashboard": "Aller au tableau de bord"
+    }
   }
 }

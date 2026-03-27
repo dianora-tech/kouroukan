@@ -11,6 +11,7 @@ import AbsenceStats from '~/modules/presences/components/AbsenceStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -145,6 +146,9 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       >
         <template #cell-eleveNom="{ row }">
           {{ (row as Absence).eleveNom ?? `#${(row as Absence).eleveId}` }}
+        </template>
+        <template #cell-dateAbsence="{ row }">
+          {{ formatDateShort((row as Absence).dateAbsence) }}
         </template>
         <template #cell-estJustifiee="{ row }">
           <UBadge :color="(row as Absence).estJustifiee ? 'success' : 'error'" variant="subtle" size="sm">

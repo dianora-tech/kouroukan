@@ -9,7 +9,7 @@ const props = defineProps<{
 const { t } = useI18n()
 
 const activeCount = computed(() =>
-  props.items.filter(a => a.estActive).length,
+  props.items.filter(a => a.statut === 'active').length,
 )
 
 const lastCreated = computed(() => {

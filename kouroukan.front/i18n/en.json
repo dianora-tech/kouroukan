@@ -21,7 +21,9 @@
     "supportAideIA": "AI Help",
     "settings": "Settings",
     "establishment": "Establishment",
-    "users": "Users"
+    "users": "Users",
+    "moduleDisabled": "Module not included in your plan",
+    "onboardingRequired": "Please complete your establishment setup first"
   },
   "dashboard": {
     "welcome": "Welcome, {name}",
@@ -36,7 +38,9 @@
     "bdeDesc": "Associations and events",
     "documentsDesc": "Templates and generated documents",
     "servicesPremiumDesc": "Value-added services",
-    "supportDesc": "Tickets, help and suggestions"
+    "supportDesc": "Tickets, help and suggestions",
+    "moduleDisabled": "Module not included in your plan",
+    "onboardingRequired": "Please complete your establishment setup first"
   },
   "auth": {
     "loginTitle": "Sign In",
@@ -307,11 +311,9 @@
       "libellePlaceholder": "e.g. 2025-2026",
       "dateDebut": "Start date",
       "dateFin": "End date",
-      "estActive": "Active",
       "active": "Active",
       "inactive": "Inactive",
       "filters": {
-        "allStatuts": "All",
         "reset": "Reset"
       },
       "stats": {
@@ -1750,5 +1752,109 @@
     "submit": "Change Password",
     "success": "Password changed successfully",
     "error": "Error changing password"
+  },
+  "onboarding": {
+    "title": "Set Up Your School",
+    "subtitle": "Follow these steps to get your school up and running",
+    "next": "Next",
+    "previous": "Previous",
+    "skip": "Skip",
+    "finish": "Finish",
+    "finishLater": "Finish later",
+    "dataSaved": "Data saved successfully",
+    "saving": "Saving...",
+    "completed": "Setup completed!",
+    "stepOf": "Step {current}/{total}",
+    "validation": {
+      "required": "This field is required",
+      "emailFormat": "Invalid email format"
+    },
+    "steps": {
+      "establishment": "School",
+      "schoolYear": "School Year",
+      "classes": "Classes",
+      "subjects": "Subjects"
+    },
+    "banner": {
+      "title": "Set up your school",
+      "description": "You are at step {step}/{total} of the setup",
+      "start": "Get started",
+      "resume": "Resume"
+    },
+    "establishment": {
+      "title": "School Information",
+      "description": "Complete your school's information to personalize the platform.",
+      "name": "School Name",
+      "namePlaceholder": "E.g. Conakry Primary School",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Brief description of your school",
+      "phone": "Phone",
+      "phonePlaceholder": "E.g. 622 00 00 00",
+      "email": "Email",
+      "emailPlaceholder": "contact{'@'}school.gn",
+      "address": "Address",
+      "addressPlaceholder": "Full address",
+      "type": "Establishment type",
+      "typePlaceholder": "Select the type",
+      "types": {
+        "preuniversitaire": "Pre-university (Primary, Middle, High School)",
+        "universitaire": "University (Bachelor, Master, PhD)",
+        "formationPro": "Vocational Training (CAP, BEP, BTS)",
+        "francoArabe": "Franco-Arabic",
+        "public": "Public",
+        "priveLaique": "Private Secular",
+        "communautaire": "Community"
+      },
+      "saved": "School information saved"
+    },
+    "schoolYear": {
+      "title": "School Year",
+      "description": "Select the school year for which you want to configure your establishment.",
+      "selectLabel": "School year",
+      "selectPlaceholder": "Choose a school year",
+      "codeLabel": "Code",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "effectiveStart": "Effective start date",
+      "periods": "Periods",
+      "trimesters": "trimesters",
+      "semesters": "semesters",
+      "statusPreparation": "In preparation",
+      "statusActive": "Active",
+      "statusClosed": "Closed",
+      "statusArchived": "Archived",
+      "noYearsAvailable": "No school year available",
+      "contactAdmin": "Contact your administrator to create a school year.",
+      "saved": "School year selected"
+    },
+    "classes": {
+      "title": "Levels and Classes",
+      "description": "Select the levels taught and create your classes. Click on a level to add a class.",
+      "addedClasses": "Added classes",
+      "capacity": "seats",
+      "empty": "Click on the levels above to add classes",
+      "existing": "Existing classes",
+      "saved": "Classes created"
+    },
+    "subjects": {
+      "title": "Subjects Taught",
+      "description": "Select subjects by cycle and adjust coefficients. Each coefficient is adapted to the class level.",
+      "coefficient": "coeff.",
+      "addCustom": "Add a custom subject",
+      "addCustomHint": "The subject will be added to all cycles with a default coefficient of 2.",
+      "code": "Code",
+      "name": "Name",
+      "namePlaceholder": "Subject name",
+      "add": "Add",
+      "existing": "Existing subjects",
+      "suggested": "Suggested subjects",
+      "noLevels": "No class levels have been created. Please create classes in the previous step first.",
+      "saved": "Subjects configured"
+    },
+    "complete": {
+      "title": "Your school is ready!",
+      "description": "Congratulations! You've completed your school's setup. You can now access all modules from the dashboard.",
+      "goToDashboard": "Go to Dashboard"
+    }
   }
 }

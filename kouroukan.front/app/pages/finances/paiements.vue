@@ -11,6 +11,7 @@ import PaiementStats from '~/modules/finances/components/PaiementStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -177,7 +178,7 @@ function getMoyenColor(moyen: string): string {
           </UBadge>
         </template>
         <template #cell-datePaiement="{ row }">
-          {{ (row as Paiement).datePaiement.split('T')[0] }}
+          {{ formatDateShort((row as Paiement).datePaiement) }}
         </template>
         <template #cell-statutPaiement="{ row }">
           <UBadge :color="getStatutColor((row as Paiement).statutPaiement)" variant="subtle" size="sm">

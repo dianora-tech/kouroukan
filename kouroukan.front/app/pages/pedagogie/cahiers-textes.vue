@@ -11,6 +11,7 @@ import CahierTextesStats from '~/modules/pedagogie/components/CahierTextesStats.
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -145,6 +146,9 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         @page-change="changePage"
         @sort="handleSort"
       >
+        <template #cell-dateSeance="{ row }">
+          {{ formatDateShort((row as CahierTextes).dateSeance) }}
+        </template>
         <template #cell-contenu="{ row }">
           <span class="line-clamp-2 max-w-xs">{{ (row as CahierTextes).contenu }}</span>
         </template>

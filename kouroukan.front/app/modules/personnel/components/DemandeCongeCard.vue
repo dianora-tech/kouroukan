@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 
 function getStatutColor(statut: string): string {
   switch (statut) {
@@ -42,7 +43,7 @@ function getStatutColor(statut: string): string {
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ demandeConge.dateDebut }} — {{ demandeConge.dateFin }}
+        {{ formatDateShort(demandeConge.dateDebut) }} — {{ formatDateShort(demandeConge.dateFin) }}
       </p>
       <p>
         <UIcon name="i-heroicons-document-text" class="mr-1 inline h-4 w-4" />

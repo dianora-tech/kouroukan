@@ -46,4 +46,10 @@ public class UserProfileDto
 
     /// <summary>URL de la photo de profil (avatar).</summary>
     public string? AvatarUrl { get; set; }
+
+    /// <summary>Etape d'onboarding de l'etablissement (0 = pas commence).</summary>
+    public int OnboardingStep { get; set; }
+
+    /// <summary>Date de completion de l'onboarding (null si pas termine).</summary>
+    public DateTime? OnboardingCompletedAt { get; set; }
 }

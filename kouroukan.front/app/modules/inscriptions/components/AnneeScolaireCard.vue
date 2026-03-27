@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 </script>
 
 <template>
@@ -21,7 +22,7 @@ const { t } = useI18n()
           {{ annee.libelle }}
         </h3>
       </div>
-      <UBadge v-if="annee.estActive" color="success" variant="subtle" size="sm">
+      <UBadge v-if="annee.statut === 'active'" color="success" variant="subtle" size="sm">
         {{ $t('inscriptions.anneeScolaire.active') }}
       </UBadge>
       <UBadge v-else color="neutral" variant="subtle" size="sm">
@@ -32,7 +33,7 @@ const { t } = useI18n()
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ annee.dateDebut }} - {{ annee.dateFin }}
+        {{ formatDateShort(annee.dateDebut) }} - {{ formatDateShort(annee.dateFin) }}
       </p>
     </div>
 

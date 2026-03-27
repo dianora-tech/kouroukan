@@ -50,6 +50,30 @@ const visibleModules = computed(() =>
   modules.filter(m => auth.hasPermission(m.permission)),
 )
 
+/** Modules requiring onboarding data to function */
+const modulesRequiringOnboarding = new Set([
+  'inscriptions', 'pedagogie', 'evaluations', 'presences', 'finances', 'personnel',
+])
+
+/** Module is enabled if subscribed AND (onboarding completed OR module doesn't need onboarding data) */
+const isModuleEnabled = (slug: string): boolean => {
+  if (!auth.hasModule(slug)) return false
+  if (modulesRequiringOnboarding.has(slug) && !auth.onboardingCompleted) return false
+  return true
+}
+
+/** Modules non souscrits — affiches en grise dans la sidebar. */
+const disabledModules = computed(() =>
+  modules.filter(m => auth.hasPermission(m.permission) && !auth.hasModule(m.slug)),
+)
+
+/** Tooltip for disabled module */
+const getDisabledTooltip = (slug: string): string => {
+  if (!auth.hasModule(slug)) return t('nav.moduleDisabled')
+  if (modulesRequiringOnboarding.has(slug) && !auth.onboardingCompleted) return t('nav.onboardingRequired')
+  return ''
+}
+
 const showSupport = computed(() => auth.hasPermission(supportModule.permission))
 
 const isActiveModule = (slug: string): boolean => {
@@ -109,7 +133,9 @@ async function handleLogout(): Promise<void> {
 
         <!-- Module links -->
         <template v-for="mod in visibleModules" :key="mod.slug">
+          <!-- Module actif (souscrit + onboarding OK) -->
           <NuxtLink
+            v-if="isModuleEnabled(mod.slug)"
             :to="localePath(`/${mod.slug}`)"
             class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
             :class="isActiveModule(mod.slug)
@@ -119,6 +145,18 @@ async function handleLogout(): Promise<void> {
             <UIcon :name="mod.icon" class="h-5 w-5 shrink-0" :style="{ color: mod.color }" />
             <span v-if="!ui.sidebarCollapsed">{{ $t(mod.label) }}</span>
           </NuxtLink>
+          <!-- Module desactive (non souscrit OU onboarding incomplet) -->
+          <div
+            v-else
+            class="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-400 opacity-50 dark:text-gray-500"
+            :title="getDisabledTooltip(mod.slug)"
+          >
+            <UIcon :name="mod.icon" class="h-5 w-5 shrink-0" />
+            <span v-if="!ui.sidebarCollapsed" class="flex items-center gap-1">
+              {{ $t(mod.label) }}
+              <UIcon name="i-heroicons-lock-closed" class="h-3 w-3" />
+            </span>
+          </div>
         </template>
 
         <!-- Support section -->

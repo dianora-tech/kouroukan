@@ -104,6 +104,7 @@ export default defineNuxtConfig({
   // --------------- Components ---------------
   components: {
     dirs: [
+      { path: '~/components', pathPrefix: false },
       '~/shared/components',
       '~/modules/**/components',
     ],

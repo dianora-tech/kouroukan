@@ -11,6 +11,7 @@ import DemandeCongeStats from '~/modules/personnel/components/DemandeCongeStats.
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -154,6 +155,12 @@ function getStatutColor(statut: string): string {
         @page-change="changePage"
         @sort="handleSort"
       >
+        <template #cell-dateDebut="{ row }">
+          {{ formatDateShort((row as DemandeConge).dateDebut) }}
+        </template>
+        <template #cell-dateFin="{ row }">
+          {{ formatDateShort((row as DemandeConge).dateFin) }}
+        </template>
         <template #cell-statutDemande="{ row }">
           <UBadge :color="getStatutColor((row as DemandeConge).statutDemande)" variant="subtle" size="sm">
             {{ $t(`personnel.demandeConge.statut.${(row as DemandeConge).statutDemande}`) }}

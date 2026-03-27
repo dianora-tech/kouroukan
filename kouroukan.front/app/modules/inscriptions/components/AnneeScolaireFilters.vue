@@ -10,7 +10,6 @@ const { t } = useI18n()
 
 const filters = reactive<AnneeScolaireFilters>({
   search: '',
-  estActive: undefined,
   dateFrom: undefined,
   dateTo: undefined,
 })
@@ -30,17 +29,11 @@ function onFilterChange(): void {
 
 function resetFilters(): void {
   filters.search = ''
-  filters.estActive = undefined
   filters.dateFrom = undefined
   filters.dateTo = undefined
   emit('reset')
 }
 
-const activeOptions = [
-  { label: t('inscriptions.anneeScolaire.filters.allStatuts'), value: '' },
-  { label: t('inscriptions.anneeScolaire.active'), value: 'true' },
-  { label: t('inscriptions.anneeScolaire.inactive'), value: 'false' },
-]
 </script>
 
 <template>
@@ -54,14 +47,6 @@ const activeOptions = [
         @input="onSearchInput"
       />
     </div>
-
-    <USelect
-      v-model="filters.estActive"
-      :items="activeOptions"
-      value-key="value"
-      class="w-36"
-      @update:model-value="onFilterChange"
-    />
 
     <UInput
       v-model="filters.dateFrom"

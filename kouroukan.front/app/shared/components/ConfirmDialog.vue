@@ -18,7 +18,10 @@ const emit = defineEmits<{
   (e: 'update:open', value: boolean): void
 }>()
 
-const { t } = useI18n()
+const isOpen = computed({
+  get: () => props.open,
+  set: (val: boolean) => emit('update:open', val),
+})
 
 const iconMap = {
   danger: 'i-heroicons-exclamation-triangle',
@@ -43,9 +46,12 @@ function handleCancel(): void {
 </script>
 
 <template>
-  <UModal :open="open" @update:open="emit('update:open', $event)">
-    <template #default>
-      <div class="p-6">
+  <Teleport to="body">
+    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/50" @click="handleCancel" />
+      <!-- Dialog -->
+      <div class="relative z-10 mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-gray-800">
         <div class="flex items-start gap-4">
           <UIcon
             :name="iconMap[variant]"
@@ -78,6 +84,6 @@ function handleCancel(): void {
           </UButton>
         </div>
       </div>
-    </template>
-  </UModal>
+    </div>
+  </Teleport>
 </template>

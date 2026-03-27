@@ -12,6 +12,7 @@ import EvenementStats from '~/modules/bde/components/EvenementStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDateShort } = useFormatDate()
 const {
   items,
   loading,
@@ -162,6 +163,9 @@ function getStatutColor(statut: string): string {
         @page-change="changePage"
         @sort="handleSort"
       >
+        <template #cell-dateEvenement="{ row }">
+          {{ formatDateShort((row as Evenement).dateEvenement) }}
+        </template>
         <template #cell-statutEvenement="{ row }">
           <UBadge :color="getStatutColor((row as Evenement).statutEvenement)" variant="subtle" size="sm">
             {{ $t(`bde.evenement.statut.${(row as Evenement).statutEvenement}`) }}
