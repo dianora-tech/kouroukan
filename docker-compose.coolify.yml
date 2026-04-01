@@ -118,8 +118,8 @@ services:
       dockerfile: kouroukan.api/Dockerfile
     container_name: kouroukan-gateway
     environment:
-      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      - GnDapper__ConnectionString=Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       - Jwt__Key=${JWT_SECRET}
       - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
       - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
@@ -163,8 +163,8 @@ services:
     container_name: kouroukan-inscriptions
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -179,8 +179,8 @@ services:
     container_name: kouroukan-pedagogie
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -195,8 +195,8 @@ services:
     container_name: kouroukan-evaluations
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -211,8 +211,8 @@ services:
     container_name: kouroukan-presences
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -227,8 +227,8 @@ services:
     container_name: kouroukan-finances
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -243,8 +243,8 @@ services:
     container_name: kouroukan-personnel
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -259,8 +259,8 @@ services:
     container_name: kouroukan-communication
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -275,8 +275,8 @@ services:
     container_name: kouroukan-bde
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -291,8 +291,8 @@ services:
     container_name: kouroukan-documents
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -316,8 +316,8 @@ services:
     container_name: kouroukan-services-premium
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -337,8 +337,8 @@ services:
     container_name: kouroukan-support
     environment:
       <<: *jwt-env
-      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
@@ -360,7 +360,7 @@ services:
     container_name: kouroukan-cache
     environment:
       Redis__ConnectionString: redis:6379
-      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: Host=postgres;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
       Gateway__BaseUrl: http://gateway:5000
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
