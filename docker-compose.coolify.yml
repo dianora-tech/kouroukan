@@ -23,6 +23,7 @@
 #   gateway      → https://api.kouroukan.dianora.org
 #   rabbitmq mgmt→ https://mq.kouroukan.dianora.org
 #   minio console→ https://storage.kouroukan.dianora.org
+#   redis-commander→ https://cache.kouroukan.dianora.org
 #   uptime-kuma  → https://monitor.kouroukan.dianora.org
 # =============================================================================
 
@@ -479,6 +480,28 @@ services:
       - "traefik.http.routers.minio-console.tls=true"
       - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
       - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
+
+  # ==========================================================================
+  # CACHE EXPLORER (Redis Commander)
+  # Interface web pour inspecter le cache Redis
+  # Exposé sur → https://cache.kouroukan.dianora.org
+  # ==========================================================================
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: kouroukan-redis-commander
+    environment:
+      REDIS_HOSTS: "cache:${CACHE_HOST:-cache}:${CACHE_PORT:-6379}"
+    restart: unless-stopped
+    depends_on:
+      - cache
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.redis-commander.rule=Host(`cache.kouroukan.dianora.org`)"
+      - "traefik.http.routers.redis-commander.entrypoints=https"
+      - "traefik.http.routers.redis-commander.tls=true"
+      - "traefik.http.routers.redis-commander.tls.certresolver=letsencrypt"
+      - "traefik.http.services.redis-commander.loadbalancer.server.port=8081"
 
   # ==========================================================================
   # MONITORING
