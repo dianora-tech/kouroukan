@@ -1,0 +1,530 @@
+# =============================================================================
+# Kouroukan - Docker Compose pour Coolify (self-hosted PaaS)
+# =============================================================================
+#
+# Différences avec docker-compose.yml (dev local) :
+#   - Nginx/certbot supprimés → Traefik (géré par Coolify) assure le reverse
+#     proxy et le SSL Let's Encrypt automatiquement
+#   - Labels Traefik ajoutés sur les services exposés publiquement
+#   - Ollama exclu (trop lourd, ~4 Go RAM) → support-service dégrade
+#     gracieusement si Ollama__BaseUrl n'est pas définie
+#   - Uptime Kuma exposé via Traefik
+#   - Deux réseaux : "coolify" (externe, géré par Coolify/Traefik) +
+#     "kouroukan-internal" (réseau bridge interne)
+#
+# Déploiement :
+#   1. Créer un projet dans Coolify, pointer sur ce fichier
+#   2. Renseigner toutes les variables d'environnement dans Coolify
+#   3. Coolify provisionne automatiquement les certificats SSL
+#
+# Domaines configurés :
+#   portal       → https://kouroukan.dianora.org
+#   frontend     → https://app.kouroukan.dianora.org
+#   gateway      → https://api.kouroukan.dianora.org
+#   rabbitmq mgmt→ https://mq.kouroukan.dianora.org
+#   minio console→ https://storage.kouroukan.dianora.org
+#   uptime-kuma  → https://monitor.kouroukan.dianora.org
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Ancre YAML réutilisable : variables JWT communes à tous les microservices
+# ---------------------------------------------------------------------------
+x-jwt-env: &jwt-env
+  Jwt__Key: ${JWT_SECRET}
+  Jwt__Issuer: ${JWT_ISSUER:-kouroukan.gn}
+  Jwt__Audience: ${JWT_AUDIENCE:-kouroukan-app}
+
+# ---------------------------------------------------------------------------
+# Ancre YAML : connexion RabbitMQ commune à tous les microservices
+# ---------------------------------------------------------------------------
+x-rabbitmq-env: &rabbitmq-env
+  RabbitMQ__Host: rabbitmq
+  RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+  RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+
+# ---------------------------------------------------------------------------
+# Ancre YAML : dépendances infra communes à tous les microservices
+# ---------------------------------------------------------------------------
+x-infra-depends: &infra-depends
+  depends_on:
+    postgres:
+      condition: service_healthy
+    rabbitmq:
+      condition: service_healthy
+
+# ---------------------------------------------------------------------------
+# Ancre YAML : networks communs à tous les services applicatifs
+# (les services infra n'utilisent que kouroukan-internal)
+# ---------------------------------------------------------------------------
+x-app-networks: &app-networks
+  networks:
+    - coolify
+    - kouroukan-internal
+
+services:
+
+  # ==========================================================================
+  # PORTAIL PUBLIC (Nuxt 4 SSG)
+  # Exposé publiquement sur → https://kouroukan.dianora.org
+  # ==========================================================================
+  portal:
+    build:
+      context: ./kouroukan.portal
+      dockerfile: Dockerfile
+    container_name: kouroukan-portal
+    restart: unless-stopped
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portal.rule=Host(`kouroukan.dianora.org`)"
+      - "traefik.http.routers.portal.entrypoints=https"
+      - "traefik.http.routers.portal.tls=true"
+      - "traefik.http.routers.portal.tls.certresolver=letsencrypt"
+      - "traefik.http.services.portal.loadbalancer.server.port=3000"
+
+  # ==========================================================================
+  # FRONTEND APPLICATIF (Nuxt 4 SSR)
+  # Exposé publiquement sur → https://app.kouroukan.dianora.org
+  # ==========================================================================
+  frontend:
+    build:
+      context: ./kouroukan.front
+      dockerfile: Dockerfile
+    container_name: kouroukan-frontend
+    environment:
+      # URL interne : le SSR fait ses appels API en direct dans le réseau Docker
+      - NUXT_PUBLIC_API_BASE_URL=http://gateway:5000
+    depends_on:
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`app.kouroukan.dianora.org`)"
+      - "traefik.http.routers.frontend.entrypoints=https"
+      - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+
+  # ==========================================================================
+  # GATEWAY API (.NET 8 / YARP)
+  # Exposé publiquement sur → https://api.kouroukan.dianora.org
+  # ==========================================================================
+  gateway:
+    build:
+      context: ./vs2022
+      dockerfile: kouroukan.api/Dockerfile
+    container_name: kouroukan-gateway
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
+      - Redis__ConnectionString=redis:6379,abortConnect=false,connectTimeout=5000
+      - ConnectionStrings__Redis=redis:6379,abortConnect=false,connectTimeout=5000
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gateway.rule=Host(`api.kouroukan.dianora.org`)"
+      - "traefik.http.routers.gateway.entrypoints=https"
+      - "traefik.http.routers.gateway.tls=true"
+      - "traefik.http.routers.gateway.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gateway.loadbalancer.server.port=5000"
+
+  # ==========================================================================
+  # MICROSERVICES
+  # Tous internes — accessibles uniquement depuis kouroukan-internal
+  # ==========================================================================
+
+  inscriptions-service:
+    build:
+      context: ./vs2022
+      dockerfile: inscriptions.service/Dockerfile
+    container_name: kouroukan-inscriptions
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  pedagogie-service:
+    build:
+      context: ./vs2022
+      dockerfile: pedagogie.service/Dockerfile
+    container_name: kouroukan-pedagogie
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  evaluations-service:
+    build:
+      context: ./vs2022
+      dockerfile: evaluations.service/Dockerfile
+    container_name: kouroukan-evaluations
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  presences-service:
+    build:
+      context: ./vs2022
+      dockerfile: presences.service/Dockerfile
+    container_name: kouroukan-presences
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  finances-service:
+    build:
+      context: ./vs2022
+      dockerfile: finances.service/Dockerfile
+    container_name: kouroukan-finances
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  personnel-service:
+    build:
+      context: ./vs2022
+      dockerfile: personnel.service/Dockerfile
+    container_name: kouroukan-personnel
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  communication-service:
+    build:
+      context: ./vs2022
+      dockerfile: communication.service/Dockerfile
+    container_name: kouroukan-communication
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  bde-service:
+    build:
+      context: ./vs2022
+      dockerfile: bde.service/Dockerfile
+    container_name: kouroukan-bde
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  documents-service:
+    build:
+      context: ./vs2022
+      dockerfile: documents.service/Dockerfile
+    container_name: kouroukan-documents
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      MinIO__Endpoint: minio:9000
+      MinIO__AccessKey: ${MINIO_ACCESS_KEY:-kouroukan}
+      MinIO__SecretKey: ${MINIO_SECRET_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+    <<: *app-networks
+
+  services-premium-service:
+    build:
+      context: ./vs2022
+      dockerfile: services-premium.service/Dockerfile
+    container_name: kouroukan-services-premium
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  # Support Service — Ollama exclu en environnement Coolify (4 Go RAM trop
+  # lourds pour un VPS standard). Le service fonctionne sans IA : laisser
+  # Ollama__BaseUrl vide ou ne pas la définir du tout pour désactiver le module.
+  # Pour l'activer ultérieurement, définir la variable dans Coolify et pointer
+  # vers une instance Ollama externe (ex: http://mon-gpu-server:11434).
+  support-service:
+    build:
+      context: ./vs2022
+      dockerfile: support.service/Dockerfile
+    container_name: kouroukan-support
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: ${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      # Laisser vide pour désactiver l'IA ; pointer vers une instance externe
+      # si disponible (ex: http://gpu-host:11434)
+      Ollama__BaseUrl: ${OLLAMA_BASE_URL:-}
+      Ollama__Model: ${OLLAMA_MODEL:-mistral}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  # ==========================================================================
+  # CACHE SERVICE (MemoryCache L1 + Redis L2 + Quartz.NET)
+  # ==========================================================================
+  cache:
+    build:
+      context: ./vs2022
+      dockerfile: gn-cache/Dockerfile
+    container_name: kouroukan-cache
+    environment:
+      Redis__ConnectionString: redis:6379
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
+      Gateway__BaseUrl: http://gateway:5000
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    depends_on:
+      redis:
+        condition: service_healthy
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped
+    <<: *app-networks
+
+  # ==========================================================================
+  # INFRASTRUCTURE
+  # Uniquement sur kouroukan-internal (pas d'exposition publique directe)
+  # ==========================================================================
+
+  # --------------------------------------------------------------------------
+  # PostgreSQL 16
+  # Pas de port exposé sur l'hôte : accès via Coolify DB tunneling si besoin
+  # --------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: kouroukan-postgres
+    environment:
+      - POSTGRES_USER=${DB_USER:-kouroukan}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME:-kouroukan}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-kouroukan} -d ${DB_NAME:-kouroukan}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - kouroukan-internal
+
+  # --------------------------------------------------------------------------
+  # Redis 7 (Cache L2)
+  # --------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: kouroukan-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - kouroukan-internal
+
+  # --------------------------------------------------------------------------
+  # RabbitMQ (Message Bus inter-services)
+  # Management UI exposée via Traefik → https://mq.kouroukan.dianora.org
+  # --------------------------------------------------------------------------
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: kouroukan-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-kouroukan}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - coolify
+      - kouroukan-internal
+    labels:
+      - "traefik.enable=true"
+      # Routeur pour la management UI (port 15672)
+      - "traefik.http.routers.rabbitmq-mgmt.rule=Host(`mq.kouroukan.dianora.org`)"
+      - "traefik.http.routers.rabbitmq-mgmt.entrypoints=https"
+      - "traefik.http.routers.rabbitmq-mgmt.tls=true"
+      - "traefik.http.routers.rabbitmq-mgmt.tls.certresolver=letsencrypt"
+      - "traefik.http.services.rabbitmq-mgmt.loadbalancer.server.port=15672"
+
+  # --------------------------------------------------------------------------
+  # MinIO (Stockage fichiers S3-compatible, self-hosted)
+  # Console exposée via Traefik → https://storage.kouroukan.dianora.org
+  # L'API S3 (port 9000) reste interne
+  # --------------------------------------------------------------------------
+  minio:
+    image: minio/minio:latest
+    container_name: kouroukan-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-kouroukan}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - coolify
+      - kouroukan-internal
+    labels:
+      - "traefik.enable=true"
+      # Routeur pour la console MinIO (port 9001)
+      - "traefik.http.routers.minio-console.rule=Host(`storage.kouroukan.dianora.org`)"
+      - "traefik.http.routers.minio-console.entrypoints=https"
+      - "traefik.http.routers.minio-console.tls=true"
+      - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
+      - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
+
+  # ==========================================================================
+  # MONITORING
+  # Uptime Kuma — https://monitor.kouroukan.dianora.org
+  # ==========================================================================
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: kouroukan-uptime-kuma
+    volumes:
+      - uptime-kuma-data:/app/data
+    restart: unless-stopped
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptime-kuma.rule=Host(`monitor.kouroukan.dianora.org`)"
+      - "traefik.http.routers.uptime-kuma.entrypoints=https"
+      - "traefik.http.routers.uptime-kuma.tls=true"
+      - "traefik.http.routers.uptime-kuma.tls.certresolver=letsencrypt"
+      - "traefik.http.services.uptime-kuma.loadbalancer.server.port=3001"
+
+# =============================================================================
+# VOLUMES
+# =============================================================================
+volumes:
+  pgdata:
+    name: kouroukan-pgdata
+  redisdata:
+    name: kouroukan-redisdata
+  rabbitmqdata:
+    name: kouroukan-rabbitmqdata
+  miniodata:
+    name: kouroukan-miniodata
+  uptime-kuma-data:
+    name: kouroukan-uptime-kuma-data
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+networks:
+  # Réseau géré par Coolify — Traefik y est déjà attaché, ce qui permet le
+  # routage automatique vers les services labellisés
+  coolify:
+    external: true
+
+  # Réseau interne privé — les microservices communiquent entre eux sans
+  # passer par Traefik ni être exposés à l'extérieur
+  kouroukan-internal:
+    driver: bridge
+    name: kouroukan-internal
