@@ -75,8 +75,9 @@ services:
     container_name: kouroukan-portal
     restart: unless-stopped
     <<: *app-networks
-    # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
-    # Coolify auto-génère les routers Traefik (http redirect + https + gzip)
+    labels:
+      # Coolify auto-génère les routers Traefik via docker_compose_domains
+      - "traefik.enable=true"
 
   # ==========================================================================
   # FRONTEND APPLICATIF (Nuxt 4 SSR)
@@ -95,7 +96,8 @@ services:
         condition: service_started
     restart: unless-stopped
     <<: *app-networks
-    # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
+    labels:
+      - "traefik.enable=true"
 
   # ==========================================================================
   # GATEWAY API (.NET 8 / YARP)
@@ -132,7 +134,8 @@ services:
       retries: 3
       start_period: 10s
     <<: *app-networks
-    # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
+    labels:
+      - "traefik.enable=true"
 
   # ==========================================================================
   # MICROSERVICES
@@ -493,7 +496,8 @@ services:
       - uptime-kuma-data:/app/data
     restart: unless-stopped
     <<: *app-networks
-    # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
+    labels:
+      - "traefik.enable=true"
 
 # =============================================================================
 # VOLUMES
