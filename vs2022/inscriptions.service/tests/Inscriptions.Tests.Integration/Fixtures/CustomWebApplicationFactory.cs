@@ -1,10 +1,16 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using GnDapper.Connection;
+using GnDapper.Options;
+using GnMessaging.Abstractions;
+using GnMessaging.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -27,11 +33,27 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureTestServices(services =>
         {
-            // Remplacer la connection string par celle du conteneur PostgreSQL
-            services.Configure<ConnectionStringOptions>(options =>
+            // Remplacer la connection string GnDapper par celle du conteneur PostgreSQL
+            services.Configure<GnDapperOptions>(options =>
             {
-                options.DefaultConnection = _dbFixture.ConnectionString;
+                options.ConnectionString = _dbFixture.ConnectionString;
             });
+
+            // Re-enregistrer le factory avec la nouvelle connection string
+            services.RemoveAll<IDbConnectionFactory>();
+            services.AddSingleton<IDbConnectionFactory>(sp =>
+            {
+                var opts = sp.GetRequiredService<IOptions<GnDapperOptions>>();
+                return new NpgsqlConnectionFactory(opts);
+            });
+
+            // Remplacer RabbitMQ par un stub (pas de broker en CI)
+            services.RemoveAll<IMessagePublisher>();
+            services.AddSingleton<IMessagePublisher, NullMessagePublisher>();
+
+            // Supprimer les hosted services et autres singletons RabbitMQ
+            services.RemoveAll<IHostedService>();
+            services.RemoveAll<IMessageConsumer>();
 
             // Ajouter l'authentification de test
             services.AddAuthentication("TestScheme")
@@ -43,11 +65,16 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
 }
 
 /// <summary>
-/// Options de connection string pour l'injection de dependances.
+/// Stub IMessagePublisher qui ne fait rien — pas de connexion RabbitMQ.
 /// </summary>
-public class ConnectionStringOptions
+internal sealed class NullMessagePublisher : IMessagePublisher
 {
-    public string DefaultConnection { get; set; } = string.Empty;
+    public Task PublishAsync<T>(T message, string exchange, string routingKey,
+        PublishOptions? options = null, CancellationToken cancellationToken = default)
+        where T : class, IMessage
+    {
+        return Task.CompletedTask;
+    }
 }
 
 /// <summary>
