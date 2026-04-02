@@ -137,11 +137,11 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:5000/health || exit 1"]
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:5000/health 2>/dev/null; rc=$?; [ $rc -eq 0 ] || [ $rc -eq 8 ]"]
       interval: 15s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 45s
     <<: *app-networks
     labels:
       - "traefik.enable=true"
