@@ -23,6 +23,12 @@ export const PERMISSIONS = {
   'inscriptions:update': ['super_admin', 'directeur', 'responsable_admissions', 'personnel_admin'],
   'inscriptions:delete': ['super_admin', 'directeur'],
 
+  // Annees scolaires (CRUD reserve au super_admin)
+  'annees-scolaires:read': ['super_admin', 'fondateur', 'admin_it', 'directeur', 'censeur', 'responsable_admissions', 'personnel_admin'],
+  'annees-scolaires:create': ['super_admin'],
+  'annees-scolaires:update': ['super_admin'],
+  'annees-scolaires:delete': ['super_admin'],
+
   // Module pedagogie
   'pedagogie:read': ['super_admin', 'fondateur', 'admin_it', 'directeur', 'censeur', 'chef_departement', 'enseignant'],
   'pedagogie:create': ['super_admin', 'directeur', 'censeur'],
@@ -84,7 +90,28 @@ export const PERMISSIONS = {
   'support:delete': ['super_admin', 'admin_it'],
   'support:manage': ['super_admin', 'admin_it', 'directeur'],
 
-  // Administration
+  // Administration globale (super admin uniquement)
+  'admin:manage': ['super_admin'],
+  'admin:forfaits': ['super_admin'],
+  'admin:sms': ['super_admin'],
+  'admin:email': ['super_admin'],
+  'admin:contenu-ia': ['super_admin'],
+  'admin:paiements': ['super_admin'],
+
+  // Espace enseignant
+  'enseignant:manage': ['enseignant'],
+  'enseignant:competences': ['enseignant'],
+  'enseignant:liaisons': ['enseignant'],
+
+  // Espace famille
+  'famille:read': ['parent', 'eleve'],
+  'famille:paiements': ['parent'],
+
+  // Liaisons & affectations (côté établissement)
+  'liaisons:manage': ['super_admin', 'directeur', 'admin_it', 'censeur'],
+  'transferts:manage': ['super_admin', 'directeur'],
+
+  // Administration établissement
   'users:manage': ['super_admin', 'admin_it', 'directeur'],
   'cache:reload': ['super_admin', 'admin_it'],
   'settings:manage': ['super_admin', 'admin_it', 'directeur'],

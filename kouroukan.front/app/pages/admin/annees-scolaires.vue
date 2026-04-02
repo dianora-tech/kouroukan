@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { AnneeScolaire, CreateAnneeScolairePayload, UpdateAnneeScolairePayload } from '~/modules/inscriptions/types/annee-scolaire.types'
+import type { AnneeScolaire, CreateAnneeScolairePayload, UpdateAnneeScolairePayload, AnneeScolaireFilters } from '~/modules/inscriptions/types/annee-scolaire.types'
 import { useAnneeScolaire } from '~/modules/inscriptions/composables/useAnneeScolaire'
-import type { AnneeScolaireFilters } from '~/modules/inscriptions/types/annee-scolaire.types'
 import AnneeScolaireForm from '~/modules/inscriptions/components/AnneeScolaireForm.vue'
 import AnneeScolaireCard from '~/modules/inscriptions/components/AnneeScolaireCard.vue'
 import AnneeScolaireFiltersComponent from '~/modules/inscriptions/components/AnneeScolaireFilters.vue'
@@ -11,6 +10,7 @@ import AnneeScolaireStats from '~/modules/inscriptions/components/AnneeScolaireS
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -35,8 +35,8 @@ const deletingEntity = ref<AnneeScolaire | null>(null)
 
 const columns: Column[] = [
   { key: 'libelle', label: t('inscriptions.anneeScolaire.libelle'), sortable: true },
-  { key: 'dateDebut', label: t('inscriptions.anneeScolaire.dateDebut'), sortable: true },
-  { key: 'dateFin', label: t('inscriptions.anneeScolaire.dateFin'), sortable: true },
+  { key: 'dateDebut', label: t('inscriptions.anneeScolaire.dateDebut'), sortable: true, render: (row: any) => formatDate(row.dateDebut) },
+  { key: 'dateFin', label: t('inscriptions.anneeScolaire.dateFin'), sortable: true, render: (row: any) => formatDate(row.dateFin) },
   { key: 'estActive', label: t('inscriptions.anneeScolaire.estActive'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -84,7 +84,7 @@ function handleFilter(filters: AnneeScolaireFilters): void {
   setFilters(filters)
 }
 
-function handleSort(key: string, direction: 'asc' | 'desc'): void {
+function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
   fetchAll({ page: 1 })
 }
 </script>
@@ -95,7 +95,7 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
       <div>
         <UBreadcrumb
           :items="[
-            { label: $t('nav.inscriptions'), to: '/inscriptions' },
+            { label: $t('admin.title'), to: '/admin' },
             { label: $t('inscriptions.anneeScolaire.title') },
           ]"
         />
@@ -117,7 +117,6 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           @click="viewMode = 'grid'"
         />
         <UButton
-          v-permission="'inscriptions:create'"
           color="primary"
           icon="i-heroicons-plus"
           @click="openCreate"
@@ -127,9 +126,15 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <AnneeScolaireStats :items="items" :total-count="pagination.totalCount" />
+    <AnneeScolaireStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <AnneeScolaireFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <AnneeScolaireFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -152,14 +157,12 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
         <template #cell-actions="{ row }">
           <div class="flex gap-1">
             <UButton
-              v-permission="'inscriptions:update'"
               variant="ghost"
               size="xs"
               icon="i-heroicons-pencil-square"
               @click="openEdit(row as AnneeScolaire)"
             />
             <UButton
-              v-permission="'inscriptions:delete'"
               variant="ghost"
               size="xs"
               color="error"
@@ -180,7 +183,10 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <AnneeScolaireCard
           v-for="annee in items"
           :key="annee.id"

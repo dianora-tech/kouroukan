@@ -2,6 +2,7 @@ using FluentAssertions;
 using GnDapper.Models;
 using GnMessaging.Abstractions;
 using GnMessaging.Events;
+using GnMessaging.Models;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Support.Domain.Entities;
@@ -71,7 +72,7 @@ public sealed class TicketServiceTests
             It.IsAny<EntityCreatedEvent<Ticket>>(),
             "kouroukan.events",
             "entity.created.ticket",
-            It.IsAny<string>(),
+            It.IsAny<PublishOptions?>(),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -101,7 +102,7 @@ public sealed class TicketServiceTests
             It.IsAny<EntityDeletedEvent<Ticket>>(),
             "kouroukan.events",
             "entity.deleted.ticket",
-            It.IsAny<string>(),
+            It.IsAny<PublishOptions?>(),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 

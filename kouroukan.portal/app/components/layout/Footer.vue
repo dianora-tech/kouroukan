@@ -20,6 +20,7 @@
           <ul class="space-y-2">
             <li><NuxtLink :to="localePath('/fonctionnalites')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.features') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/tarifs')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.pricing') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/services-digitaux')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.services') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/demo')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.demo') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/temoignages')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.testimonials') }}</NuxtLink></li>
           </ul>
@@ -33,6 +34,7 @@
             <li><NuxtLink :to="localePath('/blog')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.blog') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/faq')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.faq') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/systeme-educatif')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.education') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/verification/test')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.verification') }}</NuxtLink></li>
             <li><NuxtLink :to="localePath('/a-propos')" class="text-sm hover:text-green-400 transition-colors">{{ $t('nav.about') }}</NuxtLink></li>
           </ul>
         </div>

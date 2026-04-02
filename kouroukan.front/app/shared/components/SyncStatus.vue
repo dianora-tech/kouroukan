@@ -5,7 +5,10 @@ const offline = useOfflineStore()
 </script>
 
 <template>
-  <div v-if="offline.hasPendingSync" class="flex items-center gap-1.5">
+  <div
+    v-if="offline.hasPendingSync"
+    class="flex items-center gap-1.5"
+  >
     <UIcon
       :name="offline.syncInProgress ? 'i-heroicons-arrow-path' : 'i-heroicons-cloud-arrow-up'"
       class="h-4 w-4 text-amber-500"

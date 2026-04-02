@@ -42,22 +42,35 @@ function getMoisLabel(mois: number): string {
           {{ getMoisLabel(remuneration.mois) }} {{ remuneration.annee }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(remuneration.statutPaiement)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(remuneration.statutPaiement)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`finances.remuneration.statut.${remuneration.statutPaiement}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(remuneration.montantTotal) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-briefcase" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-briefcase"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t(`finances.remuneration.mode.${remuneration.modeRemuneration}`) }}
       </p>
       <p v-if="remuneration.nombreHeures">
-        <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-clock"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ remuneration.nombreHeures }}h
         <span v-if="remuneration.tauxHoraire"> @ {{ formatMontant(remuneration.tauxHoraire) }}/h</span>
       </p>

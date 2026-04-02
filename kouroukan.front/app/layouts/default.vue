@@ -1,61 +1,76 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/core/stores/auth.store'
 import { useUiStore } from '~/core/stores/ui.store'
-import { MODULE_COLORS } from '~/core/theme/tokens'
-import type { PermissionKey } from '~/core/auth/rbac'
+import { useNavigation } from '~/composables/useNavigation'
+import { useForfaitGating } from '~/composables/useForfaitGating'
 
-const { t } = useI18n()
+const { t, locale, locales, setLocale } = useI18n()
 const localePath = useLocalePath()
 const auth = useAuthStore()
 const ui = useUiStore()
 const route = useRoute()
+const colorMode = useColorMode()
+const toast = useToast()
+const { userType } = useForfaitGating()
 
-interface NavModule {
-  slug: string
-  label: string
-  icon: string
-  permission: PermissionKey
-  color: string
+function handleLockedClick() {
+  const forfaitPath = userType.value === 'enseignant'
+    ? localePath('/enseignant/forfait')
+    : userType.value === 'famille'
+      ? localePath('/famille/forfait')
+      : null
+
+  toast.add({
+    title: t('forfaitGating.locked'),
+    description: t('forfaitGating.description'),
+    color: 'warning',
+    icon: 'i-heroicons-lock-closed',
+  })
+
+  if (forfaitPath) {
+    navigateTo(forfaitPath)
+  }
 }
 
-const modules: NavModule[] = [
-  { slug: 'inscriptions', label: 'nav.inscriptions', icon: 'i-heroicons-user-plus', permission: 'inscriptions:read', color: MODULE_COLORS.inscriptions },
-  { slug: 'pedagogie', label: 'nav.pedagogie', icon: 'i-heroicons-academic-cap', permission: 'pedagogie:read', color: MODULE_COLORS.pedagogie },
-  { slug: 'evaluations', label: 'nav.evaluations', icon: 'i-heroicons-clipboard-document-check', permission: 'evaluations:read', color: MODULE_COLORS.evaluations },
-  { slug: 'presences', label: 'nav.presences', icon: 'i-heroicons-clock', permission: 'presences:read', color: MODULE_COLORS.presences },
-  { slug: 'finances', label: 'nav.finances', icon: 'i-heroicons-banknotes', permission: 'finances:read', color: MODULE_COLORS.finances },
-  { slug: 'personnel', label: 'nav.personnel', icon: 'i-heroicons-user-group', permission: 'personnel:read', color: MODULE_COLORS.personnel },
-  { slug: 'communication', label: 'nav.communication', icon: 'i-heroicons-chat-bubble-left-right', permission: 'communication:read', color: MODULE_COLORS.communication },
-  { slug: 'bde', label: 'nav.bde', icon: 'i-heroicons-sparkles', permission: 'bde:read', color: MODULE_COLORS.bde },
-  { slug: 'documents', label: 'nav.documents', icon: 'i-heroicons-document-text', permission: 'documents:read', color: MODULE_COLORS.documents },
-  { slug: 'services-premium', label: 'nav.servicesPremium', icon: 'i-heroicons-star', permission: 'services-premium:read', color: MODULE_COLORS['services-premium'] },
-]
+const isDark = computed(() => colorMode.value === 'dark')
 
-const supportModule: NavModule = {
-  slug: 'support',
-  label: 'nav.support',
-  icon: 'i-heroicons-lifebuoy',
-  permission: 'support:read',
-  color: MODULE_COLORS.support,
+function toggleTheme() {
+  const newMode = isDark.value ? 'light' : 'dark'
+  colorMode.preference = newMode
+  if (auth.isAuthenticated) {
+    auth.updatePreferences(locale.value, newMode).catch(() => {})
+  }
 }
 
-const supportSubItems = computed(() => [
-  { label: t('nav.supportTickets'), to: localePath('/support/tickets'), icon: 'i-heroicons-ticket' },
-  { label: t('nav.supportSuggestions'), to: localePath('/support/suggestions'), icon: 'i-heroicons-light-bulb' },
-  { label: t('nav.supportAide'), to: localePath('/support/aide'), icon: 'i-heroicons-book-open' },
-  { label: t('nav.supportAideIA'), to: localePath('/support/aide-ia'), icon: 'i-heroicons-cpu-chip' },
-])
+async function switchLocale(code: string) {
+  await setLocale(code)
+  ui.setLocale(code)
+  const langCookie = useCookie('kouroukan_lang', { maxAge: 365 * 24 * 60 * 60 })
+  langCookie.value = code
+  if (auth.isAuthenticated) {
+    auth.updatePreferences(code, colorMode.preference).catch(() => {})
+  }
+}
 
-const visibleModules = computed(() =>
-  modules.filter(m => auth.hasPermission(m.permission)),
-)
+const otherLocale = computed(() => {
+  const all = locales.value as Array<{ code: string, name: string }>
+  return all.find(l => l.code !== locale.value) || all[0]
+})
 
-const showSupport = computed(() => auth.hasPermission(supportModule.permission))
+const { navItems, spaceLabel, showCompanySwitcher } = useNavigation()
 
-const isActiveModule = (slug: string): boolean => {
-  // Supporte les chemins avec ou sans prefixe de locale (ex: /en/parametres)
+const isActiveItem = (item: { slug: string, to: string, children?: Array<{ to: string }> }): boolean => {
   const path = route.path.replace(/^\/[a-z]{2}\//, '/')
-  return path.startsWith(`/${slug}`)
+  // Exact match for dashboard items
+  if (item.to === localePath('/') || item.to === localePath('/admin') || item.to === localePath('/enseignant') || item.to === localePath('/famille')) {
+    return route.path === item.to
+  }
+  // Direct match
+  if (route.path === item.to) return true
+  // Children match
+  if (item.children?.some(child => route.path === child.to)) return true
+  // Prefix match for module items
+  return path.startsWith(`/${item.slug.replace(/^(admin-|enseignant-|famille-)/, '')}`)
 }
 
 const userName = computed(() => {
@@ -89,104 +104,78 @@ async function handleLogout(): Promise<void> {
           v-if="!ui.sidebarCollapsed"
           class="text-lg font-semibold text-gray-900 dark:text-white"
         >
-          Kouroukan
+          {{ spaceLabel }}
         </span>
       </div>
 
       <!-- Navigation -->
       <nav class="flex-1 space-y-1 overflow-y-auto p-2">
-        <!-- Dashboard -->
-        <NuxtLink
-          :to="localePath('/')"
-          class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-          :class="route.path === localePath('/') ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
+        <template
+          v-for="item in navItems"
+          :key="item.slug"
         >
-          <UIcon name="i-heroicons-home" class="h-5 w-5 shrink-0" />
-          <span v-if="!ui.sidebarCollapsed">{{ $t('nav.dashboard') }}</span>
-        </NuxtLink>
+          <!-- Locked nav item -->
+          <div
+            v-if="item.locked"
+            class="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium opacity-50 transition-colors text-gray-400 dark:text-gray-500"
+            @click="handleLockedClick"
+          >
+            <UIcon
+              :name="item.icon"
+              class="h-5 w-5 shrink-0"
+            />
+            <span
+              v-if="!ui.sidebarCollapsed"
+              class="flex-1"
+            >{{ item.label }}</span>
+            <UIcon
+              v-if="!ui.sidebarCollapsed"
+              name="i-heroicons-lock-closed"
+              class="h-4 w-4 shrink-0 text-amber-500"
+            />
+          </div>
 
-        <div class="my-2 border-t border-gray-200 dark:border-gray-700" />
-
-        <!-- Module links -->
-        <template v-for="mod in visibleModules" :key="mod.slug">
+          <!-- Main nav item (unlocked) -->
           <NuxtLink
-            :to="localePath(`/${mod.slug}`)"
+            v-else
+            :to="item.to"
             class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-            :class="isActiveModule(mod.slug)
-              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
+            :class="isActiveItem(item)
+              ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
               : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
           >
-            <UIcon :name="mod.icon" class="h-5 w-5 shrink-0" :style="{ color: mod.color }" />
-            <span v-if="!ui.sidebarCollapsed">{{ $t(mod.label) }}</span>
-          </NuxtLink>
-        </template>
-
-        <!-- Support section -->
-        <template v-if="showSupport">
-          <div class="my-2 border-t border-gray-200 dark:border-gray-700" />
-          <NuxtLink
-            :to="localePath('/support')"
-            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-            :class="isActiveModule('support')
-              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
-              : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
-          >
-            <UIcon :name="supportModule.icon" class="h-5 w-5 shrink-0" :style="{ color: supportModule.color }" />
-            <span v-if="!ui.sidebarCollapsed">{{ $t(supportModule.label) }}</span>
+            <UIcon
+              :name="item.icon"
+              class="h-5 w-5 shrink-0"
+            />
+            <span
+              v-if="!ui.sidebarCollapsed"
+              class="flex-1"
+            >{{ item.label }}</span>
+            <UIcon
+              v-if="!ui.sidebarCollapsed && item.children?.length"
+              name="i-heroicons-chevron-down"
+              class="h-4 w-4 shrink-0 transition-transform"
+              :class="isActiveItem(item) ? 'rotate-180' : ''"
+            />
           </NuxtLink>
 
-          <!-- Support sub-items -->
-          <template v-if="!ui.sidebarCollapsed && isActiveModule('support')">
+          <!-- Sub-items (children) -->
+          <template v-if="!item.locked && !ui.sidebarCollapsed && item.children?.length && isActiveItem(item)">
             <NuxtLink
-              v-for="sub in supportSubItems"
-              :key="sub.to"
-              :to="sub.to"
+              v-for="child in item.children"
+              :key="child.to"
+              :to="child.to"
               class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"
-              :class="route.path === sub.to
-                ? 'text-indigo-600 dark:text-indigo-400'
+              :class="route.path === child.to
+                ? 'text-green-600 dark:text-green-400'
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
             >
-              <UIcon :name="sub.icon" class="h-4 w-4 shrink-0" />
-              <span>{{ sub.label }}</span>
-            </NuxtLink>
-          </template>
-        </template>
-
-        <!-- Settings section -->
-        <template v-if="auth.hasPermission('settings:manage') || auth.hasPermission('users:manage')">
-          <div class="my-2 border-t border-gray-200 dark:border-gray-700" />
-          <NuxtLink
-            :to="localePath('/parametres')"
-            class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-            :class="isActiveModule('parametres')
-              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
-              : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
-          >
-            <UIcon name="i-heroicons-cog-6-tooth" class="h-5 w-5 shrink-0 text-gray-400" />
-            <span v-if="!ui.sidebarCollapsed">{{ $t('nav.settings') }}</span>
-          </NuxtLink>
-
-          <template v-if="!ui.sidebarCollapsed && isActiveModule('parametres')">
-            <NuxtLink
-              :to="localePath('/parametres/etablissement')"
-              class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"
-              :class="route.path === localePath('/parametres/etablissement')
-                ? 'text-indigo-600 dark:text-indigo-400'
-                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-            >
-              <UIcon name="i-heroicons-building-office-2" class="h-4 w-4 shrink-0" />
-              <span>{{ $t('nav.establishment') }}</span>
-            </NuxtLink>
-            <NuxtLink
-              v-if="auth.hasPermission('users:manage')"
-              :to="localePath('/parametres/utilisateurs')"
-              class="ml-6 flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors"
-              :class="route.path === localePath('/parametres/utilisateurs')
-                ? 'text-indigo-600 dark:text-indigo-400'
-                : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-            >
-              <UIcon name="i-heroicons-users" class="h-4 w-4 shrink-0" />
-              <span>{{ $t('nav.users') }}</span>
+              <UIcon
+                :name="child.icon"
+                class="h-4 w-4 shrink-0"
+              />
+              <span>{{ child.label }}</span>
             </NuxtLink>
           </template>
         </template>
@@ -215,10 +204,8 @@ async function handleLogout(): Promise<void> {
         </div>
 
         <div class="flex items-center gap-3">
-          <!-- Company Switcher -->
-          <CompanySwitcher />
-          <!-- Language Switcher -->
-          <LanguageSwitcher />
+          <!-- Company Switcher (establishment only) -->
+          <CompanySwitcher v-if="showCompanySwitcher" />
 
           <!-- User Menu -->
           <UDropdownMenu
@@ -228,15 +215,33 @@ async function handleLogout(): Promise<void> {
                 { label: $t('user.settings'), icon: 'i-heroicons-cog-6-tooth', to: localePath('/parametres') },
               ],
               [
+                { label: `${$t('user.language')}: ${otherLocale.name}`, icon: 'i-heroicons-language', onSelect: () => switchLocale(otherLocale.code) },
+                { label: isDark ? $t('user.themeLight') : $t('user.themeDark'), icon: isDark ? 'i-heroicons-sun' : 'i-heroicons-moon', onSelect: toggleTheme },
+              ],
+              [
                 { label: $t('user.logout'), icon: 'i-heroicons-arrow-right-on-rectangle', onSelect: handleLogout },
               ],
             ]"
           >
-            <UButton variant="ghost" class="gap-2">
-              <span v-if="auth.user?.avatarUrl" class="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full">
-                <img :src="auth.user.avatarUrl" alt="avatar" class="h-full w-full object-cover">
+            <UButton
+              variant="ghost"
+              class="gap-2"
+            >
+              <span
+                v-if="auth.user?.avatarUrl"
+                class="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full"
+              >
+                <img
+                  :src="auth.user.avatarUrl"
+                  alt="avatar"
+                  class="h-full w-full object-cover"
+                >
               </span>
-              <UAvatar v-else :text="userInitials" size="sm" />
+              <UAvatar
+                v-else
+                :text="userInitials"
+                size="sm"
+              />
               <span class="hidden text-sm font-medium sm:inline">{{ userName }}</span>
             </UButton>
           </UDropdownMenu>

@@ -67,40 +67,95 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.salle.name')" name="name" required>
-        <UInput v-model="state.name" :placeholder="t('pedagogie.salle.namePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.salle.name')"
+        name="name"
+        required
+      >
+        <UInput
+          v-model="state.name"
+          :placeholder="t('pedagogie.salle.namePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.salle.type')" name="typeId" required>
-        <USelect v-model="state.typeId" :items="typeOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.salle.type')"
+        name="typeId"
+        required
+      >
+        <USelect
+          v-model="state.typeId"
+          :items="typeOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.salle.capacite')" name="capacite" required>
-        <UInput v-model.number="state.capacite" type="number" :placeholder="t('pedagogie.salle.capacitePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.salle.capacite')"
+        name="capacite"
+        required
+      >
+        <UInput
+          v-model.number="state.capacite"
+          type="number"
+          :placeholder="t('pedagogie.salle.capacitePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.salle.batiment')" name="batiment">
-        <UInput v-model="state.batiment" :placeholder="t('pedagogie.salle.batimentPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.salle.batiment')"
+        name="batiment"
+      >
+        <UInput
+          v-model="state.batiment"
+          :placeholder="t('pedagogie.salle.batimentPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('pedagogie.salle.equipements')" name="equipements">
-      <UTextarea v-model="state.equipements" :placeholder="t('pedagogie.salle.equipementsPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('pedagogie.salle.equipements')"
+      name="equipements"
+    >
+      <UTextarea
+        v-model="state.equipements"
+        :placeholder="t('pedagogie.salle.equipementsPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('pedagogie.salle.estDisponible')" name="estDisponible">
+    <UFormField
+      :label="t('pedagogie.salle.estDisponible')"
+      name="estDisponible"
+    >
       <UToggle v-model="state.estDisponible" />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

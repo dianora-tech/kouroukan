@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Association,
   AssociationFilters,
@@ -7,6 +6,7 @@ import type {
   CreateAssociationPayload,
   UpdateAssociationPayload,
 } from '../types/association.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/bde/associations'
 
@@ -48,7 +48,7 @@ export const useAssociationStore = defineStore('bde-association', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<AssociationFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AssociationFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Association>(API_PATH, {

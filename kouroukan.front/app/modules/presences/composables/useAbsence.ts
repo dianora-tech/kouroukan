@@ -42,7 +42,7 @@ export function useAbsence() {
     store.items.filter(a => !a.estJustifiee).length,
   )
 
-  async function fetchAll(params?: Partial<AbsenceFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<AbsenceFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

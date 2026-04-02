@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Depense, CreateDepensePayload, UpdateDepensePayload } from '~/modules/finances/types/depense.types'
+import type { Depense, CreateDepensePayload, UpdateDepensePayload, DepenseFilters } from '~/modules/finances/types/depense.types'
 import { useDepense } from '~/modules/finances/composables/useDepense'
-import type { DepenseFilters } from '~/modules/finances/types/depense.types'
 import DepenseForm from '~/modules/finances/components/DepenseForm.vue'
 import DepenseCard from '~/modules/finances/components/DepenseCard.vue'
 import DepenseFiltersComponent from '~/modules/finances/components/DepenseFilters.vue'
@@ -11,6 +10,7 @@ import DepenseStats from '~/modules/finances/components/DepenseStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -44,7 +44,7 @@ const columns: Column[] = [
   { key: 'categorie', label: t('finances.depense.categorie_label'), sortable: true },
   { key: 'montant', label: t('finances.depense.montant'), sortable: true },
   { key: 'beneficiaireNom', label: t('finances.depense.beneficiaireNom'), sortable: true },
-  { key: 'dateDemande', label: t('finances.depense.dateDemande'), sortable: true },
+  { key: 'dateDemande', label: t('finances.depense.dateDemande'), sortable: true, render: (row: any) => formatDate(row.dateDemande) },
   { key: 'statutDepense', label: t('finances.depense.statutDepense'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -147,9 +147,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <DepenseStats :items="items" :total-count="pagination.totalCount" />
+    <DepenseStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <DepenseFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <DepenseFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -164,12 +170,20 @@ function getStatutColor(statut: string): string {
           {{ formatMontant((row as Depense).montant) }}
         </template>
         <template #cell-categorie="{ row }">
-          <UBadge color="neutral" variant="subtle" size="sm">
+          <UBadge
+            color="neutral"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.depense.categorie.${(row as Depense).categorie}`) }}
           </UBadge>
         </template>
         <template #cell-statutDepense="{ row }">
-          <UBadge :color="getStatutColor((row as Depense).statutDepense)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Depense).statutDepense)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.depense.statut.${(row as Depense).statutDepense}`) }}
           </UBadge>
         </template>
@@ -204,7 +218,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <DepenseCard
           v-for="depense in items"
           :key="depense.id"

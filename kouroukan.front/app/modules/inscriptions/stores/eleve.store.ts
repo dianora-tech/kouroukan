@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
+import type { Eleve, EleveFilters, CreateElevePayload, UpdateElevePayload } from '../types/eleve.types'
 import { apiClient } from '~/core/api/client'
 import type { PaginatedResult } from '~/core/api/types'
-import type { Eleve, EleveFilters, CreateElevePayload, UpdateElevePayload } from '../types/eleve.types'
 
 const API_PATH = '/api/inscriptions/eleves'
 
@@ -43,7 +43,7 @@ export const useEleveStore = defineStore('inscriptions-eleve', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<EleveFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<EleveFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Eleve>(API_PATH, {

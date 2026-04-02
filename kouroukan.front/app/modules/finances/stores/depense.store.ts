@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Depense,
   DepenseFilters,
@@ -7,6 +6,7 @@ import type {
   CreateDepensePayload,
   UpdateDepensePayload,
 } from '../types/depense.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/finances/depenses'
 
@@ -49,7 +49,7 @@ export const useDepenseStore = defineStore('finances-depense', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<DepenseFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<DepenseFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Depense>(API_PATH, {

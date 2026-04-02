@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type { Salle, SalleType, SalleFilters, CreateSallePayload, UpdateSallePayload } from '../types/salle.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/pedagogie/salles'
 
@@ -42,7 +42,7 @@ export const useSalleStore = defineStore('pedagogie-salle', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<SalleFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<SalleFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Salle>(API_PATH, {

@@ -11,6 +11,7 @@ const toast = useToast()
 
 const saving = ref(false)
 const uploadingAvatar = ref(false)
+const { formatDateTime } = useFormatDate()
 
 const userInitials = computed(() => {
   const first = auth.user?.firstName?.[0] ?? ''
@@ -148,10 +149,20 @@ async function handleSave(): Promise<void> {
           class="group relative cursor-pointer"
           @click="triggerAvatarUpload"
         >
-          <span v-if="auth.user?.avatarUrl" class="inline-flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full">
-            <img :src="auth.user.avatarUrl" alt="avatar" class="h-full w-full object-cover">
+          <span
+            v-if="auth.user?.avatarUrl"
+            class="inline-flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full"
+          >
+            <img
+              :src="auth.user.avatarUrl"
+              alt="avatar"
+              class="h-full w-full object-cover"
+            >
           </span>
-          <span v-else class="inline-flex h-24 w-24 items-center justify-center rounded-full bg-indigo-100 text-2xl font-bold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+          <span
+            v-else
+            class="inline-flex h-24 w-24 items-center justify-center rounded-full bg-indigo-100 text-2xl font-bold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
+          >
             {{ userInitials }}
           </span>
           <div class="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
@@ -194,7 +205,7 @@ async function handleSave(): Promise<void> {
         <div class="w-full border-t border-gray-100 pt-4 dark:border-gray-800">
           <p class="text-center text-xs text-gray-400 dark:text-gray-500">
             {{ $t('profil.lastLogin') }}:
-            {{ auth.lastLoginAt ? new Date(auth.lastLoginAt).toLocaleString() : '—' }}
+            {{ auth.lastLoginAt ? formatDateTime(auth.lastLoginAt) : '—' }}
           </p>
         </div>
       </div>
@@ -208,13 +219,27 @@ async function handleSave(): Promise<void> {
           </h2>
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <UFormField :label="$t('profil.firstName')">
-              <UInput v-model="form.firstName" class="w-full" />
+              <UInput
+                v-model="form.firstName"
+                class="w-full"
+              />
             </UFormField>
             <UFormField :label="$t('profil.lastName')">
-              <UInput v-model="form.lastName" class="w-full" />
+              <UInput
+                v-model="form.lastName"
+                class="w-full"
+              />
             </UFormField>
-            <UFormField :label="$t('profil.email')" class="sm:col-span-2">
-              <UInput v-model="form.email" type="email" class="w-full" disabled />
+            <UFormField
+              :label="$t('profil.email')"
+              class="sm:col-span-2"
+            >
+              <UInput
+                v-model="form.email"
+                type="email"
+                class="w-full"
+                disabled
+              />
             </UFormField>
           </div>
         </div>
@@ -226,13 +251,25 @@ async function handleSave(): Promise<void> {
           </h2>
           <div class="space-y-4">
             <UFormField :label="$t('profil.currentPassword')">
-              <UInput v-model="form.currentPassword" type="password" class="w-full" />
+              <UInput
+                v-model="form.currentPassword"
+                type="password"
+                class="w-full"
+              />
             </UFormField>
             <UFormField :label="$t('profil.newPassword')">
-              <UInput v-model="form.newPassword" type="password" class="w-full" />
+              <UInput
+                v-model="form.newPassword"
+                type="password"
+                class="w-full"
+              />
             </UFormField>
             <UFormField :label="$t('profil.confirmPassword')">
-              <UInput v-model="form.confirmPassword" type="password" class="w-full" />
+              <UInput
+                v-model="form.confirmPassword"
+                type="password"
+                class="w-full"
+              />
             </UFormField>
           </div>
         </div>

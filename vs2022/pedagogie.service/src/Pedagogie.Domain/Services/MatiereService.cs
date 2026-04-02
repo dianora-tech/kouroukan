@@ -46,12 +46,6 @@ public sealed class MatiereService : IMatiereService
 
     public async Task<Matiere> CreateAsync(Matiere entity, CancellationToken ct = default)
     {
-        if (entity.Coefficient <= 0)
-            throw new InvalidOperationException("Le coefficient de la matiere doit etre superieur a 0.");
-
-        if (entity.NombreHeures <= 0)
-            throw new InvalidOperationException("Le nombre d'heures doit etre superieur a 0.");
-
         var created = await _repository.AddAsync(entity, ct).ConfigureAwait(false);
 
         _logger.LogInformation("Matiere {Code} creee avec l'id {Id}.", created.Code, created.Id);
@@ -65,12 +59,6 @@ public sealed class MatiereService : IMatiereService
 
     public async Task<bool> UpdateAsync(Matiere entity, CancellationToken ct = default)
     {
-        if (entity.Coefficient <= 0)
-            throw new InvalidOperationException("Le coefficient de la matiere doit etre superieur a 0.");
-
-        if (entity.NombreHeures <= 0)
-            throw new InvalidOperationException("Le nombre d'heures doit etre superieur a 0.");
-
         var result = await _repository.UpdateAsync(entity, ct).ConfigureAwait(false);
 
         if (result)

@@ -4,8 +4,8 @@
  * Fix: use Object.prototype.hasOwnProperty.call() instead.
  * See: https://github.com/vuejs/pinia/issues/2822
  */
-import { readFileSync, writeFileSync, existsSync } from 'fs'
-import { join } from 'path'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { join } from 'node:path'
 
 const files = [
   'node_modules/pinia/dist/pinia.mjs',
@@ -30,6 +30,7 @@ for (const file of files) {
 
 if (patched === 0) {
   console.log('[patch-pinia] No files needed patching (already fixed or different version)')
-} else {
+}
+else {
   console.log(`[patch-pinia] Done — ${patched} file(s) patched`)
 }

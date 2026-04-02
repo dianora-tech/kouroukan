@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Bulletin, CreateBulletinPayload, UpdateBulletinPayload } from '~/modules/evaluations/types/bulletin.types'
+import type { Bulletin, CreateBulletinPayload, UpdateBulletinPayload, BulletinFilters } from '~/modules/evaluations/types/bulletin.types'
 import { useBulletin } from '~/modules/evaluations/composables/useBulletin'
-import type { BulletinFilters } from '~/modules/evaluations/types/bulletin.types'
 import BulletinForm from '~/modules/evaluations/components/BulletinForm.vue'
 import BulletinCard from '~/modules/evaluations/components/BulletinCard.vue'
 import BulletinFiltersComponent from '~/modules/evaluations/components/BulletinFilters.vue'
@@ -11,6 +10,7 @@ import BulletinStats from '~/modules/evaluations/components/BulletinStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -46,7 +46,7 @@ const columns: Column[] = [
   { key: 'moyenneGenerale', label: t('evaluations.bulletin.moyenneGenerale'), sortable: true },
   { key: 'rang', label: t('evaluations.bulletin.rang'), sortable: true },
   { key: 'estPublie', label: t('evaluations.bulletin.estPublie'), sortable: true },
-  { key: 'dateGeneration', label: t('evaluations.bulletin.dateGeneration'), sortable: true },
+  { key: 'dateGeneration', label: t('evaluations.bulletin.dateGeneration'), sortable: true, render: (row: any) => formatDate(row.dateGeneration) },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
 
@@ -136,9 +136,15 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <BulletinStats :items="items" :total-count="pagination.totalCount" />
+    <BulletinStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <BulletinFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <BulletinFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -150,12 +156,20 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
         @sort="handleSort"
       >
         <template #cell-trimestre="{ row }">
-          <UBadge color="primary" variant="subtle" size="sm">
+          <UBadge
+            color="primary"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`evaluations.bulletin.trimestre.${(row as Bulletin).trimestre}`) }}
           </UBadge>
         </template>
         <template #cell-moyenneGenerale="{ row }">
-          <UBadge :color="getMoyenneColor((row as Bulletin).moyenneGenerale)" variant="subtle" size="sm">
+          <UBadge
+            :color="getMoyenneColor((row as Bulletin).moyenneGenerale)"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Bulletin).moyenneGenerale.toFixed(2) }} / 20
           </UBadge>
         </template>
@@ -163,15 +177,25 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           {{ (row as Bulletin).rang ?? '-' }}
         </template>
         <template #cell-estPublie="{ row }">
-          <UBadge v-if="(row as Bulletin).estPublie" color="success" variant="subtle" size="xs">
+          <UBadge
+            v-if="(row as Bulletin).estPublie"
+            color="success"
+            variant="subtle"
+            size="xs"
+          >
             {{ $t('evaluations.bulletin.publie') }}
           </UBadge>
-          <UBadge v-else color="warning" variant="subtle" size="xs">
+          <UBadge
+            v-else
+            color="warning"
+            variant="subtle"
+            size="xs"
+          >
             {{ $t('evaluations.bulletin.nonPublie') }}
           </UBadge>
         </template>
         <template #cell-dateGeneration="{ row }">
-          {{ (row as Bulletin).dateGeneration?.split('T')[0] }}
+          {{ formatDate((row as Bulletin).dateGeneration) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">
@@ -204,7 +228,10 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <BulletinCard
           v-for="bulletin in items"
           :key="bulletin.id"

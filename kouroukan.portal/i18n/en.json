@@ -3,6 +3,7 @@
     "home": "Home",
     "features": "Features",
     "pricing": "Pricing",
+    "services": "Services",
     "about": "About",
     "testimonials": "Testimonials",
     "contact": "Contact",
@@ -11,6 +12,7 @@
     "help": "Help",
     "blog": "Blog",
     "education": "Education System",
+    "verification": "Document Verification",
     "register": "Get started for free",
     "login": "Sign in"
   },
@@ -119,12 +121,87 @@
   "pricing": {
     "title": "Pricing that fits your needs",
     "subtitle": "Start free, scale at your own pace",
+    "monthly": "per month",
+    "yearly": "per year",
     "free": "Free",
     "onQuote": "Contact us",
     "recommended": "Recommended",
     "cta": "Get started",
+    "ctaTrial": "Free 30-day trial",
     "ctaContact": "Contact us",
-    "compare": "Compare plans in detail"
+    "compare": "Compare plans in detail",
+    "rules": {
+      "trial": "30-day free trial for paid plans",
+      "vacation": "Vacation (Jul-Sep): 50% off prices",
+      "billing": "Monthly, quarterly or yearly billing"
+    },
+    "plans": {
+      "gratuit": {
+        "name": "FREE",
+        "price": "0 GNF",
+        "target": "School",
+        "description": "For any school with up to 30 students",
+        "features": [
+          "Up to 30 students",
+          "Enrollments and records",
+          "Grades and report cards",
+          "Attendance tracking",
+          "Internal communication"
+        ]
+      },
+      "standard": {
+        "name": "STANDARD",
+        "price": "100,000 GNF",
+        "target": "School",
+        "description": "All features for your school",
+        "features": [
+          "Unlimited students",
+          "All features included",
+          "Mobile Money payments",
+          "Financial management",
+          "SMS/Push notifications",
+          "Basic LMS"
+        ]
+      },
+      "premium": {
+        "name": "PREMIUM",
+        "price": "180,000 GNF",
+        "target": "School",
+        "description": "Complete solution with priority support",
+        "features": [
+          "Everything in STANDARD +",
+          "Electronic signature",
+          "Custom documents",
+          "Student council module",
+          "Multi-school management",
+          "Priority support"
+        ]
+      },
+      "enseignant": {
+        "name": "TEACHER",
+        "price": "30,000 GNF",
+        "target": "Teacher",
+        "description": "Personal workspace for teachers",
+        "features": [
+          "Personal teacher workspace",
+          "Grade management",
+          "Attendance tracking",
+          "Parent communication"
+        ]
+      },
+      "parent": {
+        "name": "PARENT",
+        "price": "5,000 GNF/student",
+        "target": "Parent",
+        "description": "Track your children's education",
+        "features": [
+          "Grades and report card tracking",
+          "Real-time notifications",
+          "Mobile Money payments",
+          "School communication"
+        ]
+      }
+    }
   },
   "cta": {
     "title": "Ready to transform your school?",
@@ -142,10 +219,31 @@
     "title": "Create your account",
     "subtitle": "Get started in minutes",
     "steps": {
+      "accountType": "Account type",
       "profile": "Information",
       "location": "Location",
-      "pricing": "Plan",
       "confirmation": "Confirmation"
+    },
+    "step0": {
+      "title": "Choose your account type",
+      "subtitle": "Select the profile that matches your situation",
+      "types": {
+        "etablissement": {
+          "name": "School",
+          "description": "School, college, high school, university or training center. Manage your entire institution.",
+          "price": "Free up to 30 students, then 100,000 GNF/month"
+        },
+        "enseignant": {
+          "name": "Teacher",
+          "description": "Personal workspace to manage your grades, attendance and communicate with parents.",
+          "price": "30,000 GNF/month"
+        },
+        "parent": {
+          "name": "Parent",
+          "description": "Track your children's education, receive notifications and make payments.",
+          "price": "5,000 GNF/student/month"
+        }
+      }
     },
     "step1": {
       "title": "Your information",
@@ -155,7 +253,8 @@
       "schoolNamePlaceholder": "E.g. Kouroukan School",
       "phone": "Phone",
       "phonePlaceholder": "+224 XX XX XX XX",
-      "email": "Email (optional)",
+      "email": "Email",
+      "emailOptional": "Email (optional)",
       "password": "Password",
       "confirmPassword": "Confirm password"
     },
@@ -182,6 +281,7 @@
     "confirmation": {
       "title": "Confirmation",
       "summary": "Summary of your information",
+      "planInfo": "Your plan",
       "submit": "Create my account",
       "success": "Your account has been created successfully!",
       "goToApp": "Access your space",
@@ -198,6 +298,70 @@
       "emailFormat": "Invalid email address",
       "passwordMin": "Password must be at least 8 characters",
       "passwordMatch": "Passwords do not match"
+    }
+  },
+  "verification": {
+    "title": "Document Verification",
+    "subtitle": "Verify the authenticity of a document issued by Kouroukan",
+    "enterPassword": "Enter the password provided with the document to verify its authenticity.",
+    "code": "Verification code",
+    "password": "Password",
+    "passwordPlaceholder": "Enter the document password",
+    "submit": "Verify",
+    "valid": "Authentic document",
+    "invalid": "Invalid document",
+    "errorMessage": "The code or password is incorrect. Please check and try again.",
+    "documentType": "Document type",
+    "date": "Date issued",
+    "etablissement": "School",
+    "authenticity": "Authenticity",
+    "confirmed": "Confirmed",
+    "verifyAnother": "Verify another document",
+    "tryAgain": "Try again"
+  },
+  "servicesDigitaux": {
+    "badge": "Digital Services",
+    "title": "Digital services for the entire school community",
+    "subtitle": "Beyond management, Kouroukan offers digital services for parents and schools.",
+    "sectionTitle": "Digital Services",
+    "sectionSubtitle": "Complementary services for parents and schools",
+    "communication": {
+      "badge": "Available",
+      "title": "School Communication",
+      "shortDescription": "Receive grades, absences and school announcements directly on your phone.",
+      "description": "The School Communication service allows parents to receive all school information in real time: grades, absences, announcements, summons and payment reminders.",
+      "price": "5,000 GNF/month/school",
+      "cardTitle": "What parents receive",
+      "cta": "Register as a parent",
+      "features": [
+        "Real-time grade and report card notifications",
+        "Absence and tardiness alerts for your child",
+        "School announcements and summons",
+        "Payment reminders and automatic receipts"
+      ],
+      "notifications": [
+        "Your child received 16/20 in Math",
+        "Absence reported on March 15",
+        "Parent-teacher meeting on March 20"
+      ]
+    },
+    "gpsTracker": {
+      "badge": "Coming soon",
+      "title": "Child GPS Tracker",
+      "shortDescription": "Track your child's journey between home and school in real time.",
+      "description": "The Child GPS Tracker will allow parents to track their child's journey between home and school in real time. A secure connected bracelet for added peace of mind.",
+      "cardTitle": "Service preview",
+      "cta": "Get notified at launch",
+      "features": [
+        "Real-time location of your child",
+        "Arrival and departure alerts from school",
+        "Trip history and safe zones"
+      ],
+      "preview": [
+        "Real-time position on the map",
+        "Alert: arrived at school at 7:45 AM",
+        "Safe zone: home - school"
+      ]
     }
   },
   "footer": {

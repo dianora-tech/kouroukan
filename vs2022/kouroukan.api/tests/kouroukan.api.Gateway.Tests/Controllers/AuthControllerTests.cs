@@ -1,8 +1,10 @@
 using FluentAssertions;
+using GnDapper.Connection;
 using GnSecurity.Jwt;
 using Kouroukan.Api.Gateway.Auth;
 using Kouroukan.Api.Gateway.Controllers;
 using Kouroukan.Api.Gateway.Models;
+using Kouroukan.Api.Gateway.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,6 +17,8 @@ public class AuthControllerTests
 {
     private readonly Mock<ITokenService> _tokenServiceMock;
     private readonly Mock<IRefreshTokenService> _refreshTokenServiceMock;
+    private readonly Mock<IMinioStorageService> _storageServiceMock;
+    private readonly Mock<IDbConnectionFactory> _connectionFactoryMock;
     private readonly Mock<ILogger<AuthController>> _loggerMock;
     private readonly AuthController _controller;
 
@@ -22,10 +26,14 @@ public class AuthControllerTests
     {
         _tokenServiceMock = new Mock<ITokenService>();
         _refreshTokenServiceMock = new Mock<IRefreshTokenService>();
+        _storageServiceMock = new Mock<IMinioStorageService>();
+        _connectionFactoryMock = new Mock<IDbConnectionFactory>();
         _loggerMock = new Mock<ILogger<AuthController>>();
         _controller = new AuthController(
             _tokenServiceMock.Object,
             _refreshTokenServiceMock.Object,
+            _storageServiceMock.Object,
+            _connectionFactoryMock.Object,
             _loggerMock.Object);
     }
 

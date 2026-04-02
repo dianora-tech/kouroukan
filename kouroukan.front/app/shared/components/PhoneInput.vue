@@ -33,7 +33,7 @@ const emit = defineEmits<{
 }>()
 
 const countries: Country[] = [
-  { name: 'GN', dial: '+224', flag: 'i-circle-flags-gn', placeholder: '629 81 79 70', maxDigits: 9 },
+  { name: 'GN', dial: '+224', flag: 'i-circle-flags-gn', placeholder: 'Numéro de téléphone', maxDigits: 9 },
 ]
 
 const countryOptions = countries.map(c => ({

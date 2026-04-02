@@ -9,7 +9,9 @@
         <div class="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-2xl font-bold text-green-600 shadow-lg">
           K
         </div>
-        <h1 class="text-2xl font-bold text-white">Kouroukan</h1>
+        <h1 class="text-2xl font-bold text-white">
+          Kouroukan
+        </h1>
         <p class="mt-1 text-sm text-green-100">
           {{ $t('portal.tagline') }}
         </p>

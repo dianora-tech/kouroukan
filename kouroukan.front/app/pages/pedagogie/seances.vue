@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Seance, CreateSeancePayload, UpdateSeancePayload } from '~/modules/pedagogie/types/seance.types'
+import type { Seance, CreateSeancePayload, UpdateSeancePayload, SeanceFilters } from '~/modules/pedagogie/types/seance.types'
 import { useSeance } from '~/modules/pedagogie/composables/useSeance'
-import type { SeanceFilters } from '~/modules/pedagogie/types/seance.types'
 import SeanceForm from '~/modules/pedagogie/components/SeanceForm.vue'
 import SeanceCard from '~/modules/pedagogie/components/SeanceCard.vue'
 import SeanceFiltersComponent from '~/modules/pedagogie/components/SeanceFilters.vue'
@@ -144,10 +143,16 @@ function getJourColor(jour: number): string {
     </div>
 
     <!-- Stats -->
-    <SeanceStats :items="items" :total-count="pagination.totalCount" />
+    <SeanceStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
     <!-- Filters -->
-    <SeanceFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <SeanceFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <!-- Table view -->
     <template v-if="viewMode === 'table'">
@@ -160,7 +165,11 @@ function getJourColor(jour: number): string {
         @sort="handleSort"
       >
         <template #cell-jourSemaine="{ row }">
-          <UBadge :color="getJourColor((row as Seance).jourSemaine)" variant="subtle" size="sm">
+          <UBadge
+            :color="getJourColor((row as Seance).jourSemaine)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`pedagogie.seance.jour.${(row as Seance).jourSemaine}`) }}
           </UBadge>
         </template>
@@ -196,7 +205,10 @@ function getJourColor(jour: number): string {
 
     <!-- Grid view -->
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <SeanceCard
           v-for="seance in items"
           :key="seance.id"

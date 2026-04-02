@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type { CahierTextes, CahierTextesFilters, CreateCahierTextesPayload, UpdateCahierTextesPayload } from '../types/cahierTextes.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/pedagogie/cahiers-textes'
 
@@ -40,7 +40,7 @@ export const useCahierTextesStore = defineStore('pedagogie-cahierTextes', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<CahierTextesFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<CahierTextesFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<CahierTextes>(API_PATH, {

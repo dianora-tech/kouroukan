@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   AnneeScolaire,
   AnneeScolaireFilters,
   CreateAnneeScolairePayload,
   UpdateAnneeScolairePayload,
 } from '../types/annee-scolaire.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/inscriptions/annees-scolaires'
 
@@ -41,21 +41,20 @@ export const useAnneeScolaireStore = defineStore('inscriptions-annee-scolaire', 
   getters: {
     isEmpty: (state): boolean => state.items.length === 0,
     hasFilters: (state): boolean =>
-      !!(state.filters.search || state.filters.estActive !== undefined
-        || state.filters.dateFrom || state.filters.dateTo),
+      !!(state.filters.search || state.filters.dateFrom || state.filters.dateTo),
     activeYear: (state): AnneeScolaire | undefined =>
-      state.items.find(a => a.estActive),
+      state.items.find(a => a.statut === 'active'),
   },
 
   actions: {
-    async fetchAll(params?: Partial<AnneeScolaireFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AnneeScolaireFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<AnneeScolaire>(API_PATH, {
           page: params?.page ?? this.pagination.page,
           pageSize: params?.pageSize ?? this.pagination.pageSize,
           search: params?.search ?? this.filters.search,
-          orderBy: 'dateDebut',
+          orderBy: 'date_debut',
           orderDirection: 'desc',
         })
         if (response.success && response.data) {

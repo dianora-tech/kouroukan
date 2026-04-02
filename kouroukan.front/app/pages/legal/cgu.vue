@@ -13,7 +13,7 @@ const cguVersion = ref('')
 
 const { data } = await useFetch<{
   success: boolean
-  data: { contenu: string; version: string }
+  data: { contenu: string, version: string }
 }>('/api/auth/cgu/active')
 
 if (data.value?.success && data.value.data) {
@@ -42,7 +42,10 @@ else {
     />
 
     <div class="flex justify-end">
-      <UButton variant="outline" to="/">
+      <UButton
+        variant="outline"
+        to="/"
+      >
         {{ $t('cgu.decline') }}
       </UButton>
     </div>

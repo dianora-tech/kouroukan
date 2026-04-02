@@ -40,6 +40,7 @@
             {{ $t('nav.login') }}
           </UButton>
           <UButton
+            v-if="!isInscriptionPage"
             :to="localePath('/inscription')"
             color="primary"
             size="sm"
@@ -65,7 +66,10 @@
 
 <script setup lang="ts">
 const localePath = useLocalePath()
+const route = useRoute()
 const { appUrl } = useRuntimeConfig().public
+
+const isInscriptionPage = computed(() => route.path.includes('/inscription'))
 
 const scrolled = ref(false)
 const mobileMenuOpen = ref(false)
@@ -73,6 +77,7 @@ const mobileMenuOpen = ref(false)
 const navLinks = [
   { to: '/fonctionnalites', label: 'nav.features' },
   { to: '/tarifs', label: 'nav.pricing' },
+  { to: '/services-digitaux', label: 'nav.services' },
   { to: '/systeme-educatif', label: 'nav.education' },
   { to: '/aide', label: 'nav.help' },
   { to: '/blog', label: 'nav.blog' },

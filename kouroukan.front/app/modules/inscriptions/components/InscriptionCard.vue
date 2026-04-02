@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 
 function getStatutColor(statut: string): string {
   const colors: Record<string, string> = {
@@ -37,28 +38,53 @@ function formatMontant(montant: number): string {
           {{ inscription.typeName }} - {{ inscription.classeName ?? `#${inscription.classeId}` }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(inscription.statutInscription)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(inscription.statutInscription)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`inscriptions.inscription.statut.${inscription.statutInscription}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ inscription.dateInscription }}
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
+        {{ formatDate(inscription.dateInscription) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(inscription.montantInscription) }}
-        <UBadge v-if="inscription.estPaye" color="success" variant="subtle" size="xs" class="ml-1">
+        <UBadge
+          v-if="inscription.estPaye"
+          color="success"
+          variant="subtle"
+          size="xs"
+          class="ml-1"
+        >
           {{ $t('inscriptions.inscription.paye') }}
         </UBadge>
-        <UBadge v-else color="warning" variant="subtle" size="xs" class="ml-1">
+        <UBadge
+          v-else
+          color="warning"
+          variant="subtle"
+          size="xs"
+          class="ml-1"
+        >
           {{ $t('inscriptions.inscription.nonPaye') }}
         </UBadge>
       </p>
       <p v-if="inscription.estRedoublant">
-        <UIcon name="i-heroicons-arrow-path" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-arrow-path"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('inscriptions.inscription.redoublant') }}
       </p>
     </div>

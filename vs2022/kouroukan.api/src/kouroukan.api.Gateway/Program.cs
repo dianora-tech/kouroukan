@@ -42,8 +42,10 @@ try
             policy.WithOrigins(
                     "https://www.kouroukan.gn",
                     "https://app.kouroukan.gn",
+                    "http://localhost",
                     "http://localhost:3000",
-                    "http://localhost:3001")
+                    "http://localhost:3001",
+                    "http://localhost:8080")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -63,6 +65,12 @@ try
 
     // Service de gestion des utilisateurs
     builder.Services.AddScoped<IUserService, UserService>();
+
+    // Services d'administration de la plateforme
+    builder.Services.AddScoped<IAdminService, AdminService>();
+    builder.Services.AddScoped<ILiaisonEnseignantService, LiaisonEnseignantService>();
+    builder.Services.AddScoped<IQrCodeService, QrCodeService>();
+    builder.Services.AddScoped<IForfaitUserService, ForfaitUserService>();
 
     // MinIO (stockage fichiers S3-compatible)
     builder.Services.AddSingleton<IMinioClient>(sp =>

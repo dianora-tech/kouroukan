@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Bulletin,
   BulletinFilters,
   CreateBulletinPayload,
   UpdateBulletinPayload,
 } from '../types/bulletin.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/evaluations/bulletins'
 
@@ -48,7 +48,7 @@ export const useBulletinStore = defineStore('evaluations-bulletin', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<BulletinFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<BulletinFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Bulletin>(API_PATH, {

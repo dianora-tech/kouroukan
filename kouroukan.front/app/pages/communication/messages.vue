@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Message, CreateMessagePayload, UpdateMessagePayload } from '~/modules/communication/types/message.types'
+import type { Message, CreateMessagePayload, UpdateMessagePayload, MessageFilters } from '~/modules/communication/types/message.types'
 import { useMessage } from '~/modules/communication/composables/useMessage'
-import type { MessageFilters } from '~/modules/communication/types/message.types'
 import MessageForm from '~/modules/communication/components/MessageForm.vue'
 import MessageCard from '~/modules/communication/components/MessageCard.vue'
 import MessageFiltersComponent from '~/modules/communication/components/MessageFilters.vue'
@@ -135,10 +134,16 @@ function getStatutLuColor(estLu: boolean): string {
     </div>
 
     <!-- Stats -->
-    <MessageStats :items="items" :total-count="pagination.totalCount" />
+    <MessageStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
     <!-- Filters -->
-    <MessageFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <MessageFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <!-- Table view -->
     <template v-if="viewMode === 'table'">
@@ -151,7 +156,11 @@ function getStatutLuColor(estLu: boolean): string {
         @sort="handleSort"
       >
         <template #cell-estLu="{ row }">
-          <UBadge :color="getStatutLuColor((row as Message).estLu)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutLuColor((row as Message).estLu)"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Message).estLu ? $t('communication.message.lu') : $t('communication.message.nonLu') }}
           </UBadge>
         </template>
@@ -187,7 +196,10 @@ function getStatutLuColor(estLu: boolean): string {
 
     <!-- Grid view -->
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <MessageCard
           v-for="message in items"
           :key="message.id"

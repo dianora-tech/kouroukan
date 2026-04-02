@@ -49,7 +49,10 @@ async function handleSubmit() {
     <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800">
       <div class="mb-6 text-center">
         <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
-          <UIcon name="i-heroicons-key" class="h-8 w-8 text-amber-600" />
+          <UIcon
+            name="i-heroicons-key"
+            class="h-8 w-8 text-amber-600"
+          />
         </div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
           {{ $t('changePassword.title') }}
@@ -59,7 +62,10 @@ async function handleSubmit() {
         </p>
       </div>
 
-      <form class="space-y-5" @submit.prevent="handleSubmit">
+      <form
+        class="space-y-5"
+        @submit.prevent="handleSubmit"
+      >
         <UFormField :label="$t('changePassword.currentPassword')">
           <UInput
             v-model="form.currentPassword"
@@ -96,7 +102,10 @@ async function handleSubmit() {
               />
             </template>
           </UInput>
-          <p v-if="form.newPassword && form.newPassword.length < 8" class="mt-1 text-xs text-red-500">
+          <p
+            v-if="form.newPassword && form.newPassword.length < 8"
+            class="mt-1 text-xs text-red-500"
+          >
             {{ $t('changePassword.minLength') }}
           </p>
         </UFormField>
@@ -109,7 +118,10 @@ async function handleSubmit() {
             class="w-full"
             required
           />
-          <p v-if="form.confirmPassword && form.newPassword !== form.confirmPassword" class="mt-1 text-xs text-red-500">
+          <p
+            v-if="form.confirmPassword && form.newPassword !== form.confirmPassword"
+            class="mt-1 text-xs text-red-500"
+          >
             {{ $t('changePassword.mismatch') }}
           </p>
         </UFormField>

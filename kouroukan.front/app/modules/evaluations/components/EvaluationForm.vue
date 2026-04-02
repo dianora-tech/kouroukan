@@ -68,52 +68,147 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('evaluations.evaluation.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('evaluations.evaluation.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('evaluations.evaluation.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('evaluations.evaluation.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('evaluations.evaluation.dateEvaluation')" name="dateEvaluation" required>
-        <UInput v-model="state.dateEvaluation" type="date" class="w-full" />
+      <UFormField
+        :label="t('evaluations.evaluation.dateEvaluation')"
+        name="dateEvaluation"
+        required
+      >
+        <UInput
+          v-model="state.dateEvaluation"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('evaluations.evaluation.trimestre')" name="trimestre" required>
-        <USelect v-model="state.trimestre" :items="trimestreOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('evaluations.evaluation.trimestre')"
+        name="trimestre"
+        required
+      >
+        <USelect
+          v-model="state.trimestre"
+          :items="trimestreOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('evaluations.evaluation.coefficient')" name="coefficient" required>
-        <UInput v-model.number="state.coefficient" type="number" min="0.01" step="0.01" class="w-full" />
+      <UFormField
+        :label="t('evaluations.evaluation.coefficient')"
+        name="coefficient"
+        required
+      >
+        <UInput
+          v-model.number="state.coefficient"
+          type="number"
+          min="0.01"
+          step="0.01"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('evaluations.evaluation.noteMaximale')" name="noteMaximale" required>
-        <UInput v-model.number="state.noteMaximale" type="number" min="1" step="0.5" class="w-full" />
+      <UFormField
+        :label="t('evaluations.evaluation.noteMaximale')"
+        name="noteMaximale"
+        required
+      >
+        <UInput
+          v-model.number="state.noteMaximale"
+          type="number"
+          min="1"
+          step="0.5"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('evaluations.evaluation.matiereId')" name="matiereId" required>
-      <UInput v-model.number="state.matiereId" type="number" :placeholder="t('evaluations.evaluation.matierePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('evaluations.evaluation.matiereId')"
+      name="matiereId"
+      required
+    >
+      <UInput
+        v-model.number="state.matiereId"
+        type="number"
+        :placeholder="t('evaluations.evaluation.matierePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('evaluations.evaluation.classeId')" name="classeId" required>
-      <UInput v-model.number="state.classeId" type="number" :placeholder="t('evaluations.evaluation.classePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('evaluations.evaluation.classeId')"
+      name="classeId"
+      required
+    >
+      <UInput
+        v-model.number="state.classeId"
+        type="number"
+        :placeholder="t('evaluations.evaluation.classePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('evaluations.evaluation.enseignantId')" name="enseignantId" required>
-      <UInput v-model.number="state.enseignantId" type="number" :placeholder="t('evaluations.evaluation.enseignantPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('evaluations.evaluation.enseignantId')"
+      name="enseignantId"
+      required
+    >
+      <UInput
+        v-model.number="state.enseignantId"
+        type="number"
+        :placeholder="t('evaluations.evaluation.enseignantPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('evaluations.evaluation.anneeScolaireId')" name="anneeScolaireId" required>
-      <UInput v-model.number="state.anneeScolaireId" type="number" :placeholder="t('evaluations.evaluation.anneeScolairePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('evaluations.evaluation.anneeScolaireId')"
+      name="anneeScolaireId"
+      required
+    >
+      <UInput
+        v-model.number="state.anneeScolaireId"
+        type="number"
+        :placeholder="t('evaluations.evaluation.anneeScolairePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

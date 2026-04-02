@@ -1,10 +1,8 @@
 <template>
-  <section class="relative min-h-screen flex items-center bg-gradient-to-br from-green-700 via-green-600 to-green-800 overflow-hidden">
-    <!-- Background pattern -->
-    <div class="absolute inset-0 opacity-10">
-      <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
-      <div class="absolute bottom-20 right-10 w-96 h-96 bg-yellow-400 rounded-full blur-3xl" />
-    </div>
+  <section class="relative min-h-screen flex items-center overflow-hidden">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-green-900 via-green-800 to-emerald-900" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(16,185,129,0.2)_0%,_transparent_60%)]" />
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 sm:py-40">
       <div class="max-w-3xl">

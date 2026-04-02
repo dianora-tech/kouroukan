@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   DemandeConge,
   DemandeCongeFilters,
@@ -7,6 +6,7 @@ import type {
   CreateDemandeCongePayload,
   UpdateDemandeCongePayload,
 } from '../types/demandeConge.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/personnel/demandes-conges'
 
@@ -50,7 +50,7 @@ export const useDemandeCongeStore = defineStore('personnel-demandeConge', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<DemandeCongeFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<DemandeCongeFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<DemandeConge>(API_PATH, {

@@ -65,7 +65,10 @@ async function handleRegister(): Promise<void> {
       {{ $t('auth.registerTitle') }}
     </h2>
 
-    <form class="space-y-4" @submit.prevent="handleRegister">
+    <form
+      class="space-y-4"
+      @submit.prevent="handleRegister"
+    >
       <div class="grid grid-cols-2 gap-3">
         <UFormField :label="$t('auth.firstName')">
           <UInput
@@ -132,7 +135,10 @@ async function handleRegister(): Promise<void> {
     </form>
 
     <div class="mt-4 text-center">
-      <NuxtLink to="/connexion" class="text-sm text-green-600 hover:underline dark:text-green-400">
+      <NuxtLink
+        to="/connexion"
+        class="text-sm text-green-600 hover:underline dark:text-green-400"
+      >
         {{ $t('auth.hasAccount') }}
       </NuxtLink>
     </div>

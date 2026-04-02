@@ -77,46 +77,129 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('bde.depenseBde.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('bde.depenseBde.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('bde.depenseBde.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('bde.depenseBde.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.depenseBde.associationId')" name="associationId" required>
-      <USelect v-model="state.associationId" :items="associationOptions" value-key="value" :placeholder="t('bde.depenseBde.associationPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.depenseBde.associationId')"
+      name="associationId"
+      required
+    >
+      <USelect
+        v-model="state.associationId"
+        :items="associationOptions"
+        value-key="value"
+        :placeholder="t('bde.depenseBde.associationPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.depenseBde.name')" name="name" required>
-      <UInput v-model="state.name" :placeholder="t('bde.depenseBde.namePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.depenseBde.name')"
+      name="name"
+      required
+    >
+      <UInput
+        v-model="state.name"
+        :placeholder="t('bde.depenseBde.namePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('bde.depenseBde.montant')" name="montant" required>
-        <UInput v-model.number="state.montant" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('bde.depenseBde.montant')"
+        name="montant"
+        required
+      >
+        <UInput
+          v-model.number="state.montant"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('bde.depenseBde.categorie_label')" name="categorie" required>
-        <USelect v-model="state.categorie" :items="categorieOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('bde.depenseBde.categorie_label')"
+        name="categorie"
+        required
+      >
+        <USelect
+          v-model="state.categorie"
+          :items="categorieOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('bde.depenseBde.motif')" name="motif" required>
-      <UTextarea v-model="state.motif" :placeholder="t('bde.depenseBde.motifPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.depenseBde.motif')"
+      name="motif"
+      required
+    >
+      <UTextarea
+        v-model="state.motif"
+        :placeholder="t('bde.depenseBde.motifPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.depenseBde.statutValidation')" name="statutValidation" required>
-      <USelect v-model="state.statutValidation" :items="statutOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('bde.depenseBde.statutValidation')"
+      name="statutValidation"
+      required
+    >
+      <USelect
+        v-model="state.statutValidation"
+        :items="statutOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.depenseBde.description')" name="description">
-      <UTextarea v-model="state.description" :placeholder="t('bde.depenseBde.descriptionPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.depenseBde.description')"
+      name="description"
+    >
+      <UTextarea
+        v-model="state.description"
+        :placeholder="t('bde.depenseBde.descriptionPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

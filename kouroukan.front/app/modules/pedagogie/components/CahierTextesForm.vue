@@ -63,28 +63,74 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('pedagogie.cahierTextes.seance')" name="seanceId" required>
-      <USelect v-model="state.seanceId" :items="seanceOptions" value-key="value" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('pedagogie.cahierTextes.seance')"
+      name="seanceId"
+      required
+    >
+      <USelect
+        v-model="state.seanceId"
+        :items="seanceOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('pedagogie.cahierTextes.dateSeance')" name="dateSeance" required>
-      <UInput v-model="state.dateSeance" type="date" class="w-full" />
+    <UFormField
+      :label="t('pedagogie.cahierTextes.dateSeance')"
+      name="dateSeance"
+      required
+    >
+      <UInput
+        v-model="state.dateSeance"
+        type="date"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('pedagogie.cahierTextes.contenu')" name="contenu" required>
-      <UTextarea v-model="state.contenu" :placeholder="t('pedagogie.cahierTextes.contenuPlaceholder')" :rows="6" class="w-full" />
+    <UFormField
+      :label="t('pedagogie.cahierTextes.contenu')"
+      name="contenu"
+      required
+    >
+      <UTextarea
+        v-model="state.contenu"
+        :placeholder="t('pedagogie.cahierTextes.contenuPlaceholder')"
+        :rows="6"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('pedagogie.cahierTextes.travailAFaire')" name="travailAFaire">
-      <UTextarea v-model="state.travailAFaire" :placeholder="t('pedagogie.cahierTextes.travailPlaceholder')" :rows="4" class="w-full" />
+    <UFormField
+      :label="t('pedagogie.cahierTextes.travailAFaire')"
+      name="travailAFaire"
+    >
+      <UTextarea
+        v-model="state.travailAFaire"
+        :placeholder="t('pedagogie.cahierTextes.travailPlaceholder')"
+        :rows="4"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

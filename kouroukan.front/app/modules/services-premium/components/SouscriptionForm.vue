@@ -66,48 +66,125 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('servicesPremium.souscription.serviceParentId')" name="serviceParentId" required>
-      <UInput v-model.number="state.serviceParentId" type="number" min="1" :placeholder="t('servicesPremium.souscription.serviceParentPlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('servicesPremium.souscription.serviceParentId')"
+      name="serviceParentId"
+      required
+    >
+      <UInput
+        v-model.number="state.serviceParentId"
+        type="number"
+        min="1"
+        :placeholder="t('servicesPremium.souscription.serviceParentPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('servicesPremium.souscription.parentId')" name="parentId" required>
-      <UInput v-model.number="state.parentId" type="number" min="1" :placeholder="t('servicesPremium.souscription.parentPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('servicesPremium.souscription.parentId')"
+      name="parentId"
+      required
+    >
+      <UInput
+        v-model.number="state.parentId"
+        type="number"
+        min="1"
+        :placeholder="t('servicesPremium.souscription.parentPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('servicesPremium.souscription.dateDebut')" name="dateDebut" required>
-        <UInput v-model="state.dateDebut" type="date" class="w-full" />
+      <UFormField
+        :label="t('servicesPremium.souscription.dateDebut')"
+        name="dateDebut"
+        required
+      >
+        <UInput
+          v-model="state.dateDebut"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('servicesPremium.souscription.dateFin')" name="dateFin">
-        <UInput v-model="state.dateFin" type="date" class="w-full" />
+      <UFormField
+        :label="t('servicesPremium.souscription.dateFin')"
+        name="dateFin"
+      >
+        <UInput
+          v-model="state.dateFin"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('servicesPremium.souscription.montantPaye')" name="montantPaye" required>
-        <UInput v-model.number="state.montantPaye" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('servicesPremium.souscription.montantPaye')"
+        name="montantPaye"
+        required
+      >
+        <UInput
+          v-model.number="state.montantPaye"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('servicesPremium.souscription.statutSouscription')" name="statutSouscription" required>
-        <USelect v-model="state.statutSouscription" :items="statutOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('servicesPremium.souscription.statutSouscription')"
+        name="statutSouscription"
+        required
+      >
+        <USelect
+          v-model="state.statutSouscription"
+          :items="statutOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('servicesPremium.souscription.renouvellementAuto')" name="renouvellementAuto">
+    <UFormField
+      :label="t('servicesPremium.souscription.renouvellementAuto')"
+      name="renouvellementAuto"
+    >
       <UToggle v-model="state.renouvellementAuto" />
     </UFormField>
 
-    <UFormField v-if="state.renouvellementAuto" :label="t('servicesPremium.souscription.dateProchainRenouvellement')" name="dateProchainRenouvellement">
-      <UInput v-model="state.dateProchainRenouvellement" type="date" class="w-full" />
+    <UFormField
+      v-if="state.renouvellementAuto"
+      :label="t('servicesPremium.souscription.dateProchainRenouvellement')"
+      name="dateProchainRenouvellement"
+    >
+      <UInput
+        v-model="state.dateProchainRenouvellement"
+        type="date"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

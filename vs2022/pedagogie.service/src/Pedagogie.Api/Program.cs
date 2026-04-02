@@ -94,6 +94,8 @@ try
     builder.Services.AddScoped<ISalleService, SalleService>();
     builder.Services.AddScoped<ISeanceService, SeanceService>();
     builder.Services.AddScoped<ICahierTextesService, CahierTextesService>();
+    builder.Services.AddScoped<ICompetenceEnseignantService, CompetenceEnseignantService>();
+    builder.Services.AddScoped<IAffectationEnseignantService, AffectationEnseignantService>();
 
     // 10. Repositories
     builder.Services.AddScoped<INiveauClasseRepository, NiveauClasseRepository>();
@@ -102,6 +104,8 @@ try
     builder.Services.AddScoped<ISalleRepository, SalleRepository>();
     builder.Services.AddScoped<ISeanceRepository, SeanceRepository>();
     builder.Services.AddScoped<ICahierTextesRepository, CahierTextesRepository>();
+    builder.Services.AddScoped<ICompetenceEnseignantRepository, CompetenceEnseignantRepository>();
+    builder.Services.AddScoped<IAffectationEnseignantRepository, AffectationEnseignantRepository>();
 
     // 11. Swagger
     builder.Services.AddControllers();

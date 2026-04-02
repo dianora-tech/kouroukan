@@ -24,6 +24,9 @@ server {
     listen 80;
     server_name _;
 
+    # Eviter "Request Header Or Cookie Too Large"
+    large_client_header_buffers 4 32k;
+
     root /usr/share/nginx/html;
     index index.html;
 

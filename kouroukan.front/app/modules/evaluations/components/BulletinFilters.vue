@@ -100,7 +100,12 @@ const publicationOptions = [
       @change="onFilterChange"
     />
 
-    <UButton variant="ghost" size="sm" icon="i-heroicons-x-mark" @click="resetFilters">
+    <UButton
+      variant="ghost"
+      size="sm"
+      icon="i-heroicons-x-mark"
+      @click="resetFilters"
+    >
       {{ $t('evaluations.bulletin.filters.reset') }}
     </UButton>
   </div>

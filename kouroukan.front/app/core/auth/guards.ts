@@ -5,6 +5,16 @@ import type { PermissionKey } from './rbac'
  * Built dynamically from project modules.
  */
 export const ROUTE_PERMISSIONS: Record<string, PermissionKey> = {
+  // Espace admin (super_admin uniquement)
+  '/admin': 'admin:manage',
+
+  // Espace enseignant
+  '/enseignant': 'enseignant:manage',
+
+  // Espace famille (parent/élève)
+  '/famille': 'famille:read',
+
+  // Espace établissement
   '/inscriptions': 'inscriptions:read',
   '/pedagogie': 'pedagogie:read',
   '/evaluations': 'evaluations:read',
@@ -33,6 +43,18 @@ export const CGU_EXEMPT_ROUTES = [
   '/inscription',
   '/legal/cgu',
   '/changer-mot-de-passe',
+] as const
+
+/** Routes accessible even if onboarding not completed */
+export const ONBOARDING_EXEMPT_ROUTES = [
+  '/onboarding',
+  '/connexion',
+  '/inscription',
+  '/legal/cgu',
+  '/support/cgu',
+  '/changer-mot-de-passe',
+  '/profil',
+  '/parametres',
 ] as const
 
 /**
@@ -75,4 +97,12 @@ export function isPublicRoute(path: string): boolean {
 export function isCguExemptRoute(path: string): boolean {
   const cleanPath = path.replace(/^\/(fr|en)/, '') || '/'
   return CGU_EXEMPT_ROUTES.some(route => cleanPath === route || cleanPath.startsWith(route + '/'))
+}
+
+/**
+ * Checks if a route is exempt from onboarding check.
+ */
+export function isOnboardingExemptRoute(path: string): boolean {
+  const cleanPath = path.replace(/^\/(fr|en)/, '') || '/'
+  return ONBOARDING_EXEMPT_ROUTES.some(route => cleanPath === route || cleanPath.startsWith(route + '/'))
 }

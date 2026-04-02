@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Signature } from '../types/signature.types'
 
+const { formatDate } = useFormatDate()
+
 defineProps<{
   signature: Signature
 }>()
@@ -34,23 +36,36 @@ function getStatutColor(statut: string): string {
           {{ signature.typeName }} - {{ $t(`documents.signature.niveau.${signature.niveauSignature}`) }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(signature.statutSignature)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(signature.statutSignature)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`documents.signature.statut.${signature.statutSignature}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p v-if="signature.signataireNom">
-        <UIcon name="i-heroicons-user" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-user"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ signature.signataireNom }}
       </p>
       <p>
-        <UIcon name="i-heroicons-queue-list" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-queue-list"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('documents.signature.ordreLabel') }} {{ signature.ordreSignature }}
       </p>
       <p v-if="signature.dateSignature">
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ signature.dateSignature?.split('T')[0] }}
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
+        {{ formatDate(signature.dateSignature) }}
       </p>
     </div>
 

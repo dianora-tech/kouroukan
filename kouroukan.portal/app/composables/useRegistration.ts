@@ -1,15 +1,17 @@
 import { z } from 'zod'
-import type { RegistrationPayload } from '~/utils/types'
+import type { AccountType, RegistrationPayload } from '~/utils/types'
 import { MODULE_SLUGS } from '~/utils/constants'
 
 const STORAGE_KEY = 'kouroukan_registration'
 
 export function useRegistration() {
   const { t } = useI18n()
-  const currentStep = ref(1)
+  const currentStep = ref(0)
   const loading = ref(false)
   const error = ref<string | null>(null)
   const success = ref(false)
+
+  const accountType = ref<AccountType | ''>('')
 
   const step1Data = reactive({
     firstName: '',
@@ -28,33 +30,52 @@ export function useRegistration() {
     address: '',
   })
 
-  const step3Data = reactive({
-    plan: 'starter',
+  const isEtablissement = computed(() => accountType.value === 'etablissement')
+  const isEnseignant = computed(() => accountType.value === 'enseignant')
+  const isParent = computed(() => accountType.value === 'parent')
+
+  // Steps: 0 (type) → 1 (profile) → 2 (location) → 3 (confirmation)
+  const totalSteps = computed(() => 3)
+
+  const stepLabelsForType = computed(() => {
+    return [
+      t('inscription.steps.accountType'),
+      t('inscription.steps.profile'),
+      t('inscription.steps.location'),
+      t('inscription.steps.confirmation'),
+    ]
   })
 
-  const step1Schema = computed(() => z.object({
-    firstName: z.string().min(2, t('inscription.validation.required')),
-    lastName: z.string().min(2, t('inscription.validation.required')),
-    phone: z.string().min(1, t('inscription.validation.required')),
-    email: z.string().email(t('inscription.validation.emailFormat')).or(z.literal('')),
-    password: z.string().min(8, t('inscription.validation.passwordMin')),
-    confirmPassword: z.string(),
-  }).refine(data => data.password === data.confirmPassword, {
-    message: t('inscription.validation.passwordMatch'),
-    path: ['confirmPassword'],
-  }))
+  const step1Schema = computed(() => {
+    const base: Record<string, z.ZodType> = {
+      firstName: z.string().min(2, t('inscription.validation.required')),
+      lastName: z.string().min(2, t('inscription.validation.required')),
+      phone: z.string().min(1, t('inscription.validation.required')),
+      password: z.string().min(8, t('inscription.validation.passwordMin')),
+      confirmPassword: z.string(),
+    }
 
-  const totalSteps = 4
+    if (isParent.value) {
+      base.email = z.string().email(t('inscription.validation.emailFormat')).or(z.literal(''))
+    } else {
+      base.email = z.string().email(t('inscription.validation.emailFormat')).or(z.literal(''))
+    }
+
+    return z.object(base).refine(data => data.password === data.confirmPassword, {
+      message: t('inscription.validation.passwordMatch'),
+      path: ['confirmPassword'],
+    })
+  })
 
   function nextStep() {
-    if (currentStep.value < totalSteps) {
+    if (currentStep.value < totalSteps.value) {
       currentStep.value++
       saveToSession()
     }
   }
 
   function prevStep() {
-    if (currentStep.value > 1) {
+    if (currentStep.value > 0) {
       currentStep.value--
     }
   }
@@ -62,9 +83,9 @@ export function useRegistration() {
   function saveToSession() {
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+        accountType: accountType.value,
         step1: step1Data,
         step2: step2Data,
-        step3: step3Data,
         currentStep: currentStep.value,
       }))
     }
@@ -78,10 +99,10 @@ export function useRegistration() {
       const stored = sessionStorage.getItem(STORAGE_KEY)
       if (stored) {
         const data = JSON.parse(stored)
+        accountType.value = data.accountType || ''
         Object.assign(step1Data, data.step1 || {})
         Object.assign(step2Data, data.step2 || {})
-        Object.assign(step3Data, data.step3 || {})
-        currentStep.value = data.currentStep || 1
+        currentStep.value = data.currentStep || 0
       }
     }
     catch {
@@ -90,13 +111,10 @@ export function useRegistration() {
   }
 
   function formatPhone(raw: string): string {
-    // Extraire uniquement les chiffres
     const digits = raw.replace(/\D/g, '')
-    // Si commence par 224 (indicatif), le retirer
     if (digits.startsWith('224') && digits.length === 12) {
       return digits.slice(3)
     }
-    // Retourner les 9 chiffres bruts
     return digits
   }
 
@@ -110,8 +128,9 @@ export function useRegistration() {
         phoneNumber: formatPhone(step1Data.phone),
         email: step1Data.email || undefined,
         password: step1Data.password,
-        modules: MODULE_SLUGS,
-        schoolName: step1Data.schoolName || undefined,
+        modules: isEtablissement.value ? MODULE_SLUGS : [],
+        accountType: accountType.value as AccountType,
+        schoolName: isEtablissement.value ? (step1Data.schoolName || undefined) : undefined,
         region: step2Data.region || undefined,
         prefecture: step2Data.prefecture || undefined,
         sousPrefecture: step2Data.sousPrefecture || undefined,
@@ -139,9 +158,13 @@ export function useRegistration() {
   return {
     currentStep,
     totalSteps,
+    accountType,
+    isEtablissement,
+    isEnseignant,
+    isParent,
+    stepLabelsForType,
     step1Data,
     step2Data,
-    step3Data,
     step1Schema,
     loading,
     error,

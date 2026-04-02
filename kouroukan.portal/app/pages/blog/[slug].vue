@@ -57,6 +57,8 @@ if (article.value) {
 }
 
 function formatDate(date: string): string {
-  return new Intl.DateTimeFormat('fr-GN', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date))
+  const { locale } = useI18n()
+  const localeMap: Record<string, string> = { fr: 'fr-GN', en: 'en-US' }
+  return new Intl.DateTimeFormat(localeMap[locale.value] ?? locale.value, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date))
 }
 </script>

@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GnDapper.Connection;
 using GnDapper.Models;
 using GnDapper.Options;
@@ -12,8 +13,33 @@ using Microsoft.Extensions.Options;
 
 namespace Inscriptions.Infrastructure.Repositories;
 
-public sealed class AnneeScolaireRepository : IAnneeScolaireRepository
+public sealed partial class AnneeScolaireRepository : IAnneeScolaireRepository
 {
+    // Whitelist of sortable columns to prevent SQL injection
+    private static readonly HashSet<string> AllowedSortColumns = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "created_at", "libelle", "date_debut", "date_fin", "statut", "date_rentree"
+    };
+
+    /// <summary>Convert camelCase orderBy to snake_case and validate.</summary>
+    private static string SanitizeOrderBy(string? orderBy)
+    {
+        if (string.IsNullOrWhiteSpace(orderBy)) return "created_at DESC";
+
+        // Split "dateDebut desc" into column + direction
+        var parts = orderBy.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        var column = CamelToSnake(parts[0]);
+        var direction = parts.Length > 1 && parts[1].Equals("asc", StringComparison.OrdinalIgnoreCase) ? "ASC" : "DESC";
+
+        return AllowedSortColumns.Contains(column) ? $"{column} {direction}" : "created_at DESC";
+    }
+
+    /// <summary>Convert camelCase to snake_case.</summary>
+    private static string CamelToSnake(string input)
+        => CamelCaseRegex().Replace(input, "$1_$2").ToLowerInvariant();
+
+    [GeneratedRegex("([a-z0-9])([A-Z])")]
+    private static partial Regex CamelCaseRegex();
     private readonly AuditRepository<AnneeScolaireDto> _repo;
 
     public AnneeScolaireRepository(
@@ -51,7 +77,7 @@ public sealed class AnneeScolaireRepository : IAnneeScolaireRepository
 
         var spec = new SimpleSpecification<AnneeScolaireDto>(
             where, parameters,
-            string.IsNullOrWhiteSpace(orderBy) ? "created_at DESC" : orderBy,
+            SanitizeOrderBy(orderBy),
             (page - 1) * pageSize, pageSize);
 
         var result = await _repo.FindPagedAsync(spec, ct).ConfigureAwait(false);

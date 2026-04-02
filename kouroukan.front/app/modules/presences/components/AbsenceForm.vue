@@ -62,50 +62,130 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('presences.absence.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('presences.absence.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('presences.absence.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('presences.absence.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('presences.absence.eleveId')" name="eleveId" required>
-      <UInput v-model.number="state.eleveId" type="number" :placeholder="t('presences.absence.elevePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('presences.absence.eleveId')"
+      name="eleveId"
+      required
+    >
+      <UInput
+        v-model.number="state.eleveId"
+        type="number"
+        :placeholder="t('presences.absence.elevePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('presences.absence.appelId')" name="appelId">
-      <UInput v-model.number="state.appelId" type="number" :placeholder="t('presences.absence.appelPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('presences.absence.appelId')"
+      name="appelId"
+    >
+      <UInput
+        v-model.number="state.appelId"
+        type="number"
+        :placeholder="t('presences.absence.appelPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <UFormField :label="t('presences.absence.dateAbsence')" name="dateAbsence" required>
-        <UInput v-model="state.dateAbsence" type="date" class="w-full" />
+      <UFormField
+        :label="t('presences.absence.dateAbsence')"
+        name="dateAbsence"
+        required
+      >
+        <UInput
+          v-model="state.dateAbsence"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('presences.absence.heureDebut')" name="heureDebut">
-        <UInput v-model="state.heureDebut" type="time" class="w-full" />
+      <UFormField
+        :label="t('presences.absence.heureDebut')"
+        name="heureDebut"
+      >
+        <UInput
+          v-model="state.heureDebut"
+          type="time"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('presences.absence.heureFin')" name="heureFin">
-        <UInput v-model="state.heureFin" type="time" class="w-full" />
+      <UFormField
+        :label="t('presences.absence.heureFin')"
+        name="heureFin"
+      >
+        <UInput
+          v-model="state.heureFin"
+          type="time"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('presences.absence.estJustifiee')" name="estJustifiee">
+    <UFormField
+      :label="t('presences.absence.estJustifiee')"
+      name="estJustifiee"
+    >
       <UToggle v-model="state.estJustifiee" />
     </UFormField>
 
-    <UFormField v-if="state.estJustifiee" :label="t('presences.absence.motifJustification')" name="motifJustification">
-      <UTextarea v-model="state.motifJustification" :placeholder="t('presences.absence.motifPlaceholder')" class="w-full" />
+    <UFormField
+      v-if="state.estJustifiee"
+      :label="t('presences.absence.motifJustification')"
+      name="motifJustification"
+    >
+      <UTextarea
+        v-model="state.motifJustification"
+        :placeholder="t('presences.absence.motifPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField v-if="state.estJustifiee" :label="t('presences.absence.pieceJointeUrl')" name="pieceJointeUrl">
-      <UInput v-model="state.pieceJointeUrl" :placeholder="t('presences.absence.pieceJointePlaceholder')" class="w-full" />
+    <UFormField
+      v-if="state.estJustifiee"
+      :label="t('presences.absence.pieceJointeUrl')"
+      name="pieceJointeUrl"
+    >
+      <UInput
+        v-model="state.pieceJointeUrl"
+        :placeholder="t('presences.absence.pieceJointePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

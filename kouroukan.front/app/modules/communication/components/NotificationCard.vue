@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 
 function getStatutEnvoiColor(estEnvoyee: boolean): string {
   return estEnvoyee ? 'success' : 'warning'
@@ -32,7 +33,10 @@ function getCanalIcon(canal: string): string {
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-teal-100 text-sm font-semibold text-teal-700 dark:bg-teal-900 dark:text-teal-300">
-          <UIcon :name="getCanalIcon(notification.canal)" class="h-5 w-5" />
+          <UIcon
+            :name="getCanalIcon(notification.canal)"
+            class="h-5 w-5"
+          />
         </div>
         <div>
           <h3 class="font-semibold text-gray-900 dark:text-white">
@@ -43,19 +47,29 @@ function getCanalIcon(canal: string): string {
           </p>
         </div>
       </div>
-      <UBadge :color="getStatutEnvoiColor(notification.estEnvoyee)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutEnvoiColor(notification.estEnvoyee)"
+        variant="subtle"
+        size="sm"
+      >
         {{ notification.estEnvoyee ? $t('communication.notification.envoyee') : $t('communication.notification.enAttente') }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p v-if="notification.typeName">
-        <UIcon name="i-heroicons-tag" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-tag"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ notification.typeName }}
       </p>
       <p v-if="notification.dateEnvoi">
-        <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
-        {{ notification.dateEnvoi }}
+        <UIcon
+          name="i-heroicons-clock"
+          class="mr-1 inline h-4 w-4"
+        />
+        {{ formatDate(notification.dateEnvoi) }}
       </p>
     </div>
 

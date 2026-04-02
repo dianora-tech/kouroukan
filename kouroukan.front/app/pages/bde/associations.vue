@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Association, CreateAssociationPayload, UpdateAssociationPayload } from '~/modules/bde/types/association.types'
-import type { AssociationFilters } from '~/modules/bde/types/association.types'
+import type { Association, CreateAssociationPayload, UpdateAssociationPayload, AssociationFilters } from '~/modules/bde/types/association.types'
 import { useAssociation } from '~/modules/bde/composables/useAssociation'
 import AssociationForm from '~/modules/bde/components/AssociationForm.vue'
 import AssociationCard from '~/modules/bde/components/AssociationCard.vue'
@@ -143,9 +142,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <AssociationStats :items="items" :total-count="pagination.totalCount" />
+    <AssociationStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <AssociationFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <AssociationFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -160,7 +165,11 @@ function getStatutColor(statut: string): string {
           {{ formatMontant((row as Association).budgetAnnuel) }}
         </template>
         <template #cell-statut="{ row }">
-          <UBadge :color="getStatutColor((row as Association).statut)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Association).statut)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`bde.association.statut.${(row as Association).statut}`) }}
           </UBadge>
         </template>
@@ -195,7 +204,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <AssociationCard
           v-for="association in items"
           :key="association.id"

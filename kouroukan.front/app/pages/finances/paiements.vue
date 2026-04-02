@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Paiement, CreatePaiementPayload, UpdatePaiementPayload } from '~/modules/finances/types/paiement.types'
+import type { Paiement, CreatePaiementPayload, UpdatePaiementPayload, PaiementFilters } from '~/modules/finances/types/paiement.types'
 import { usePaiement } from '~/modules/finances/composables/usePaiement'
-import type { PaiementFilters } from '~/modules/finances/types/paiement.types'
 import PaiementForm from '~/modules/finances/components/PaiementForm.vue'
 import PaiementCard from '~/modules/finances/components/PaiementCard.vue'
 import PaiementFiltersComponent from '~/modules/finances/components/PaiementFilters.vue'
@@ -11,6 +10,7 @@ import PaiementStats from '~/modules/finances/components/PaiementStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -44,7 +44,7 @@ const columns: Column[] = [
   { key: 'factureNumero', label: t('finances.paiement.facture'), sortable: true },
   { key: 'montantPaye', label: t('finances.paiement.montantPaye'), sortable: true },
   { key: 'moyenPaiement', label: t('finances.paiement.moyenPaiement'), sortable: true },
-  { key: 'datePaiement', label: t('finances.paiement.datePaiement'), sortable: true },
+  { key: 'datePaiement', label: t('finances.paiement.datePaiement'), sortable: true, render: (row: any) => formatDate(row.datePaiement) },
   { key: 'statutPaiement', label: t('finances.paiement.statutPaiement'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -155,9 +155,15 @@ function getMoyenColor(moyen: string): string {
       </div>
     </div>
 
-    <PaiementStats :items="items" :total-count="pagination.totalCount" />
+    <PaiementStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <PaiementFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <PaiementFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -172,15 +178,23 @@ function getMoyenColor(moyen: string): string {
           {{ formatMontant((row as Paiement).montantPaye) }}
         </template>
         <template #cell-moyenPaiement="{ row }">
-          <UBadge :color="getMoyenColor((row as Paiement).moyenPaiement)" variant="subtle" size="sm">
+          <UBadge
+            :color="getMoyenColor((row as Paiement).moyenPaiement)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.paiement.moyen.${(row as Paiement).moyenPaiement}`) }}
           </UBadge>
         </template>
         <template #cell-datePaiement="{ row }">
-          {{ (row as Paiement).datePaiement.split('T')[0] }}
+          {{ formatDate((row as Paiement).datePaiement) }}
         </template>
         <template #cell-statutPaiement="{ row }">
-          <UBadge :color="getStatutColor((row as Paiement).statutPaiement)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Paiement).statutPaiement)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.paiement.statut.${(row as Paiement).statutPaiement}`) }}
           </UBadge>
         </template>
@@ -215,7 +229,10 @@ function getMoyenColor(moyen: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <PaiementCard
           v-for="paiement in items"
           :key="paiement.id"

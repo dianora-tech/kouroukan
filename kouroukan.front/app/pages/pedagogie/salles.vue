@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Salle, CreateSallePayload, UpdateSallePayload } from '~/modules/pedagogie/types/salle.types'
+import type { Salle, CreateSallePayload, UpdateSallePayload, SalleFilters } from '~/modules/pedagogie/types/salle.types'
 import { useSalle } from '~/modules/pedagogie/composables/useSalle'
-import type { SalleFilters } from '~/modules/pedagogie/types/salle.types'
 import SalleForm from '~/modules/pedagogie/components/SalleForm.vue'
 import SalleCard from '~/modules/pedagogie/components/SalleCard.vue'
 import SalleFiltersComponent from '~/modules/pedagogie/components/SalleFilters.vue'
@@ -132,10 +131,16 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
     </div>
 
     <!-- Stats -->
-    <SalleStats :items="items" :total-count="pagination.totalCount" />
+    <SalleStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
     <!-- Filters -->
-    <SalleFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <SalleFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <!-- Table view -->
     <template v-if="viewMode === 'table'">
@@ -148,12 +153,21 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         @sort="handleSort"
       >
         <template #cell-estDisponible="{ row }">
-          <UBadge :color="(row as Salle).estDisponible ? 'success' : 'error'" variant="subtle" size="sm">
+          <UBadge
+            :color="(row as Salle).estDisponible ? 'success' : 'error'"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Salle).estDisponible ? $t('pedagogie.salle.disponible') : $t('pedagogie.salle.indisponible') }}
           </UBadge>
         </template>
         <template #cell-typeName="{ row }">
-          <UBadge v-if="(row as Salle).typeName" color="primary" variant="subtle" size="sm">
+          <UBadge
+            v-if="(row as Salle).typeName"
+            color="primary"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Salle).typeName }}
           </UBadge>
         </template>
@@ -189,7 +203,10 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
 
     <!-- Grid view -->
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <SalleCard
           v-for="salle in items"
           :key="salle.id"

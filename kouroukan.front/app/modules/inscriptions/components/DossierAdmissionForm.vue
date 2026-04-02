@@ -79,48 +79,128 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('inscriptions.dossierAdmission.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('inscriptions.dossierAdmission.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('inscriptions.dossierAdmission.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('inscriptions.dossierAdmission.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('inscriptions.dossierAdmission.statutDossier')" name="statutDossier" required>
-        <USelect v-model="state.statutDossier" :items="statutOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.dossierAdmission.statutDossier')"
+        name="statutDossier"
+        required
+      >
+        <USelect
+          v-model="state.statutDossier"
+          :items="statutOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('inscriptions.dossierAdmission.etapeActuelle')" name="etapeActuelle" required>
-        <USelect v-model="state.etapeActuelle" :items="etapeOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.dossierAdmission.etapeActuelle')"
+        name="etapeActuelle"
+        required
+      >
+        <USelect
+          v-model="state.etapeActuelle"
+          :items="etapeOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('inscriptions.dossierAdmission.dateDemande')" name="dateDemande" required>
-        <UInput v-model="state.dateDemande" type="date" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.dossierAdmission.dateDemande')"
+        name="dateDemande"
+        required
+      >
+        <UInput
+          v-model="state.dateDemande"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('inscriptions.dossierAdmission.dateDecision')" name="dateDecision">
-        <UInput v-model="state.dateDecision" type="date" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.dossierAdmission.dateDecision')"
+        name="dateDecision"
+      >
+        <UInput
+          v-model="state.dateDecision"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('inscriptions.dossierAdmission.scoringInterne')" name="scoringInterne">
-      <UInput v-model.number="state.scoringInterne" type="number" min="0" max="100" step="0.01" class="w-full" />
+    <UFormField
+      :label="t('inscriptions.dossierAdmission.scoringInterne')"
+      name="scoringInterne"
+    >
+      <UInput
+        v-model.number="state.scoringInterne"
+        type="number"
+        min="0"
+        max="100"
+        step="0.01"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField v-if="showMotifRefus" :label="t('inscriptions.dossierAdmission.motifRefus')" name="motifRefus">
-      <UTextarea v-model="state.motifRefus" :placeholder="t('inscriptions.dossierAdmission.motifRefusPlaceholder')" class="w-full" />
+    <UFormField
+      v-if="showMotifRefus"
+      :label="t('inscriptions.dossierAdmission.motifRefus')"
+      name="motifRefus"
+    >
+      <UTextarea
+        v-model="state.motifRefus"
+        :placeholder="t('inscriptions.dossierAdmission.motifRefusPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('inscriptions.dossierAdmission.commentaires')" name="commentaires">
-      <UTextarea v-model="state.commentaires" :placeholder="t('inscriptions.dossierAdmission.commentairesPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('inscriptions.dossierAdmission.commentaires')"
+      name="commentaires"
+    >
+      <UTextarea
+        v-model="state.commentaires"
+        :placeholder="t('inscriptions.dossierAdmission.commentairesPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

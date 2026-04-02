@@ -77,58 +77,150 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('finances.depense.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('finances.depense.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('finances.depense.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('finances.depense.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('finances.depense.numeroJustificatif')" name="numeroJustificatif" required>
-      <UInput v-model="state.numeroJustificatif" :placeholder="t('finances.depense.numeroJustificatifPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('finances.depense.numeroJustificatif')"
+      name="numeroJustificatif"
+      required
+    >
+      <UInput
+        v-model="state.numeroJustificatif"
+        :placeholder="t('finances.depense.numeroJustificatifPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('finances.depense.montant')" name="montant" required>
-        <UInput v-model.number="state.montant" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('finances.depense.montant')"
+        name="montant"
+        required
+      >
+        <UInput
+          v-model.number="state.montant"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('finances.depense.categorie')" name="categorie" required>
-        <USelect v-model="state.categorie" :items="categorieOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('finances.depense.categorie')"
+        name="categorie"
+        required
+      >
+        <USelect
+          v-model="state.categorie"
+          :items="categorieOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('finances.depense.motifDepense')" name="motifDepense" required>
-      <UTextarea v-model="state.motifDepense" :placeholder="t('finances.depense.motifPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('finances.depense.motifDepense')"
+      name="motifDepense"
+      required
+    >
+      <UTextarea
+        v-model="state.motifDepense"
+        :placeholder="t('finances.depense.motifPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('finances.depense.beneficiaireNom')" name="beneficiaireNom" required>
-        <UInput v-model="state.beneficiaireNom" :placeholder="t('finances.depense.beneficiaireNomPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('finances.depense.beneficiaireNom')"
+        name="beneficiaireNom"
+        required
+      >
+        <UInput
+          v-model="state.beneficiaireNom"
+          :placeholder="t('finances.depense.beneficiaireNomPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('finances.depense.beneficiaireTelephone')" name="beneficiaireTelephone">
+      <UFormField
+        :label="t('finances.depense.beneficiaireTelephone')"
+        name="beneficiaireTelephone"
+      >
         <PhoneInput v-model="state.beneficiaireTelephone" />
       </UFormField>
     </div>
 
-    <UFormField :label="t('finances.depense.beneficiaireNIF')" name="beneficiaireNIF">
-      <UInput v-model="state.beneficiaireNIF" :placeholder="t('finances.depense.nifPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('finances.depense.beneficiaireNIF')"
+      name="beneficiaireNIF"
+    >
+      <UInput
+        v-model="state.beneficiaireNIF"
+        :placeholder="t('finances.depense.nifPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('finances.depense.dateDemande')" name="dateDemande" required>
-        <UInput v-model="state.dateDemande" type="date" class="w-full" />
+      <UFormField
+        :label="t('finances.depense.dateDemande')"
+        name="dateDemande"
+        required
+      >
+        <UInput
+          v-model="state.dateDemande"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('finances.depense.statutDepense')" name="statutDepense" required>
-        <USelect v-model="state.statutDepense" :items="statutOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('finances.depense.statutDepense')"
+        name="statutDepense"
+        required
+      >
+        <USelect
+          v-model="state.statutDepense"
+          :items="statutOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

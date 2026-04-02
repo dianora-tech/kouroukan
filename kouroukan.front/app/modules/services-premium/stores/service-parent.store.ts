@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   ServiceParent,
   ServiceParentFilters,
@@ -7,6 +6,7 @@ import type {
   CreateServiceParentPayload,
   UpdateServiceParentPayload,
 } from '../types/service-parent.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/services-premium/services-parents'
 
@@ -49,7 +49,7 @@ export const useServiceParentStore = defineStore('services-premium-service-paren
   },
 
   actions: {
-    async fetchAll(params?: Partial<ServiceParentFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<ServiceParentFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<ServiceParent>(API_PATH, {

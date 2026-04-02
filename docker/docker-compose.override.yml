@@ -3,6 +3,11 @@
 # Surcharge pour desactiver SSL/certbot et utiliser HTTP
 # =============================================================================
 
+x-jwt-env: &jwt-env
+  Jwt__Key: ${JWT_SECRET}
+  Jwt__Issuer: ${JWT_ISSUER:-kouroukan.gn}
+  Jwt__Audience: ${JWT_AUDIENCE:-kouroukan-app}
+
 services:
   nginx:
     volumes:
@@ -23,6 +28,10 @@ services:
     profiles:
       - production
 
+  redis:
+    ports:
+      - "6379:6379"
+
   # Fix: override GnDapper connection string for all services
   gateway:
     environment:
@@ -34,48 +43,59 @@ services:
 
   inscriptions-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   pedagogie-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   evaluations-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   presences-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   finances-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   personnel-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   communication-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   bde-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   documents-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   services-premium-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   support-service:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      <<: *jwt-env
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}
 
   cache:
     environment:
-      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      GnDapper__ConnectionString: ${DB_CONNECTION_STRING}

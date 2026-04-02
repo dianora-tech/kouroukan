@@ -13,8 +13,10 @@ const props = withDefaults(defineProps<{
   columns: Column[]
   data: PaginatedResult<T> | null
   loading?: boolean
+  searchable?: boolean
 }>(), {
   loading: false,
+  searchable: false,
 })
 
 const emit = defineEmits<{
@@ -24,7 +26,23 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const currentSort = ref<{ key: string; direction: 'asc' | 'desc' } | null>(null)
+const searchQuery = ref('')
+
+const filteredItems = computed(() => {
+  if (!props.data?.items) return []
+  if (!props.searchable || !searchQuery.value.trim()) return props.data.items
+
+  const term = searchQuery.value.trim().toLowerCase()
+  return props.data.items.filter((row) => {
+    return props.columns.some((col) => {
+      const value = col.render ? col.render(row) : row[col.key]
+      if (value == null) return false
+      return String(value).toLowerCase().includes(term)
+    })
+  })
+})
+
+const currentSort = ref<{ key: string, direction: 'asc' | 'desc' } | null>(null)
 
 function handleSort(key: string): void {
   if (!props.columns.find(c => c.key === key)?.sortable) return
@@ -44,6 +62,19 @@ function getCellValue(row: T, key: string): unknown {
 
 <template>
   <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+    <!-- Search input -->
+    <div
+      v-if="searchable"
+      class="border-b border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800"
+    >
+      <UInput
+        v-model="searchQuery"
+        :placeholder="$t('table.search')"
+        icon="i-heroicons-magnifying-glass"
+        size="sm"
+        class="max-w-xs"
+      />
+    </div>
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead class="bg-gray-50 dark:bg-gray-800">
@@ -70,21 +101,30 @@ function getCellValue(row: T, key: string): unknown {
         <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
           <!-- Loading -->
           <tr v-if="loading">
-            <td :colspan="columns.length" class="px-4 py-8 text-center">
-              <UIcon name="i-heroicons-arrow-path" class="mx-auto h-6 w-6 animate-spin text-gray-400" />
+            <td
+              :colspan="columns.length"
+              class="px-4 py-8 text-center"
+            >
+              <UIcon
+                name="i-heroicons-arrow-path"
+                class="mx-auto h-6 w-6 animate-spin text-gray-400"
+              />
             </td>
           </tr>
 
           <!-- Empty -->
-          <tr v-else-if="!data?.items?.length">
-            <td :colspan="columns.length" class="px-4 py-8 text-center text-sm text-gray-500">
+          <tr v-else-if="!filteredItems.length">
+            <td
+              :colspan="columns.length"
+              class="px-4 py-8 text-center text-sm text-gray-500"
+            >
               {{ $t('table.empty') }}
             </td>
           </tr>
 
           <!-- Rows -->
           <tr
-            v-for="(row, idx) in data?.items"
+            v-for="(row, idx) in filteredItems"
             v-else
             :key="idx"
             class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -95,7 +135,11 @@ function getCellValue(row: T, key: string): unknown {
               class="whitespace-nowrap px-4 py-3 text-sm text-gray-900 dark:text-gray-100"
               :class="col.class"
             >
-              <slot :name="`cell-${col.key}`" :row="row" :value="getCellValue(row, col.key)">
+              <slot
+                :name="`cell-${col.key}`"
+                :row="row"
+                :value="getCellValue(row, col.key)"
+              >
                 {{ col.render ? col.render(row) : getCellValue(row, col.key) }}
               </slot>
             </td>

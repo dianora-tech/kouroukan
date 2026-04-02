@@ -76,56 +76,154 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('bde.evenement.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('bde.evenement.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('bde.evenement.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('bde.evenement.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.evenement.associationId')" name="associationId" required>
-      <USelect v-model="state.associationId" :items="associationOptions" value-key="value" :placeholder="t('bde.evenement.associationPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.evenement.associationId')"
+      name="associationId"
+      required
+    >
+      <USelect
+        v-model="state.associationId"
+        :items="associationOptions"
+        value-key="value"
+        :placeholder="t('bde.evenement.associationPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.evenement.name')" name="name" required>
-      <UInput v-model="state.name" :placeholder="t('bde.evenement.namePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.evenement.name')"
+      name="name"
+      required
+    >
+      <UInput
+        v-model="state.name"
+        :placeholder="t('bde.evenement.namePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.evenement.description')" name="description">
-      <UTextarea v-model="state.description" :placeholder="t('bde.evenement.descriptionPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.evenement.description')"
+      name="description"
+    >
+      <UTextarea
+        v-model="state.description"
+        :placeholder="t('bde.evenement.descriptionPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('bde.evenement.dateEvenement')" name="dateEvenement" required>
-        <UInput v-model="state.dateEvenement" type="date" class="w-full" />
+      <UFormField
+        :label="t('bde.evenement.dateEvenement')"
+        name="dateEvenement"
+        required
+      >
+        <UInput
+          v-model="state.dateEvenement"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('bde.evenement.lieu')" name="lieu" required>
-        <UInput v-model="state.lieu" :placeholder="t('bde.evenement.lieuPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('bde.evenement.lieu')"
+        name="lieu"
+        required
+      >
+        <UInput
+          v-model="state.lieu"
+          :placeholder="t('bde.evenement.lieuPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <UFormField :label="t('bde.evenement.capacite')" name="capacite">
-        <UInput v-model.number="state.capacite" type="number" min="0" class="w-full" />
+      <UFormField
+        :label="t('bde.evenement.capacite')"
+        name="capacite"
+      >
+        <UInput
+          v-model.number="state.capacite"
+          type="number"
+          min="0"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('bde.evenement.tarifEntree')" name="tarifEntree">
-        <UInput v-model.number="state.tarifEntree" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('bde.evenement.tarifEntree')"
+        name="tarifEntree"
+      >
+        <UInput
+          v-model.number="state.tarifEntree"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('bde.evenement.nombreInscrits')" name="nombreInscrits" required>
-        <UInput v-model.number="state.nombreInscrits" type="number" min="0" class="w-full" />
+      <UFormField
+        :label="t('bde.evenement.nombreInscrits')"
+        name="nombreInscrits"
+        required
+      >
+        <UInput
+          v-model.number="state.nombreInscrits"
+          type="number"
+          min="0"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('bde.evenement.statutEvenement')" name="statutEvenement" required>
-      <USelect v-model="state.statutEvenement" :items="statutOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('bde.evenement.statutEvenement')"
+      name="statutEvenement"
+      required
+    >
+      <USelect
+        v-model="state.statutEvenement"
+        :items="statutOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

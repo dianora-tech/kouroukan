@@ -25,7 +25,7 @@ public sealed class AnneeScolaireController : ControllerBase
 
     /// <summary>Recupere toutes les annees scolaires avec pagination.</summary>
     [HttpGet]
-    [Authorize(Policy = "RequirePermission:inscriptions:read")]
+    [Authorize(Policy = "RequirePermission:annees-scolaires:read")]
     public async Task<ActionResult<ApiResponse<PagedResult<AnneeScolaire>>>> GetAll(
         [FromQuery] int page = 1, [FromQuery] int pageSize = 20,
         [FromQuery] string? search = null, [FromQuery] string? orderBy = null,
@@ -42,7 +42,7 @@ public sealed class AnneeScolaireController : ControllerBase
 
     /// <summary>Recupere une annee scolaire par son identifiant.</summary>
     [HttpGet("{id:int}")]
-    [Authorize(Policy = "RequirePermission:inscriptions:read")]
+    [Authorize(Policy = "RequirePermission:annees-scolaires:read")]
     public async Task<ActionResult<ApiResponse<AnneeScolaire>>> GetById(int id, CancellationToken ct)
     {
         var correlationId = HttpContext.Items["CorrelationId"]?.ToString();
@@ -57,7 +57,7 @@ public sealed class AnneeScolaireController : ControllerBase
 
     /// <summary>Cree une nouvelle annee scolaire.</summary>
     [HttpPost]
-    [Authorize(Policy = "RequirePermission:inscriptions:create")]
+    [Authorize(Policy = "RequirePermission:annees-scolaires:create")]
     public async Task<ActionResult<ApiResponse<AnneeScolaire>>> Create(
         [FromBody] CreateAnneeScolaireCommand command, CancellationToken ct)
     {
@@ -70,7 +70,7 @@ public sealed class AnneeScolaireController : ControllerBase
 
     /// <summary>Met a jour une annee scolaire existante.</summary>
     [HttpPut("{id:int}")]
-    [Authorize(Policy = "RequirePermission:inscriptions:update")]
+    [Authorize(Policy = "RequirePermission:annees-scolaires:update")]
     public async Task<ActionResult<ApiResponse<bool>>> Update(
         int id, [FromBody] UpdateAnneeScolaireCommand command, CancellationToken ct)
     {
@@ -89,7 +89,7 @@ public sealed class AnneeScolaireController : ControllerBase
 
     /// <summary>Supprime une annee scolaire (suppression logique).</summary>
     [HttpDelete("{id:int}")]
-    [Authorize(Policy = "RequirePermission:inscriptions:delete")]
+    [Authorize(Policy = "RequirePermission:annees-scolaires:delete")]
     public async Task<ActionResult<ApiResponse<bool>>> Delete(int id, CancellationToken ct)
     {
         var correlationId = HttpContext.Items["CorrelationId"]?.ToString();

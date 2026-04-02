@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Absence,
   AbsenceFilters,
@@ -7,6 +6,7 @@ import type {
   CreateAbsencePayload,
   UpdateAbsencePayload,
 } from '../types/absence.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/presences/absences'
 
@@ -50,7 +50,7 @@ export const useAbsenceStore = defineStore('presences-absence', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<AbsenceFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AbsenceFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Absence>(API_PATH, {

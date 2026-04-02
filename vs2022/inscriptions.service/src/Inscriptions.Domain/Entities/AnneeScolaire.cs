@@ -22,6 +22,24 @@ public class AnneeScolaire : IAuditableEntity, ISoftDeletable
     /// <summary>Indique si cette annee scolaire est l'annee en cours.</summary>
     public bool EstActive { get; set; }
 
+    /// <summary>Code de l'annee scolaire (ex: "2024-2025").</summary>
+    public string? Code { get; set; }
+
+    /// <summary>Description de l'annee scolaire.</summary>
+    public string? Description { get; set; }
+
+    /// <summary>Statut de l'annee scolaire (preparation, active, cloturee, archivee).</summary>
+    public string Statut { get; set; } = "preparation";
+
+    /// <summary>Date effective de rentree.</summary>
+    public DateTime? DateRentree { get; set; }
+
+    /// <summary>Nombre de periodes (trimestres ou semestres).</summary>
+    public int NombrePeriodes { get; set; } = 3;
+
+    /// <summary>Type de periode (trimestre ou semestre).</summary>
+    public string TypePeriode { get; set; } = "trimestre";
+
     // IAuditableEntity
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

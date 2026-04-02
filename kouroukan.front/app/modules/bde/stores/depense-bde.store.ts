@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   DepenseBDE,
   DepenseBDEFilters,
@@ -7,6 +6,7 @@ import type {
   CreateDepenseBDEPayload,
   UpdateDepenseBDEPayload,
 } from '../types/depense-bde.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/bde/depenses-bde'
 
@@ -49,7 +49,7 @@ export const useDepenseBDEStore = defineStore('bde-depense-bde', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<DepenseBDEFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<DepenseBDEFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<DepenseBDE>(API_PATH, {

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { DossierAdmission, CreateDossierAdmissionPayload, UpdateDossierAdmissionPayload } from '~/modules/inscriptions/types/dossier-admission.types'
+import type { DossierAdmission, CreateDossierAdmissionPayload, UpdateDossierAdmissionPayload, DossierAdmissionFilters } from '~/modules/inscriptions/types/dossier-admission.types'
 import { useDossierAdmission } from '~/modules/inscriptions/composables/useDossierAdmission'
-import type { DossierAdmissionFilters } from '~/modules/inscriptions/types/dossier-admission.types'
 import DossierAdmissionForm from '~/modules/inscriptions/components/DossierAdmissionForm.vue'
 import DossierAdmissionCard from '~/modules/inscriptions/components/DossierAdmissionCard.vue'
 import DossierAdmissionFiltersComponent from '~/modules/inscriptions/components/DossierAdmissionFilters.vue'
@@ -11,6 +10,7 @@ import DossierAdmissionStats from '~/modules/inscriptions/components/DossierAdmi
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -39,7 +39,7 @@ const columns: Column[] = [
   { key: 'typeName', label: t('inscriptions.dossierAdmission.type'), sortable: true },
   { key: 'statutDossier', label: t('inscriptions.dossierAdmission.statutDossier'), sortable: true },
   { key: 'etapeActuelle', label: t('inscriptions.dossierAdmission.etapeActuelle'), sortable: true },
-  { key: 'dateDemande', label: t('inscriptions.dossierAdmission.dateDemande'), sortable: true },
+  { key: 'dateDemande', label: t('inscriptions.dossierAdmission.dateDemande'), sortable: true, render: (row: any) => formatDate(row.dateDemande) },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
 
@@ -142,9 +142,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <DossierAdmissionStats :items="items" :total-count="pagination.totalCount" />
+    <DossierAdmissionStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <DossierAdmissionFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <DossierAdmissionFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -156,7 +162,11 @@ function getStatutColor(statut: string): string {
         @sort="handleSort"
       >
         <template #cell-statutDossier="{ row }">
-          <UBadge :color="getStatutColor((row as DossierAdmission).statutDossier)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as DossierAdmission).statutDossier)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`inscriptions.dossierAdmission.statut.${(row as DossierAdmission).statutDossier}`) }}
           </UBadge>
         </template>
@@ -194,7 +204,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <DossierAdmissionCard
           v-for="dossier in items"
           :key="dossier.id"

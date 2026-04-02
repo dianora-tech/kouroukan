@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 </script>
 
 <template>
@@ -24,22 +25,35 @@ const { t } = useI18n()
           {{ appel.enseignantNom ?? `#${appel.enseignantId}` }}
         </p>
       </div>
-      <UBadge :color="appel.estCloture ? 'success' : 'warning'" variant="subtle" size="sm">
+      <UBadge
+        :color="appel.estCloture ? 'success' : 'warning'"
+        variant="subtle"
+        size="sm"
+      >
         {{ appel.estCloture ? t('presences.appel.cloture') : t('presences.appel.enCours') }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ appel.dateAppel }}
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
+        {{ formatDate(appel.dateAppel) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-clock"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ appel.heureAppel }}
       </p>
       <p v-if="appel.seanceId">
-        <UIcon name="i-heroicons-book-open" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-book-open"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ appel.seanceInfo ?? `${t('presences.appel.seanceId')}: #${appel.seanceId}` }}
       </p>
     </div>

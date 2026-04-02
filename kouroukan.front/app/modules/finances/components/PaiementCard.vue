@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Paiement } from '../types/paiement.types'
 
+const { formatDate } = useFormatDate()
+
 defineProps<{
   paiement: Paiement
 }>()
@@ -48,29 +50,49 @@ function formatMontant(montant: number): string {
           {{ paiement.typeName }} - {{ $t('finances.paiement.facture') }} {{ paiement.factureNumero ?? `#${paiement.factureId}` }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(paiement.statutPaiement)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(paiement.statutPaiement)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`finances.paiement.statut.${paiement.statutPaiement}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(paiement.montantPaye) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-device-phone-mobile" class="mr-1 inline h-4 w-4" />
-        <UBadge :color="getMoyenColor(paiement.moyenPaiement)" variant="subtle" size="xs">
+        <UIcon
+          name="i-heroicons-device-phone-mobile"
+          class="mr-1 inline h-4 w-4"
+        />
+        <UBadge
+          :color="getMoyenColor(paiement.moyenPaiement)"
+          variant="subtle"
+          size="xs"
+        >
           {{ $t(`finances.paiement.moyen.${paiement.moyenPaiement}`) }}
         </UBadge>
       </p>
       <p v-if="paiement.referenceMobileMoney">
-        <UIcon name="i-heroicons-hashtag" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-hashtag"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ paiement.referenceMobileMoney }}
       </p>
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ paiement.datePaiement.split('T')[0] }}
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
+        {{ formatDate(paiement.datePaiement) }}
       </p>
     </div>
 

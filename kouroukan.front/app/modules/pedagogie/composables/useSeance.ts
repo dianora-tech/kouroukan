@@ -24,7 +24,7 @@ export function useSeance() {
     hasPreviousPage: store.pagination.page > 1,
   }))
 
-  async function fetchAll(params?: Partial<SeanceFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<SeanceFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

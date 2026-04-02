@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Signature, CreateSignaturePayload, UpdateSignaturePayload } from '~/modules/documents/types/signature.types'
+import type { Signature, CreateSignaturePayload, UpdateSignaturePayload, SignatureFilters } from '~/modules/documents/types/signature.types'
 import { useSignature } from '~/modules/documents/composables/useSignature'
-import type { SignatureFilters } from '~/modules/documents/types/signature.types'
 import SignatureForm from '~/modules/documents/components/SignatureForm.vue'
 import SignatureCard from '~/modules/documents/components/SignatureCard.vue'
 import SignatureFiltersComponent from '~/modules/documents/components/SignatureFilters.vue'
@@ -11,6 +10,7 @@ import SignatureStats from '~/modules/documents/components/SignatureStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -41,7 +41,7 @@ const columns: Column[] = [
   { key: 'ordreSignature', label: t('documents.signature.ordreSignature'), sortable: true },
   { key: 'niveauSignature', label: t('documents.signature.niveauSignature'), sortable: true },
   { key: 'statutSignature', label: t('documents.signature.statutSignature'), sortable: true },
-  { key: 'dateSignature', label: t('documents.signature.dateSignature'), sortable: true },
+  { key: 'dateSignature', label: t('documents.signature.dateSignature'), sortable: true, render: (row: any) => formatDate(row.dateSignature) },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
 
@@ -141,9 +141,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <SignatureStats :items="items" :total-count="pagination.totalCount" />
+    <SignatureStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <SignatureFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <SignatureFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -155,17 +161,25 @@ function getStatutColor(statut: string): string {
         @sort="handleSort"
       >
         <template #cell-niveauSignature="{ row }">
-          <UBadge color="neutral" variant="subtle" size="sm">
+          <UBadge
+            color="neutral"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`documents.signature.niveau.${(row as Signature).niveauSignature}`) }}
           </UBadge>
         </template>
         <template #cell-statutSignature="{ row }">
-          <UBadge :color="getStatutColor((row as Signature).statutSignature)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Signature).statutSignature)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`documents.signature.statut.${(row as Signature).statutSignature}`) }}
           </UBadge>
         </template>
         <template #cell-dateSignature="{ row }">
-          {{ (row as Signature).dateSignature?.split('T')[0] ?? '-' }}
+          {{ formatDate((row as Signature).dateSignature) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">
@@ -198,7 +212,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <SignatureCard
           v-for="sig in items"
           :key="sig.id"

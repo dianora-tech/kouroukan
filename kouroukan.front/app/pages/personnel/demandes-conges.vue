@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { DemandeConge, CreateDemandeCongePayload, UpdateDemandeCongePayload } from '~/modules/personnel/types/demandeConge.types'
+import type { DemandeConge, CreateDemandeCongePayload, UpdateDemandeCongePayload, DemandeCongeFilters } from '~/modules/personnel/types/demandeConge.types'
 import { useDemandeConge } from '~/modules/personnel/composables/useDemandeConge'
-import type { DemandeCongeFilters } from '~/modules/personnel/types/demandeConge.types'
 import DemandeCongeForm from '~/modules/personnel/components/DemandeCongeForm.vue'
 import DemandeCongeCard from '~/modules/personnel/components/DemandeCongeCard.vue'
 import DemandeCongeFiltersComponent from '~/modules/personnel/components/DemandeCongeFilters.vue'
@@ -11,6 +10,7 @@ import DemandeCongeStats from '~/modules/personnel/components/DemandeCongeStats.
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -37,8 +37,8 @@ const deletingEntity = ref<DemandeConge | null>(null)
 const columns: Column[] = [
   { key: 'typeName', label: t('personnel.demandeConge.type'), sortable: true },
   { key: 'enseignantNom', label: t('personnel.demandeConge.enseignant'), sortable: true },
-  { key: 'dateDebut', label: t('personnel.demandeConge.dateDebut'), sortable: true },
-  { key: 'dateFin', label: t('personnel.demandeConge.dateFin'), sortable: true },
+  { key: 'dateDebut', label: t('personnel.demandeConge.dateDebut'), sortable: true, render: (row: any) => formatDate(row.dateDebut) },
+  { key: 'dateFin', label: t('personnel.demandeConge.dateFin'), sortable: true, render: (row: any) => formatDate(row.dateFin) },
   { key: 'motif', label: t('personnel.demandeConge.motif'), sortable: false },
   { key: 'statutDemande', label: t('personnel.demandeConge.statutDemandeLabel'), sortable: true },
   { key: 'impactPaie', label: t('personnel.demandeConge.impactPaie'), sortable: true },
@@ -141,9 +141,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <DemandeCongeStats :items="items" :total-count="pagination.totalCount" />
+    <DemandeCongeStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <DemandeCongeFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <DemandeCongeFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -155,7 +161,11 @@ function getStatutColor(statut: string): string {
         @sort="handleSort"
       >
         <template #cell-statutDemande="{ row }">
-          <UBadge :color="getStatutColor((row as DemandeConge).statutDemande)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as DemandeConge).statutDemande)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`personnel.demandeConge.statut.${(row as DemandeConge).statutDemande}`) }}
           </UBadge>
         </template>
@@ -197,7 +207,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <DemandeCongeCard
           v-for="demandeConge in items"
           :key="demandeConge.id"

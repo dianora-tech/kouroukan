@@ -25,7 +25,7 @@ export function useAnnonce() {
     hasPreviousPage: store.pagination.page > 1,
   }))
 
-  async function fetchAll(params?: Partial<AnnonceFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<AnnonceFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

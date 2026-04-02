@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   DossierAdmission,
   DossierAdmissionFilters,
@@ -7,6 +6,7 @@ import type {
   CreateDossierAdmissionPayload,
   UpdateDossierAdmissionPayload,
 } from '../types/dossier-admission.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/inscriptions/dossiers-admission'
 
@@ -49,7 +49,7 @@ export const useDossierAdmissionStore = defineStore('inscriptions-dossier-admiss
   },
 
   actions: {
-    async fetchAll(params?: Partial<DossierAdmissionFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<DossierAdmissionFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<DossierAdmission>(API_PATH, {

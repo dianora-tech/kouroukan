@@ -16,14 +16,23 @@ const emit = defineEmits<{
 
 <template>
   <div class="flex flex-col items-center justify-center py-12 text-center">
-    <UIcon :name="icon" class="mb-4 h-12 w-12 text-gray-300 dark:text-gray-600" />
+    <UIcon
+      :name="icon"
+      class="mb-4 h-12 w-12 text-gray-300 dark:text-gray-600"
+    />
     <h3 class="text-lg font-medium text-gray-900 dark:text-white">
       {{ title }}
     </h3>
-    <p v-if="description" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+    <p
+      v-if="description"
+      class="mt-1 text-sm text-gray-500 dark:text-gray-400"
+    >
       {{ description }}
     </p>
-    <div v-if="actionLabel" class="mt-4">
+    <div
+      v-if="actionLabel"
+      class="mt-4"
+    >
       <UButton
         v-if="actionTo"
         :to="actionTo"

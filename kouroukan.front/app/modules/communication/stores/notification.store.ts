@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
+import type { Notification, NotificationFilters, CreateNotificationPayload, UpdateNotificationPayload } from '../types/notification.types'
 import { apiClient } from '~/core/api/client'
 import type { PaginatedResult } from '~/core/api/types'
-import type { Notification, NotificationFilters, CreateNotificationPayload, UpdateNotificationPayload } from '../types/notification.types'
 
 const API_PATH = '/api/communication/notifications'
 
 interface NotificationState {
   items: Notification[]
   currentItem: Notification | null
-  types: { id: number; name: string }[]
+  types: { id: number, name: string }[]
   loading: boolean
   saving: boolean
   filters: NotificationFilters
@@ -45,7 +45,7 @@ export const useNotificationStore = defineStore('communication-notification', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<NotificationFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<NotificationFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Notification>(API_PATH, {
@@ -87,7 +87,7 @@ export const useNotificationStore = defineStore('communication-notification', {
 
     async fetchTypes(): Promise<void> {
       try {
-        const response = await apiClient.get<{ id: number; name: string }[]>(`${API_PATH}/types`)
+        const response = await apiClient.get<{ id: number, name: string }[]>(`${API_PATH}/types`)
         if (response.success && response.data) {
           this.types = response.data
         }

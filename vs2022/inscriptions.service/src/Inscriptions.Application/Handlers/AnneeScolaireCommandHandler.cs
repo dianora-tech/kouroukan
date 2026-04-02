@@ -27,7 +27,13 @@ public sealed class AnneeScolaireCommandHandler :
             Libelle = request.Libelle,
             DateDebut = request.DateDebut,
             DateFin = request.DateFin,
-            EstActive = request.EstActive
+            EstActive = request.EstActive,
+            Code = request.Code,
+            Description = request.Description,
+            Statut = request.Statut,
+            DateRentree = request.DateRentree,
+            NombrePeriodes = request.NombrePeriodes,
+            TypePeriode = request.TypePeriode
         };
         return await _service.CreateAsync(entity, ct).ConfigureAwait(false);
     }
@@ -40,7 +46,13 @@ public sealed class AnneeScolaireCommandHandler :
             Libelle = request.Libelle,
             DateDebut = request.DateDebut,
             DateFin = request.DateFin,
-            EstActive = request.EstActive
+            EstActive = request.EstActive,
+            Code = request.Code,
+            Description = request.Description,
+            Statut = request.Statut,
+            DateRentree = request.DateRentree,
+            NombrePeriodes = request.NombrePeriodes,
+            TypePeriode = request.TypePeriode
         };
         return await _service.UpdateAsync(entity, ct).ConfigureAwait(false);
     }

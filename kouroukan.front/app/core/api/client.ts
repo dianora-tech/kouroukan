@@ -76,11 +76,14 @@ async function tryRefreshToken(): Promise<boolean> {
       }>('/api/auth/refresh', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: { refreshToken: auth.accessToken ?? '' },
+        body: { refreshToken: auth.refreshToken ?? '' },
       })
 
       if (response?.success && response.data?.accessToken) {
         auth.accessToken = response.data.accessToken
+        if (response.data.refreshToken) {
+          auth.refreshToken = response.data.refreshToken
+        }
         try {
           const tokenCookie = useCookie('auth.token')
           tokenCookie.value = response.data.accessToken

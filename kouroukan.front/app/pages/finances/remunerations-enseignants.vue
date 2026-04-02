@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { RemunerationEnseignant, CreateRemunerationPayload, UpdateRemunerationPayload } from '~/modules/finances/types/remuneration.types'
+import type { RemunerationEnseignant, CreateRemunerationPayload, UpdateRemunerationPayload, RemunerationFilters } from '~/modules/finances/types/remuneration.types'
 import { useRemuneration } from '~/modules/finances/composables/useRemuneration'
-import type { RemunerationFilters } from '~/modules/finances/types/remuneration.types'
 import RemunerationForm from '~/modules/finances/components/RemunerationForm.vue'
 import RemunerationCard from '~/modules/finances/components/RemunerationCard.vue'
 import RemunerationFiltersComponent from '~/modules/finances/components/RemunerationFilters.vue'
@@ -146,9 +145,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <RemunerationStats :items="items" :total-count="pagination.totalCount" />
+    <RemunerationStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <RemunerationFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <RemunerationFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -163,7 +168,11 @@ function getStatutColor(statut: string): string {
           {{ getMoisLabel((row as RemunerationEnseignant).mois) }}
         </template>
         <template #cell-modeRemuneration="{ row }">
-          <UBadge color="neutral" variant="subtle" size="sm">
+          <UBadge
+            color="neutral"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.remuneration.mode.${(row as RemunerationEnseignant).modeRemuneration}`) }}
           </UBadge>
         </template>
@@ -171,7 +180,11 @@ function getStatutColor(statut: string): string {
           {{ formatMontant((row as RemunerationEnseignant).montantTotal) }}
         </template>
         <template #cell-statutPaiement="{ row }">
-          <UBadge :color="getStatutColor((row as RemunerationEnseignant).statutPaiement)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as RemunerationEnseignant).statutPaiement)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.remuneration.statut.${(row as RemunerationEnseignant).statutPaiement}`) }}
           </UBadge>
         </template>
@@ -206,7 +219,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <RemunerationCard
           v-for="remuneration in items"
           :key="remuneration.id"

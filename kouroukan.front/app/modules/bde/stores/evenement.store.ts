@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Evenement,
   EvenementFilters,
@@ -7,6 +6,7 @@ import type {
   CreateEvenementPayload,
   UpdateEvenementPayload,
 } from '../types/evenement.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/bde/evenements'
 
@@ -49,7 +49,7 @@ export const useEvenementStore = defineStore('bde-evenement', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<EvenementFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<EvenementFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Evenement>(API_PATH, {

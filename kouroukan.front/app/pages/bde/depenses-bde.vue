@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { DepenseBDE, CreateDepenseBDEPayload, UpdateDepenseBDEPayload } from '~/modules/bde/types/depense-bde.types'
-import type { DepenseBDEFilters } from '~/modules/bde/types/depense-bde.types'
+import type { DepenseBDE, CreateDepenseBDEPayload, UpdateDepenseBDEPayload, DepenseBDEFilters } from '~/modules/bde/types/depense-bde.types'
 import { useDepenseBDE } from '~/modules/bde/composables/useDepenseBDE'
 import { useAssociation } from '~/modules/bde/composables/useAssociation'
 import DepenseBDEForm from '~/modules/bde/components/DepenseBDEForm.vue'
@@ -147,9 +146,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <DepenseBDEStats :items="items" :total-count="pagination.totalCount" />
+    <DepenseBDEStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <DepenseBDEFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <DepenseBDEFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -164,12 +169,20 @@ function getStatutColor(statut: string): string {
           {{ formatMontant((row as DepenseBDE).montant) }}
         </template>
         <template #cell-categorie="{ row }">
-          <UBadge color="neutral" variant="subtle" size="sm">
+          <UBadge
+            color="neutral"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`bde.depenseBde.categorie.${(row as DepenseBDE).categorie}`) }}
           </UBadge>
         </template>
         <template #cell-statutValidation="{ row }">
-          <UBadge :color="getStatutColor((row as DepenseBDE).statutValidation)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as DepenseBDE).statutValidation)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`bde.depenseBde.statut.${(row as DepenseBDE).statutValidation}`) }}
           </UBadge>
         </template>
@@ -204,7 +217,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <DepenseBDECard
           v-for="depense in items"
           :key="depense.id"

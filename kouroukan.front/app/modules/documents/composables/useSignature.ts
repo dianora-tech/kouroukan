@@ -46,7 +46,7 @@ export function useSignature() {
     store.items.filter(s => s.statutSignature === 'Refuse').length,
   )
 
-  async function fetchAll(params?: Partial<SignatureFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<SignatureFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

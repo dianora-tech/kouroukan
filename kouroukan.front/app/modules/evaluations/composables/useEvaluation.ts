@@ -47,7 +47,7 @@ export function useEvaluation() {
     return counts
   })
 
-  async function fetchAll(params?: Partial<EvaluationFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<EvaluationFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

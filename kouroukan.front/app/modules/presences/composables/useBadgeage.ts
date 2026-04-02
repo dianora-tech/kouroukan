@@ -50,7 +50,7 @@ export function useBadgeage() {
     return counts
   })
 
-  async function fetchAll(params?: Partial<BadgeageFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<BadgeageFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

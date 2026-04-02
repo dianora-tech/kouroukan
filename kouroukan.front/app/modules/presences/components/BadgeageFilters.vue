@@ -117,7 +117,12 @@ const methodeOptions = [
       @change="onFilterChange"
     />
 
-    <UButton variant="ghost" size="sm" icon="i-heroicons-x-mark" @click="resetFilters">
+    <UButton
+      variant="ghost"
+      size="sm"
+      icon="i-heroicons-x-mark"
+      @click="resetFilters"
+    >
       {{ $t('presences.badgeage.filters.reset') }}
     </UButton>
   </div>

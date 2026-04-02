@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type { Classe, ClasseFilters, CreateClassePayload, UpdateClassePayload } from '../types/classe.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/pedagogie/classes'
 
@@ -40,7 +40,7 @@ export const useClasseStore = defineStore('pedagogie-classe', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<ClasseFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<ClasseFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Classe>(API_PATH, {

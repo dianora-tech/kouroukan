@@ -41,7 +41,7 @@ export function useRemuneration() {
     store.items.reduce((sum, r) => sum + (r.nombreHeures ?? 0), 0),
   )
 
-  async function fetchAll(params?: Partial<RemunerationFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<RemunerationFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

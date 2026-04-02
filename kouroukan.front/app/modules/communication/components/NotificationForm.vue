@@ -73,34 +73,90 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('communication.notification.contenu')" name="contenu" required>
-      <UTextarea v-model="state.contenu" :placeholder="t('communication.notification.contenuPlaceholder')" :rows="3" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('communication.notification.contenu')"
+      name="contenu"
+      required
+    >
+      <UTextarea
+        v-model="state.contenu"
+        :placeholder="t('communication.notification.contenuPlaceholder')"
+        :rows="3"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('communication.notification.destinatairesIds')" name="destinatairesIds" required>
-      <UTextarea v-model="state.destinatairesIds" :placeholder="t('communication.notification.destinatairesIdsPlaceholder')" :rows="2" class="w-full" />
+    <UFormField
+      :label="t('communication.notification.destinatairesIds')"
+      name="destinatairesIds"
+      required
+    >
+      <UTextarea
+        v-model="state.destinatairesIds"
+        :placeholder="t('communication.notification.destinatairesIdsPlaceholder')"
+        :rows="2"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('communication.notification.canal')" name="canal" required>
-        <USelect v-model="state.canal" :items="canalOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('communication.notification.canal')"
+        name="canal"
+        required
+      >
+        <USelect
+          v-model="state.canal"
+          :items="canalOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('communication.notification.typeId')" name="typeId" required>
-        <USelect v-model="state.typeId" :items="typeOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('communication.notification.typeId')"
+        name="typeId"
+        required
+      >
+        <USelect
+          v-model="state.typeId"
+          :items="typeOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('communication.notification.lienAction')" name="lienAction">
-      <UInput v-model="state.lienAction" type="url" :placeholder="t('communication.notification.lienActionPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('communication.notification.lienAction')"
+      name="lienAction"
+    >
+      <UInput
+        v-model="state.lienAction"
+        type="url"
+        :placeholder="t('communication.notification.lienActionPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

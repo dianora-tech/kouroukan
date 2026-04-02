@@ -42,7 +42,7 @@ export function useBulletin() {
     store.items.filter(b => !b.estPublie).length,
   )
 
-  async function fetchAll(params?: Partial<BulletinFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<BulletinFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

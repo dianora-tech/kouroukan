@@ -80,7 +80,12 @@ const ministereOptions = [
       @update:model-value="onFilterChange"
     />
 
-    <UButton variant="ghost" size="sm" icon="i-heroicons-x-mark" @click="resetFilters">
+    <UButton
+      variant="ghost"
+      size="sm"
+      icon="i-heroicons-x-mark"
+      @click="resetFilters"
+    >
       {{ $t('pedagogie.niveauClasse.filters.reset') }}
     </UButton>
   </div>

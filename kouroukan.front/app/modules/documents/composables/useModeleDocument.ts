@@ -42,7 +42,7 @@ export function useModeleDocument() {
     store.items.filter(m => !m.estActif).length,
   )
 
-  async function fetchAll(params?: Partial<ModeleDocumentFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<ModeleDocumentFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

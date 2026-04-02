@@ -50,7 +50,7 @@ export function useFacture() {
     store.items.filter(f => f.statutFacture === 'Echue').length,
   )
 
-  async function fetchAll(params?: Partial<FactureFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<FactureFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

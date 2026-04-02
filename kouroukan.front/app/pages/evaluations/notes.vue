@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Note, CreateNotePayload, UpdateNotePayload } from '~/modules/evaluations/types/note.types'
+import type { Note, CreateNotePayload, UpdateNotePayload, NoteFilters } from '~/modules/evaluations/types/note.types'
 import { useNote } from '~/modules/evaluations/composables/useNote'
-import type { NoteFilters } from '~/modules/evaluations/types/note.types'
 import NoteForm from '~/modules/evaluations/components/NoteForm.vue'
 import NoteCard from '~/modules/evaluations/components/NoteCard.vue'
 import NoteFiltersComponent from '~/modules/evaluations/components/NoteFilters.vue'
@@ -11,6 +10,7 @@ import NoteStats from '~/modules/evaluations/components/NoteStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -46,7 +46,7 @@ const columns: Column[] = [
   { key: 'matiereName', label: t('evaluations.note.matiere'), sortable: true },
   { key: 'evaluationTypeName', label: t('evaluations.note.evaluationType'), sortable: true },
   { key: 'valeur', label: t('evaluations.note.valeur'), sortable: true },
-  { key: 'dateSaisie', label: t('evaluations.note.dateSaisie'), sortable: true },
+  { key: 'dateSaisie', label: t('evaluations.note.dateSaisie'), sortable: true, render: (row: any) => formatDate(row.dateSaisie) },
   { key: 'commentaire', label: t('evaluations.note.commentaire'), sortable: false },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -137,9 +137,15 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <NoteStats :items="items" :total-count="pagination.totalCount" />
+    <NoteStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <NoteFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <NoteFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -151,12 +157,16 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
         @sort="handleSort"
       >
         <template #cell-valeur="{ row }">
-          <UBadge :color="getNoteColor((row as Note).valeur, (row as Note).noteMaximale)" variant="subtle" size="sm">
+          <UBadge
+            :color="getNoteColor((row as Note).valeur, (row as Note).noteMaximale)"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Note).valeur }} / {{ (row as Note).noteMaximale ?? 20 }}
           </UBadge>
         </template>
         <template #cell-dateSaisie="{ row }">
-          {{ (row as Note).dateSaisie?.split('T')[0] }}
+          {{ formatDate((row as Note).dateSaisie) }}
         </template>
         <template #cell-commentaire="{ row }">
           <span class="max-w-[200px] truncate">{{ (row as Note).commentaire ?? '-' }}</span>
@@ -192,7 +202,10 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <NoteCard
           v-for="note in items"
           :key="note.id"

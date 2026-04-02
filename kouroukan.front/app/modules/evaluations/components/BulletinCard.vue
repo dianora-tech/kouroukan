@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Bulletin } from '../types/bulletin.types'
 
+const { formatDate } = useFormatDate()
+
 defineProps<{
   bulletin: Bulletin
 }>()
@@ -30,30 +32,56 @@ function getMoyenneColor(moyenne: number): string {
           {{ bulletin.classeName ?? `#${bulletin.classeId}` }} - {{ $t(`evaluations.bulletin.trimestre.${bulletin.trimestre}`) }}
         </p>
       </div>
-      <UBadge :color="getMoyenneColor(bulletin.moyenneGenerale)" variant="subtle" size="sm">
+      <UBadge
+        :color="getMoyenneColor(bulletin.moyenneGenerale)"
+        variant="subtle"
+        size="sm"
+      >
         {{ bulletin.moyenneGenerale.toFixed(2) }} / 20
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p v-if="bulletin.rang">
-        <UIcon name="i-heroicons-trophy" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-trophy"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('evaluations.bulletin.rangLabel') }}: {{ bulletin.rang }}
       </p>
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ bulletin.dateGeneration?.split('T')[0] }}
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
+        {{ formatDate(bulletin.dateGeneration) }}
       </p>
       <p>
-        <UBadge v-if="bulletin.estPublie" color="success" variant="subtle" size="xs">
+        <UBadge
+          v-if="bulletin.estPublie"
+          color="success"
+          variant="subtle"
+          size="xs"
+        >
           {{ $t('evaluations.bulletin.publie') }}
         </UBadge>
-        <UBadge v-else color="warning" variant="subtle" size="xs">
+        <UBadge
+          v-else
+          color="warning"
+          variant="subtle"
+          size="xs"
+        >
           {{ $t('evaluations.bulletin.nonPublie') }}
         </UBadge>
       </p>
-      <p v-if="bulletin.appreciation" class="truncate">
-        <UIcon name="i-heroicons-chat-bubble-left" class="mr-1 inline h-4 w-4" />
+      <p
+        v-if="bulletin.appreciation"
+        class="truncate"
+      >
+        <UIcon
+          name="i-heroicons-chat-bubble-left"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ bulletin.appreciation }}
       </p>
     </div>

@@ -47,7 +47,7 @@ export function useEnseignant() {
     return Math.round(store.items.reduce((sum, e) => sum + e.soldeCongesAnnuel, 0) / store.items.length)
   })
 
-  async function fetchAll(params?: Partial<EnseignantFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<EnseignantFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

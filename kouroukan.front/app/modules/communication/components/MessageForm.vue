@@ -70,40 +70,102 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('communication.message.sujet')" name="sujet" required>
-      <UInput v-model="state.sujet" :placeholder="t('communication.message.sujetPlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('communication.message.sujet')"
+      name="sujet"
+      required
+    >
+      <UInput
+        v-model="state.sujet"
+        :placeholder="t('communication.message.sujetPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('communication.message.contenu')" name="contenu" required>
-      <UTextarea v-model="state.contenu" :placeholder="t('communication.message.contenuPlaceholder')" :rows="5" class="w-full" />
+    <UFormField
+      :label="t('communication.message.contenu')"
+      name="contenu"
+      required
+    >
+      <UTextarea
+        v-model="state.contenu"
+        :placeholder="t('communication.message.contenuPlaceholder')"
+        :rows="5"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('communication.message.expediteurId')" name="expediteurId" required>
-        <UInput v-model.number="state.expediteurId" type="number" :placeholder="t('communication.message.expediteurIdPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('communication.message.expediteurId')"
+        name="expediteurId"
+        required
+      >
+        <UInput
+          v-model.number="state.expediteurId"
+          type="number"
+          :placeholder="t('communication.message.expediteurIdPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('communication.message.destinataireId')" name="destinataireId">
-        <UInput v-model.number="state.destinataireId" type="number" :placeholder="t('communication.message.destinataireIdPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('communication.message.destinataireId')"
+        name="destinataireId"
+      >
+        <UInput
+          v-model.number="state.destinataireId"
+          type="number"
+          :placeholder="t('communication.message.destinataireIdPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('communication.message.typeId')" name="typeId" required>
-        <USelect v-model="state.typeId" :items="typeOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('communication.message.typeId')"
+        name="typeId"
+        required
+      >
+        <USelect
+          v-model="state.typeId"
+          :items="typeOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('communication.message.groupeDestinataire')" name="groupeDestinataire">
-        <UInput v-model="state.groupeDestinataire" :placeholder="t('communication.message.groupeDestinatairePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('communication.message.groupeDestinataire')"
+        name="groupeDestinataire"
+      >
+        <UInput
+          v-model="state.groupeDestinataire"
+          :placeholder="t('communication.message.groupeDestinatairePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

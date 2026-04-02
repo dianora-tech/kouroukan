@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Appel, CreateAppelPayload, UpdateAppelPayload } from '~/modules/presences/types/appel.types'
-import type { AppelFilters } from '~/modules/presences/types/appel.types'
+import type { Appel, CreateAppelPayload, UpdateAppelPayload, AppelFilters } from '~/modules/presences/types/appel.types'
 import { useAppel } from '~/modules/presences/composables/useAppel'
 import AppelForm from '~/modules/presences/components/AppelForm.vue'
 import AppelCard from '~/modules/presences/components/AppelCard.vue'
@@ -11,6 +10,7 @@ import AppelStats from '~/modules/presences/components/AppelStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -36,7 +36,7 @@ const deletingEntity = ref<Appel | null>(null)
 const columns: Column[] = [
   { key: 'classeName', label: t('presences.appel.classe'), sortable: true },
   { key: 'enseignantNom', label: t('presences.appel.enseignant'), sortable: true },
-  { key: 'dateAppel', label: t('presences.appel.dateAppel'), sortable: true },
+  { key: 'dateAppel', label: t('presences.appel.dateAppel'), sortable: true, render: (row: any) => formatDate(row.dateAppel) },
   { key: 'heureAppel', label: t('presences.appel.heureAppel'), sortable: true },
   { key: 'estCloture', label: t('presences.appel.statut'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
@@ -128,9 +128,15 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <AppelStats :items="items" :total-count="pagination.totalCount" />
+    <AppelStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <AppelFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <AppelFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -148,7 +154,11 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
           {{ (row as Appel).enseignantNom ?? `#${(row as Appel).enseignantId}` }}
         </template>
         <template #cell-estCloture="{ row }">
-          <UBadge :color="(row as Appel).estCloture ? 'success' : 'warning'" variant="subtle" size="sm">
+          <UBadge
+            :color="(row as Appel).estCloture ? 'success' : 'warning'"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Appel).estCloture ? $t('presences.appel.cloture') : $t('presences.appel.enCours') }}
           </UBadge>
         </template>
@@ -183,7 +193,10 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <AppelCard
           v-for="appel in items"
           :key="appel.id"

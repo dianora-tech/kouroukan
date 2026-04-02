@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Enseignant,
   EnseignantFilters,
@@ -7,6 +6,7 @@ import type {
   CreateEnseignantPayload,
   UpdateEnseignantPayload,
 } from '../types/enseignant.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/personnel/enseignants'
 
@@ -50,7 +50,7 @@ export const useEnseignantStore = defineStore('personnel-enseignant', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<EnseignantFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<EnseignantFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Enseignant>(API_PATH, {

@@ -79,8 +79,15 @@ const subModules = computed(() => [
         class="group rounded-lg border border-gray-200 bg-white p-5 transition-all hover:border-indigo-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:hover:border-indigo-600"
       >
         <div class="flex items-center gap-3">
-          <div class="rounded-lg p-2" :class="sub.bgColor">
-            <UIcon :name="sub.icon" class="h-6 w-6" :class="sub.color" />
+          <div
+            class="rounded-lg p-2"
+            :class="sub.bgColor"
+          >
+            <UIcon
+              :name="sub.icon"
+              class="h-6 w-6"
+              :class="sub.color"
+            />
           </div>
           <div>
             <h3 class="font-semibold text-gray-900 group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">

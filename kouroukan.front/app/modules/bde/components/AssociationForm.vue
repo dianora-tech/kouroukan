@@ -66,44 +66,115 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('bde.association.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('bde.association.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('bde.association.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('bde.association.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.association.name')" name="name" required>
-      <UInput v-model="state.name" :placeholder="t('bde.association.namePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.association.name')"
+      name="name"
+      required
+    >
+      <UInput
+        v-model="state.name"
+        :placeholder="t('bde.association.namePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('bde.association.sigle')" name="sigle">
-        <UInput v-model="state.sigle" :placeholder="t('bde.association.siglePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('bde.association.sigle')"
+        name="sigle"
+      >
+        <UInput
+          v-model="state.sigle"
+          :placeholder="t('bde.association.siglePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('bde.association.anneeScolaire')" name="anneeScolaire" required>
-        <UInput v-model="state.anneeScolaire" :placeholder="t('bde.association.anneeScolairePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('bde.association.anneeScolaire')"
+        name="anneeScolaire"
+        required
+      >
+        <UInput
+          v-model="state.anneeScolaire"
+          :placeholder="t('bde.association.anneeScolairePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('bde.association.description')" name="description">
-      <UTextarea v-model="state.description" :placeholder="t('bde.association.descriptionPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.association.description')"
+      name="description"
+    >
+      <UTextarea
+        v-model="state.description"
+        :placeholder="t('bde.association.descriptionPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('bde.association.budgetAnnuel')" name="budgetAnnuel" required>
-        <UInput v-model.number="state.budgetAnnuel" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('bde.association.budgetAnnuel')"
+        name="budgetAnnuel"
+        required
+      >
+        <UInput
+          v-model.number="state.budgetAnnuel"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('bde.association.statut_label')" name="statut" required>
-        <USelect v-model="state.statut" :items="statutOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('bde.association.statut_label')"
+        name="statut"
+        required
+      >
+        <USelect
+          v-model="state.statut"
+          :items="statutOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

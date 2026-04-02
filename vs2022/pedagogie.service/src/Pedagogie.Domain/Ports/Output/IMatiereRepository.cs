@@ -16,4 +16,8 @@ public interface IMatiereRepository
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
     Task<bool> ExistsAsync(int id, CancellationToken ct = default);
     Task<IReadOnlyList<TypeDto>> GetTypesAsync(CancellationToken ct = default);
+    Task<TypeDto?> GetTypeByIdAsync(int id, CancellationToken ct = default);
+    Task<TypeDto> AddTypeAsync(string name, string? description, CancellationToken ct = default);
+    Task<bool> UpdateTypeAsync(int id, string name, string? description, CancellationToken ct = default);
+    Task<bool> DeleteTypeAsync(int id, CancellationToken ct = default);
 }

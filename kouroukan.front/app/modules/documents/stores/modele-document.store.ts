@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   ModeleDocument,
   ModeleDocumentFilters,
@@ -7,6 +6,7 @@ import type {
   CreateModeleDocumentPayload,
   UpdateModeleDocumentPayload,
 } from '../types/modele-document.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/documents/modelesdocuments'
 
@@ -48,7 +48,7 @@ export const useModeleDocumentStore = defineStore('documents-modele-document', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<ModeleDocumentFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<ModeleDocumentFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<ModeleDocument>(API_PATH, {

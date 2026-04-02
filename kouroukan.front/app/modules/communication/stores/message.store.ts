@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
+import type { Message, MessageFilters, CreateMessagePayload, UpdateMessagePayload } from '../types/message.types'
 import { apiClient } from '~/core/api/client'
 import type { PaginatedResult } from '~/core/api/types'
-import type { Message, MessageFilters, CreateMessagePayload, UpdateMessagePayload } from '../types/message.types'
 
 const API_PATH = '/api/communication/messages'
 
 interface MessageState {
   items: Message[]
   currentItem: Message | null
-  types: { id: number; name: string }[]
+  types: { id: number, name: string }[]
   loading: boolean
   saving: boolean
   filters: MessageFilters
@@ -46,7 +46,7 @@ export const useMessageStore = defineStore('communication-message', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<MessageFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<MessageFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Message>(API_PATH, {
@@ -88,7 +88,7 @@ export const useMessageStore = defineStore('communication-message', {
 
     async fetchTypes(): Promise<void> {
       try {
-        const response = await apiClient.get<{ id: number; name: string }[]>(`${API_PATH}/types`)
+        const response = await apiClient.get<{ id: number, name: string }[]>(`${API_PATH}/types`)
         if (response.success && response.data) {
           this.types = response.data
         }

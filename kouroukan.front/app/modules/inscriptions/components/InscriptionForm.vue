@@ -88,50 +88,121 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('inscriptions.inscription.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('inscriptions.inscription.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('inscriptions.inscription.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('inscriptions.inscription.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('inscriptions.inscription.dateInscription')" name="dateInscription" required>
-        <UInput v-model="state.dateInscription" type="date" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.inscription.dateInscription')"
+        name="dateInscription"
+        required
+      >
+        <UInput
+          v-model="state.dateInscription"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('inscriptions.inscription.statutInscription')" name="statutInscription" required>
-        <USelect v-model="state.statutInscription" :items="statutOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.inscription.statutInscription')"
+        name="statutInscription"
+        required
+      >
+        <USelect
+          v-model="state.statutInscription"
+          :items="statutOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('inscriptions.inscription.montantInscription')" name="montantInscription" required>
-        <UInput v-model.number="state.montantInscription" type="number" min="0" step="0.01" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.inscription.montantInscription')"
+        name="montantInscription"
+        required
+      >
+        <UInput
+          v-model.number="state.montantInscription"
+          type="number"
+          min="0"
+          step="0.01"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('inscriptions.inscription.typeEtablissement')" name="typeEtablissement">
-        <USelect v-model="state.typeEtablissement" :items="typeEtablissementOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.inscription.typeEtablissement')"
+        name="typeEtablissement"
+      >
+        <USelect
+          v-model="state.typeEtablissement"
+          :items="typeEtablissementOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('inscriptions.inscription.serieBac')" name="serieBac">
-      <USelect v-model="state.serieBac" :items="serieBacOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('inscriptions.inscription.serieBac')"
+      name="serieBac"
+    >
+      <USelect
+        v-model="state.serieBac"
+        :items="serieBacOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('inscriptions.inscription.estPaye')" name="estPaye">
+      <UFormField
+        :label="t('inscriptions.inscription.estPaye')"
+        name="estPaye"
+      >
         <UToggle v-model="state.estPaye" />
       </UFormField>
 
-      <UFormField :label="t('inscriptions.inscription.estRedoublant')" name="estRedoublant">
+      <UFormField
+        :label="t('inscriptions.inscription.estRedoublant')"
+        name="estRedoublant"
+      >
         <UToggle v-model="state.estRedoublant" />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

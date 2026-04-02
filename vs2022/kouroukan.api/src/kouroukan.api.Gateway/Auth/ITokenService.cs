@@ -63,4 +63,24 @@ public interface ITokenService
     /// Met a jour les preferences utilisateur (langue, theme).
     /// </summary>
     Task UpdatePreferencesAsync(int userId, string locale, string theme, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Recupere le statut d'onboarding de l'etablissement de l'utilisateur.
+    /// </summary>
+    Task<OnboardingStatusDto?> GetOnboardingStatusAsync(int userId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Met a jour l'etape d'onboarding de l'etablissement.
+    /// </summary>
+    Task UpdateOnboardingStepAsync(int userId, int step, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Marque l'onboarding comme termine (skip ou completion).
+    /// </summary>
+    Task CompleteOnboardingAsync(int userId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Met a jour les informations de l'etablissement.
+    /// </summary>
+    Task UpdateCompanyAsync(int userId, UpdateCompanyRequest request, CancellationToken cancellationToken = default);
 }

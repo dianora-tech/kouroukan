@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Enseignant, CreateEnseignantPayload, UpdateEnseignantPayload } from '~/modules/personnel/types/enseignant.types'
+import type { Enseignant, CreateEnseignantPayload, UpdateEnseignantPayload, EnseignantFilters } from '~/modules/personnel/types/enseignant.types'
 import { useEnseignant } from '~/modules/personnel/composables/useEnseignant'
-import type { EnseignantFilters } from '~/modules/personnel/types/enseignant.types'
 import EnseignantForm from '~/modules/personnel/components/EnseignantForm.vue'
 import EnseignantCard from '~/modules/personnel/components/EnseignantCard.vue'
 import EnseignantFiltersComponent from '~/modules/personnel/components/EnseignantFilters.vue'
@@ -11,6 +10,7 @@ import EnseignantStats from '~/modules/personnel/components/EnseignantStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -39,7 +39,7 @@ const columns: Column[] = [
   { key: 'typeName', label: t('personnel.enseignant.type'), sortable: true },
   { key: 'specialite', label: t('personnel.enseignant.specialite'), sortable: true },
   { key: 'telephone', label: t('personnel.enseignant.telephone'), sortable: false },
-  { key: 'dateEmbauche', label: t('personnel.enseignant.dateEmbauche'), sortable: true },
+  { key: 'dateEmbauche', label: t('personnel.enseignant.dateEmbauche'), sortable: true, render: (row: any) => formatDate(row.dateEmbauche) },
   { key: 'modeRemuneration', label: t('personnel.enseignant.modeRemunerationLabel'), sortable: true },
   { key: 'statutEnseignant', label: t('personnel.enseignant.statutEnseignantLabel'), sortable: true },
   { key: 'soldeCongesAnnuel', label: t('personnel.enseignant.soldeCongesAnnuel'), sortable: true },
@@ -142,9 +142,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <EnseignantStats :items="items" :total-count="pagination.totalCount" />
+    <EnseignantStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <EnseignantFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <EnseignantFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -156,7 +162,11 @@ function getStatutColor(statut: string): string {
         @sort="handleSort"
       >
         <template #cell-statutEnseignant="{ row }">
-          <UBadge :color="getStatutColor((row as Enseignant).statutEnseignant)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Enseignant).statutEnseignant)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`personnel.enseignant.statut.${(row as Enseignant).statutEnseignant}`) }}
           </UBadge>
         </template>
@@ -194,7 +204,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <EnseignantCard
           v-for="enseignant in items"
           :key="enseignant.id"

@@ -107,7 +107,12 @@ async function handleSave() {
     </div>
 
     <div class="flex justify-end">
-      <UButton color="primary" icon="i-heroicons-check" :loading="saving" @click="handleSave">
+      <UButton
+        color="primary"
+        icon="i-heroicons-check"
+        :loading="saving"
+        @click="handleSave"
+      >
         {{ $t('parametres.saveChanges') }}
       </UButton>
     </div>

@@ -82,46 +82,112 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('communication.annonce.contenu')" name="contenu" required>
-      <UTextarea v-model="state.contenu" :placeholder="t('communication.annonce.contenuPlaceholder')" :rows="5" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('communication.annonce.contenu')"
+      name="contenu"
+      required
+    >
+      <UTextarea
+        v-model="state.contenu"
+        :placeholder="t('communication.annonce.contenuPlaceholder')"
+        :rows="5"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('communication.annonce.dateDebut')" name="dateDebut" required>
-        <UInput v-model="state.dateDebut" type="date" class="w-full" />
+      <UFormField
+        :label="t('communication.annonce.dateDebut')"
+        name="dateDebut"
+        required
+      >
+        <UInput
+          v-model="state.dateDebut"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('communication.annonce.dateFin')" name="dateFin">
-        <UInput v-model="state.dateFin" type="date" class="w-full" />
+      <UFormField
+        :label="t('communication.annonce.dateFin')"
+        name="dateFin"
+      >
+        <UInput
+          v-model="state.dateFin"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('communication.annonce.cibleAudience')" name="cibleAudience" required>
-        <USelect v-model="state.cibleAudience" :items="cibleOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('communication.annonce.cibleAudience')"
+        name="cibleAudience"
+        required
+      >
+        <USelect
+          v-model="state.cibleAudience"
+          :items="cibleOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('communication.annonce.typeId')" name="typeId" required>
-        <USelect v-model="state.typeId" :items="typeOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('communication.annonce.typeId')"
+        name="typeId"
+        required
+      >
+        <USelect
+          v-model="state.typeId"
+          :items="typeOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('communication.annonce.prioriteLabel')" name="priorite" required>
-        <USelect v-model="state.priorite" :items="prioriteOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('communication.annonce.prioriteLabel')"
+        name="priorite"
+        required
+      >
+        <USelect
+          v-model="state.priorite"
+          :items="prioriteOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('communication.annonce.estActive')" name="estActive">
+      <UFormField
+        :label="t('communication.annonce.estActive')"
+        name="estActive"
+      >
         <UToggle v-model="state.estActive" />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

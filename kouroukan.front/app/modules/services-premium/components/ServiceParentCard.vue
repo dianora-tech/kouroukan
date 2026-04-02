@@ -28,22 +28,35 @@ function formatMontant(montant: number): string {
           {{ serviceParent.typeName }}
         </p>
       </div>
-      <UBadge :color="serviceParent.estActif ? 'success' : 'neutral'" variant="subtle" size="sm">
+      <UBadge
+        :color="serviceParent.estActif ? 'success' : 'neutral'"
+        variant="subtle"
+        size="sm"
+      >
         {{ serviceParent.estActif ? $t('servicesPremium.serviceParent.actif') : $t('servicesPremium.serviceParent.inactif') }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(serviceParent.tarif) }} / {{ $t(`servicesPremium.serviceParent.periodicite.${serviceParent.periodicite}`) }}
       </p>
       <p v-if="serviceParent.periodeEssaiJours">
-        <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-clock"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('servicesPremium.serviceParent.essai') }}: {{ serviceParent.periodeEssaiJours }} {{ $t('servicesPremium.serviceParent.jours') }}
       </p>
       <p v-if="serviceParent.tarifDegressif">
-        <UIcon name="i-heroicons-arrow-trending-down" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-arrow-trending-down"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('servicesPremium.serviceParent.degressif') }}
       </p>
     </div>

@@ -24,22 +24,35 @@ const { t } = useI18n()
           {{ modeleDocument.typeName }}
         </p>
       </div>
-      <UBadge :color="modeleDocument.estActif ? 'success' : 'neutral'" variant="subtle" size="sm">
+      <UBadge
+        :color="modeleDocument.estActif ? 'success' : 'neutral'"
+        variant="subtle"
+        size="sm"
+      >
         {{ modeleDocument.estActif ? $t('documents.modeleDocument.actif') : $t('documents.modeleDocument.inactif') }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-code-bracket" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-code-bracket"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ modeleDocument.code }}
       </p>
       <p v-if="modeleDocument.description">
-        <UIcon name="i-heroicons-document-text" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-document-text"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ modeleDocument.description }}
       </p>
       <p v-if="modeleDocument.couleurPrimaire">
-        <span class="mr-1 inline-block h-3 w-3 rounded-full" :style="{ backgroundColor: modeleDocument.couleurPrimaire }" />
+        <span
+          class="mr-1 inline-block h-3 w-3 rounded-full"
+          :style="{ backgroundColor: modeleDocument.couleurPrimaire }"
+        />
         {{ modeleDocument.couleurPrimaire }}
       </p>
     </div>

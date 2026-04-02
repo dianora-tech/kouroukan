@@ -1,10 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-01-01',
-
-  future: {
-    compatibilityVersion: 4,
-  },
 
   modules: [
     '@nuxt/ui',
@@ -16,6 +11,69 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     '@nuxt/image',
   ],
+
+  // --------------- Components ---------------
+  components: {
+    dirs: [
+      { path: '~/components', pathPrefix: false },
+      '~/shared/components',
+      '~/modules/**/components',
+    ],
+  },
+
+  // --------------- Auto-imports ---------------
+  imports: {
+    dirs: ['./app/modules/**/composables/**'],
+  },
+
+  // --------------- Dev ---------------
+  devtools: { enabled: true },
+
+  // --------------- App ---------------
+  app: {
+    head: {
+      title: 'Kouroukan',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Plateforme de gestion d\'établissement scolaire' },
+        { name: 'theme-color', content: '#16a34a' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      ],
+    },
+  },
+
+  css: ['~/assets/css/main.css'],
+
+  // --------------- Runtime Config ---------------
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:5000',
+      appName: 'Kouroukan',
+      cguVersion: process.env.CGU_VERSION || '1.0.0',
+    },
+  },
+
+  future: {
+    compatibilityVersion: 4,
+  },
+  compatibilityDate: '2025-01-01',
+
+  // --------------- Nitro (Proxy API) ---------------
+  nitro: {
+    routeRules: {
+      '/api/**': {
+        proxy: `${process.env.API_BASE_URL || 'http://localhost:5000'}/api/**`,
+      },
+    },
+  },
+
+  typescript: {
+    strict: true,
+    typeCheck: process.env.NUXT_TYPECHECK !== 'false',
+  },
 
   // --------------- Auth (sidebase) ---------------
   auth: {
@@ -57,18 +115,6 @@ export default defineNuxtConfig({
     },
   },
 
-  // --------------- Security ---------------
-  // TODO: Re-enable nuxt-security once hydration payload compatibility is resolved
-  security: {
-    headers: false,
-    rateLimiter: false,
-    requestSizeLimiter: false,
-    xssValidator: false,
-    corsHandler: false,
-    allowedMethodsRestricter: false,
-    csrf: false,
-  },
-
   // --------------- i18n ---------------
   i18n: {
     locales: [
@@ -91,22 +137,21 @@ export default defineNuxtConfig({
     },
   },
 
+  // --------------- Icon ---------------
+  icon: {
+    localApiEndpoint: '/_nuxt_icon',
+  },
+
+  // --------------- Image ---------------
+  image: {
+    quality: 70,
+    formats: ['webp', 'avif'],
+    domains: ['localhost', 'minio'],
+  },
+
   // --------------- Pinia ---------------
   pinia: {
     storesDirs: ['./app/core/stores/**', './app/modules/**/stores/**'],
-  },
-
-  // --------------- Auto-imports ---------------
-  imports: {
-    dirs: ['./app/modules/**/composables/**'],
-  },
-
-  // --------------- Components ---------------
-  components: {
-    dirs: [
-      '~/shared/components',
-      '~/modules/**/components',
-    ],
   },
 
   // --------------- PWA ---------------
@@ -141,59 +186,15 @@ export default defineNuxtConfig({
     },
   },
 
-  // --------------- Image ---------------
-  image: {
-    quality: 70,
-    formats: ['webp', 'avif'],
-    domains: ['localhost', 'minio'],
+  // --------------- Security ---------------
+  // TODO: Re-enable nuxt-security once hydration payload compatibility is resolved
+  security: {
+    headers: false,
+    rateLimiter: false,
+    requestSizeLimiter: false,
+    xssValidator: false,
+    corsHandler: false,
+    allowedMethodsRestricter: false,
+    csrf: false,
   },
-
-  // --------------- Icon ---------------
-  icon: {
-    localApiEndpoint: '/_nuxt_icon',
-  },
-
-  // --------------- Nitro (Proxy API) ---------------
-  nitro: {
-    routeRules: {
-      '/api/**': {
-        proxy: `${process.env.API_BASE_URL || 'http://localhost:5000'}/api/**`,
-      },
-    },
-  },
-
-  // --------------- Runtime Config ---------------
-  runtimeConfig: {
-    public: {
-      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:5000',
-      appName: 'Kouroukan',
-      cguVersion: process.env.CGU_VERSION || '1.0.0',
-    },
-  },
-
-  // --------------- App ---------------
-  app: {
-    head: {
-      title: 'Kouroukan',
-      meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Plateforme de gestion d\'établissement scolaire' },
-        { name: 'theme-color', content: '#16a34a' },
-      ],
-      link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      ],
-    },
-  },
-
-  // --------------- Dev ---------------
-  devtools: { enabled: true },
-
-  typescript: {
-    strict: true,
-    typeCheck: process.env.NUXT_TYPECHECK !== 'false',
-  },
-
-  css: ['~/assets/css/main.css'],
 })

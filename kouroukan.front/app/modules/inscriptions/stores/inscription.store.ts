@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Inscription,
   InscriptionFilters,
@@ -7,6 +6,7 @@ import type {
   CreateInscriptionPayload,
   UpdateInscriptionPayload,
 } from '../types/inscription.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/inscriptions/inscriptions'
 
@@ -51,7 +51,7 @@ export const useInscriptionStore = defineStore('inscriptions-inscription', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<InscriptionFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<InscriptionFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Inscription>(API_PATH, {

@@ -22,18 +22,6 @@ public class Matiere : IAuditableEntity, ISoftDeletable
     /// <summary>Code matiere (MATH, FR, HG...).</summary>
     public string Code { get; set; } = string.Empty;
 
-    /// <summary>Coefficient de la matiere.</summary>
-    public decimal Coefficient { get; set; }
-
-    /// <summary>Volume horaire hebdomadaire.</summary>
-    public int NombreHeures { get; set; }
-
-    /// <summary>FK vers le niveau de classe (pedagogie.niveaux_classes).</summary>
-    public int NiveauClasseId { get; set; }
-
-    /// <summary>FK vers l'utilisateur (auth.users).</summary>
-    public int UserId { get; set; }
-
     // IAuditableEntity
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

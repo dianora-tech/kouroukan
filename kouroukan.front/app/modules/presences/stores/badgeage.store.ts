@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Badgeage,
   BadgeageFilters,
@@ -7,6 +6,7 @@ import type {
   CreateBadgeagePayload,
   UpdateBadgeagePayload,
 } from '../types/badgeage.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/presences/badgeages'
 
@@ -51,7 +51,7 @@ export const useBadgeageStore = defineStore('presences-badgeage', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<BadgeageFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<BadgeageFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Badgeage>(API_PATH, {

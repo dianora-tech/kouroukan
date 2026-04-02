@@ -75,7 +75,13 @@ function scrollTo(index: number) {
   if (!carouselRef.value) return
   const cards = carouselRef.value.children
   if (cards[index]) {
-    (cards[index] as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+    const card = cards[index] as HTMLElement
+    const container = carouselRef.value
+    // Scroll horizontally within the container only — never scroll the page
+    container.scrollTo({
+      left: card.offsetLeft - container.offsetLeft,
+      behavior: 'smooth',
+    })
     currentIndex.value = index
   }
 }

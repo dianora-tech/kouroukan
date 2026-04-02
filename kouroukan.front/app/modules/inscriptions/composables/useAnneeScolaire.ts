@@ -34,7 +34,7 @@ export function useAnneeScolaire() {
     store.items.map(a => ({ label: a.libelle, value: a.id })),
   )
 
-  async function fetchAll(params?: Partial<AnneeScolaireFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<AnneeScolaireFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

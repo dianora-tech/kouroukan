@@ -67,40 +67,107 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('presences.badgeage.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('presences.badgeage.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('presences.badgeage.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('presences.badgeage.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('presences.badgeage.eleveId')" name="eleveId" required>
-      <UInput v-model.number="state.eleveId" type="number" :placeholder="t('presences.badgeage.elevePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('presences.badgeage.eleveId')"
+      name="eleveId"
+      required
+    >
+      <UInput
+        v-model.number="state.eleveId"
+        type="number"
+        :placeholder="t('presences.badgeage.elevePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('presences.badgeage.dateBadgeage')" name="dateBadgeage" required>
-        <UInput v-model="state.dateBadgeage" type="date" class="w-full" />
+      <UFormField
+        :label="t('presences.badgeage.dateBadgeage')"
+        name="dateBadgeage"
+        required
+      >
+        <UInput
+          v-model="state.dateBadgeage"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('presences.badgeage.heureBadgeage')" name="heureBadgeage" required>
-        <UInput v-model="state.heureBadgeage" type="time" class="w-full" />
+      <UFormField
+        :label="t('presences.badgeage.heureBadgeage')"
+        name="heureBadgeage"
+        required
+      >
+        <UInput
+          v-model="state.heureBadgeage"
+          type="time"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('presences.badgeage.pointAcces')" name="pointAcces" required>
-        <USelect v-model="state.pointAcces" :items="pointAccesOptions" value-key="value" :placeholder="t('presences.badgeage.pointAccesPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('presences.badgeage.pointAcces')"
+        name="pointAcces"
+        required
+      >
+        <USelect
+          v-model="state.pointAcces"
+          :items="pointAccesOptions"
+          value-key="value"
+          :placeholder="t('presences.badgeage.pointAccesPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('presences.badgeage.methodeBadgeage')" name="methodeBadgeage" required>
-        <USelect v-model="state.methodeBadgeage" :items="methodeOptions" value-key="value" :placeholder="t('presences.badgeage.methodePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('presences.badgeage.methodeBadgeage')"
+        name="methodeBadgeage"
+        required
+      >
+        <USelect
+          v-model="state.methodeBadgeage"
+          :items="methodeOptions"
+          value-key="value"
+          :placeholder="t('presences.badgeage.methodePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

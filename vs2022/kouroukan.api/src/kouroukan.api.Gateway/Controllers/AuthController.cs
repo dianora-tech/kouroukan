@@ -251,6 +251,84 @@ public sealed class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// Retourne le statut d'onboarding de l'etablissement de l'utilisateur.
+    /// </summary>
+    [HttpGet("onboarding/status")]
+    [Authorize]
+    [ProducesResponseType(typeof(ApiResponse<OnboardingStatusDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetOnboardingStatus(CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                       ?? User.FindFirst("sub")?.Value;
+        if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<object>.Fail("Token invalide."));
+
+        var status = await _tokenService.GetOnboardingStatusAsync(userId, cancellationToken);
+        if (status is null)
+            return NotFound(ApiResponse<object>.Fail("Etablissement introuvable."));
+
+        return Ok(ApiResponse<OnboardingStatusDto>.Ok(status));
+    }
+
+    /// <summary>
+    /// Met a jour l'etape d'onboarding de l'etablissement.
+    /// </summary>
+    [HttpPut("onboarding/step")]
+    [Authorize]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateOnboardingStep([FromBody] UpdateOnboardingStepRequest request, CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                       ?? User.FindFirst("sub")?.Value;
+        if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<object>.Fail("Token invalide."));
+
+        if (request.Step < 1 || request.Step > 6)
+            return BadRequest(ApiResponse<object>.Fail("L'etape doit etre entre 1 et 6."));
+
+        await _tokenService.UpdateOnboardingStepAsync(userId, request.Step, cancellationToken);
+
+        return Ok(ApiResponse<object>.Ok(null!, "Etape d'onboarding mise a jour."));
+    }
+
+    /// <summary>
+    /// Marque l'onboarding comme termine (skip ou completion).
+    /// </summary>
+    [HttpPut("onboarding/skip")]
+    [Authorize]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SkipOnboarding(CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                       ?? User.FindFirst("sub")?.Value;
+        if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<object>.Fail("Token invalide."));
+
+        await _tokenService.CompleteOnboardingAsync(userId, cancellationToken);
+
+        return Ok(ApiResponse<object>.Ok(null!, "Onboarding termine."));
+    }
+
+    /// <summary>
+    /// Met a jour les informations de l'etablissement.
+    /// </summary>
+    [HttpPut("company")]
+    [Authorize]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateCompany([FromBody] UpdateCompanyRequest request, CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                       ?? User.FindFirst("sub")?.Value;
+        if (userIdClaim is null || !int.TryParse(userIdClaim, out var userId))
+            return Unauthorized(ApiResponse<object>.Fail("Token invalide."));
+
+        await _tokenService.UpdateCompanyAsync(userId, request, cancellationToken);
+
+        return Ok(ApiResponse<object>.Ok(null!, "Etablissement mis a jour."));
+    }
+
+    /// <summary>
     /// Upload ou remplace la photo de profil (avatar) de l'utilisateur.
     /// Formats acceptes : JPEG, PNG, WebP. Taille max : 2 MB.
     /// </summary>

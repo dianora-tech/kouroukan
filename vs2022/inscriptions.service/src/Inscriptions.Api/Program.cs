@@ -92,12 +92,18 @@ try
     builder.Services.AddScoped<IEleveService, EleveService>();
     builder.Services.AddScoped<IDossierAdmissionService, DossierAdmissionService>();
     builder.Services.AddScoped<IInscriptionService, InscriptionService>();
+    builder.Services.AddScoped<ITransfertService, TransfertService>();
+    builder.Services.AddScoped<IRadiationService, RadiationService>();
+    builder.Services.AddScoped<ILiaisonParentService, LiaisonParentService>();
 
     // 10. Repositories
     builder.Services.AddScoped<IAnneeScolaireRepository, AnneeScolaireRepository>();
     builder.Services.AddScoped<IEleveRepository, EleveRepository>();
     builder.Services.AddScoped<IDossierAdmissionRepository, DossierAdmissionRepository>();
     builder.Services.AddScoped<IInscriptionRepository, InscriptionRepository>();
+    builder.Services.AddScoped<ITransfertRepository, TransfertRepository>();
+    builder.Services.AddScoped<IRadiationRepository, RadiationRepository>();
+    builder.Services.AddScoped<ILiaisonParentRepository, LiaisonParentRepository>();
 
     // 11. Swagger
     builder.Services.AddControllers();
@@ -158,3 +164,8 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+/// <summary>
+/// Partial class marker to make Program accessible from integration tests.
+/// </summary>
+public partial class Program { }

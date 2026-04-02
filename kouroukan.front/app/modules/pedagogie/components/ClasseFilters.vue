@@ -71,7 +71,12 @@ onMounted(() => {
       @update:model-value="onFilterChange"
     />
 
-    <UButton variant="ghost" size="sm" icon="i-heroicons-x-mark" @click="resetFilters">
+    <UButton
+      variant="ghost"
+      size="sm"
+      icon="i-heroicons-x-mark"
+      @click="resetFilters"
+    >
       {{ $t('pedagogie.classe.filters.reset') }}
     </UButton>
   </div>
