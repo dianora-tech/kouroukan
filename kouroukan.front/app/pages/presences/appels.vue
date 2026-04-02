@@ -11,7 +11,7 @@ import AppelStats from '~/modules/presences/components/AppelStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -37,7 +37,7 @@ const deletingEntity = ref<Appel | null>(null)
 const columns: Column[] = [
   { key: 'classeName', label: t('presences.appel.classe'), sortable: true },
   { key: 'enseignantNom', label: t('presences.appel.enseignant'), sortable: true },
-  { key: 'dateAppel', label: t('presences.appel.dateAppel'), sortable: true },
+  { key: 'dateAppel', label: t('presences.appel.dateAppel'), sortable: true, render: (row: any) => formatDate(row.dateAppel) },
   { key: 'heureAppel', label: t('presences.appel.heureAppel'), sortable: true },
   { key: 'estCloture', label: t('presences.appel.statut'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
@@ -147,9 +147,6 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         </template>
         <template #cell-enseignantNom="{ row }">
           {{ (row as Appel).enseignantNom ?? `#${(row as Appel).enseignantId}` }}
-        </template>
-        <template #cell-dateAppel="{ row }">
-          {{ formatDateShort((row as Appel).dateAppel) }}
         </template>
         <template #cell-estCloture="{ row }">
           <UBadge :color="(row as Appel).estCloture ? 'success' : 'warning'" variant="subtle" size="sm">

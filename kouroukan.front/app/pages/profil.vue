@@ -6,12 +6,12 @@ definePageMeta({
 })
 
 const { t } = useI18n()
-const { formatDateTime } = useFormatDate()
 const auth = useAuthStore()
 const toast = useToast()
 
 const saving = ref(false)
 const uploadingAvatar = ref(false)
+const { formatDateTime } = useFormatDate()
 
 const userInitials = computed(() => {
   const first = auth.user?.firstName?.[0] ?? ''
@@ -195,7 +195,7 @@ async function handleSave(): Promise<void> {
         <div class="w-full border-t border-gray-100 pt-4 dark:border-gray-800">
           <p class="text-center text-xs text-gray-400 dark:text-gray-500">
             {{ $t('profil.lastLogin') }}:
-            {{ formatDateTime(auth.lastLoginAt) }}
+            {{ auth.lastLoginAt ? formatDateTime(auth.lastLoginAt) : '—' }}
           </p>
         </div>
       </div>

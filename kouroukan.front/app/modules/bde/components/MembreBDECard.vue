@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 
 function formatMontant(montant: number): string {
   return new Intl.NumberFormat('fr-GN', { style: 'decimal' }).format(montant) + ' GNF'
@@ -40,7 +41,7 @@ function formatMontant(montant: number): string {
       </p>
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ membre.dateAdhesion }}
+        {{ formatDate(membre.dateAdhesion) }}
       </p>
       <p v-if="membre.montantCotisation">
         <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />

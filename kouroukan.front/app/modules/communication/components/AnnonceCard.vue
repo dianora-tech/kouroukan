@@ -11,7 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 
 function getStatutColor(estActive: boolean): string {
   return estActive ? 'success' : 'neutral'
@@ -53,8 +53,8 @@ function getPrioriteColor(priorite: number): string {
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ formatDateShort(annonce.dateDebut) }}
-        <span v-if="annonce.dateFin"> - {{ formatDateShort(annonce.dateFin) }}</span>
+        {{ formatDate(annonce.dateDebut) }}
+        <span v-if="annonce.dateFin"> - {{ formatDate(annonce.dateFin) }}</span>
       </p>
       <p>
         <UIcon name="i-heroicons-users" class="mr-1 inline h-4 w-4" />

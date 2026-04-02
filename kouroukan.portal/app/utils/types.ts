@@ -11,9 +11,20 @@ export interface PricingPlan {
   key: string
   name: string
   price: string
+  priceAmount: number
+  priceUnit: string
+  target: string
   description: string
   features: string[]
   recommended?: boolean
+}
+
+export type AccountType = 'etablissement' | 'enseignant' | 'parent'
+
+export interface ServiceDigital {
+  key: string
+  icon: string
+  available: boolean
 }
 
 export interface Testimonial {
@@ -42,6 +53,7 @@ export interface RegistrationPayload {
   prefecture?: string
   sousPrefecture?: string
   address?: string
+  accountType: AccountType
 }
 
 export interface PortalStats {

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Note } from '../types/note.types'
 
+const { formatDate } = useFormatDate()
+
 defineProps<{
   note: Note
 }>()
@@ -11,7 +13,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
 
 function getNoteColor(valeur: number, noteMax: number | undefined): string {
   const max = noteMax ?? 20
@@ -41,7 +42,7 @@ function getNoteColor(valeur: number, noteMax: number | undefined): string {
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ formatDateShort(note.dateSaisie) }}
+        {{ formatDate(note.dateSaisie) }}
       </p>
       <p v-if="note.commentaire">
         <UIcon name="i-heroicons-chat-bubble-left" class="mr-1 inline h-4 w-4" />

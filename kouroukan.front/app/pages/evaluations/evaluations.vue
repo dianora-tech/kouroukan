@@ -11,7 +11,7 @@ import EvaluationStats from '~/modules/evaluations/components/EvaluationStats.vu
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -40,7 +40,7 @@ const columns: Column[] = [
   { key: 'matiereName', label: t('evaluations.evaluation.matiere'), sortable: true },
   { key: 'classeName', label: t('evaluations.evaluation.classe'), sortable: true },
   { key: 'enseignantNom', label: t('evaluations.evaluation.enseignant'), sortable: true },
-  { key: 'dateEvaluation', label: t('evaluations.evaluation.dateEvaluation'), sortable: true },
+  { key: 'dateEvaluation', label: t('evaluations.evaluation.dateEvaluation'), sortable: true, render: (row: any) => formatDate(row.dateEvaluation) },
   { key: 'coefficient', label: t('evaluations.evaluation.coefficient'), sortable: true },
   { key: 'noteMaximale', label: t('evaluations.evaluation.noteMaximale'), sortable: true },
   { key: 'trimestre', label: t('evaluations.evaluation.trimestreLabel'), sortable: true },
@@ -146,9 +146,6 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
         @page-change="changePage"
         @sort="handleSort"
       >
-        <template #cell-dateEvaluation="{ row }">
-          {{ formatDateShort((row as Evaluation).dateEvaluation) }}
-        </template>
         <template #cell-trimestre="{ row }">
           <UBadge color="primary" variant="subtle" size="sm">
             {{ $t(`evaluations.evaluation.trimestre.${(row as Evaluation).trimestre}`) }}

@@ -66,6 +66,12 @@ try
     // Service de gestion des utilisateurs
     builder.Services.AddScoped<IUserService, UserService>();
 
+    // Services d'administration de la plateforme
+    builder.Services.AddScoped<IAdminService, AdminService>();
+    builder.Services.AddScoped<ILiaisonEnseignantService, LiaisonEnseignantService>();
+    builder.Services.AddScoped<IQrCodeService, QrCodeService>();
+    builder.Services.AddScoped<IForfaitUserService, ForfaitUserService>();
+
     // MinIO (stockage fichiers S3-compatible)
     builder.Services.AddSingleton<IMinioClient>(sp =>
     {

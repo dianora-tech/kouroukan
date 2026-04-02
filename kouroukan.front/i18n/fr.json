@@ -22,8 +22,43 @@
     "settings": "Paramètres",
     "establishment": "Établissement",
     "users": "Utilisateurs",
-    "moduleDisabled": "Module non inclus dans votre forfait",
-    "onboardingRequired": "Veuillez d'abord terminer la configuration de votre établissement"
+    "admin": {
+      "dashboard": "Tableau de bord",
+      "etablissements": "Établissements",
+      "enseignants": "Enseignants",
+      "parents": "Parents",
+      "anneesScolaires": "Années scolaires",
+      "niveauxClasses": "Niveaux de classes",
+      "matieres": "Matières",
+      "forfaits": "Forfaits",
+      "sms": "SMS",
+      "email": "Configuration Email",
+      "paiements": "Paiements",
+      "contenuIA": "Contenu IA",
+      "utilisateurs": "Utilisateurs"
+    },
+    "enseignant": {
+      "dashboard": "Tableau de bord",
+      "profil": "Mon profil",
+      "competences": "Mes compétences",
+      "etablissements": "Mes établissements",
+      "emploiDuTemps": "Emploi du temps",
+      "heures": "Mes heures",
+      "bulletins": "Mes bulletins",
+      "forfait": "Mon forfait"
+    },
+    "famille": {
+      "dashboard": "Tableau de bord",
+      "enfants": "Mes enfants",
+      "notes": "Notes & bulletins",
+      "emploiDuTemps": "Emploi du temps",
+      "absences": "Absences",
+      "communication": "Communication",
+      "paiements": "Paiements",
+      "documents": "Documents",
+      "options": "Services & Options",
+      "forfait": "Mon forfait"
+    }
   },
   "dashboard": {
     "welcome": "Bienvenue, {name}",
@@ -38,9 +73,7 @@
     "bdeDesc": "Associations et événements",
     "documentsDesc": "Modèles et documents générés",
     "servicesPremiumDesc": "Services à valeur ajoutée",
-    "supportDesc": "Tickets, aide et suggestions",
-    "moduleDisabled": "Module non inclus dans votre forfait",
-    "onboardingRequired": "Veuillez d'abord terminer la configuration de votre établissement"
+    "supportDesc": "Tickets, aide et suggestions"
   },
   "auth": {
     "loginTitle": "Connexion",
@@ -96,7 +129,8 @@
     "empty": "Aucune donnée à afficher",
     "showing": "Affichage de {from} à {to} sur {total}",
     "previous": "Précédent",
-    "next": "Suivant"
+    "next": "Suivant",
+    "search": "Rechercher..."
   },
   "actions": {
     "confirm": "Confirmer",
@@ -117,7 +151,11 @@
   "user": {
     "profile": "Mon profil",
     "settings": "Paramètres",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "language": "Langue",
+    "theme": "Thème",
+    "themeLight": "Mode clair",
+    "themeDark": "Mode sombre"
   },
   "inscriptions": {
     "subtitle": "Gestion des inscriptions, admissions et dossiers élèves",
@@ -311,9 +349,11 @@
       "libellePlaceholder": "Ex: 2025-2026",
       "dateDebut": "Date de début",
       "dateFin": "Date de fin",
+      "estActive": "Active",
       "active": "Active",
       "inactive": "Inactive",
       "filters": {
+        "allStatuts": "Toutes",
         "reset": "Réinitialiser"
       },
       "stats": {
@@ -1139,7 +1179,7 @@
     "subtitle": "Gestion du bureau des étudiants, associations et événements",
     "association": {
       "title": "Associations",
-      "description": "Gestion des associations et clubs étudiants",
+      "description": "Description",
       "add": "Ajouter une association",
       "edit": "Modifier l'association",
       "deleteTitle": "Supprimer l'association",
@@ -1148,7 +1188,6 @@
       "emptyDescription": "Commencez par créer votre première association ou club étudiant.",
       "name": "Nom",
       "namePlaceholder": "Nom de l'association",
-      "description": "Description",
       "descriptionPlaceholder": "Description de l'association",
       "sigle": "Sigle",
       "siglePlaceholder": "Ex: BDE, AS, CC",
@@ -1185,7 +1224,7 @@
     },
     "evenement": {
       "title": "Événements",
-      "description": "Gestion des événements et activités BDE",
+      "description": "Description",
       "add": "Ajouter un événement",
       "edit": "Modifier l'événement",
       "deleteTitle": "Supprimer l'événement",
@@ -1194,7 +1233,6 @@
       "emptyDescription": "Commencez par créer votre premier événement.",
       "name": "Nom",
       "namePlaceholder": "Nom de l'événement",
-      "description": "Description",
       "descriptionPlaceholder": "Description de l'événement",
       "type": "Type",
       "typeId": "Type d'événement",
@@ -1237,7 +1275,7 @@
     },
     "membreBde": {
       "title": "Membres BDE",
-      "description": "Gestion des membres des associations",
+      "description": "Notes",
       "add": "Ajouter un membre",
       "edit": "Modifier le membre",
       "deleteTitle": "Supprimer le membre",
@@ -1246,7 +1284,6 @@
       "emptyDescription": "Commencez par ajouter des membres aux associations.",
       "name": "Nom complet",
       "namePlaceholder": "Nom du membre",
-      "description": "Notes",
       "descriptionPlaceholder": "Notes sur le membre",
       "associationId": "Association",
       "associationPlaceholder": "Sélectionner une association",
@@ -1287,7 +1324,7 @@
     },
     "depenseBde": {
       "title": "Dépenses BDE",
-      "description": "Gestion des dépenses des associations",
+      "description": "Description",
       "add": "Ajouter une dépense",
       "edit": "Modifier la dépense",
       "deleteTitle": "Supprimer la dépense",
@@ -1296,7 +1333,6 @@
       "emptyDescription": "Commencez par enregistrer votre première dépense BDE.",
       "name": "Libellé",
       "namePlaceholder": "Libellé de la dépense",
-      "description": "Description",
       "descriptionPlaceholder": "Description complémentaire",
       "type": "Type",
       "typeId": "Type de dépense",
@@ -1768,108 +1804,475 @@
     "success": "Mot de passe modifié avec succès",
     "error": "Erreur lors du changement de mot de passe"
   },
-  "onboarding": {
-    "title": "Configuration de votre établissement",
-    "subtitle": "Suivez ces étapes pour rendre votre école opérationnelle",
-    "next": "Suivant",
-    "previous": "Précédent",
-    "skip": "Passer",
-    "finish": "Terminer",
-    "finishLater": "Terminer plus tard",
-    "dataSaved": "Données sauvegardées avec succès",
-    "saving": "Enregistrement en cours...",
-    "completed": "Configuration terminée !",
-    "stepOf": "Étape {current}/{total}",
-    "validation": {
-      "required": "Ce champ est requis",
-      "emailFormat": "Format d'email invalide"
+  "enseignant": {
+    "title": "Enseignant",
+    "dashboard": {
+      "title": "Tableau de bord enseignant",
+      "subtitle": "Vue d'ensemble de votre activité d'enseignement",
+      "etablissements": "Établissements liés",
+      "heuresMois": "Heures ce mois",
+      "prochainsCours": "Prochains cours",
+      "mesEtablissements": "Mes établissements",
+      "ceMois": "ce mois"
     },
-    "steps": {
-      "establishment": "Établissement",
-      "schoolYear": "Année scolaire",
-      "classes": "Classes",
-      "subjects": "Matières"
+    "statut": {
+      "active": "Actif",
+      "pending": "En attente",
+      "accepted": "Accepté",
+      "terminated": "Terminé"
     },
-    "banner": {
-      "title": "Configurez votre établissement",
-      "description": "Vous êtes à l'étape {step}/{total} de la configuration",
-      "start": "Commencer",
-      "resume": "Reprendre"
+    "cours": {
+      "jour": "Jour",
+      "horaire": "Horaire",
+      "matiere": "Matière",
+      "classe": "Classe",
+      "etablissement": "Établissement"
     },
-    "establishment": {
-      "title": "Informations de l'établissement",
-      "description": "Complétez les informations de votre école pour personnaliser la plateforme.",
-      "name": "Nom de l'établissement",
-      "namePlaceholder": "Ex: École Primaire de Conakry",
-      "descriptionLabel": "Description",
-      "descriptionPlaceholder": "Brève description de votre établissement",
-      "phone": "Téléphone",
-      "phonePlaceholder": "Ex: 622 00 00 00",
+    "profil": {
+      "title": "Mon profil",
+      "infosPersonnelles": "Informations personnelles",
+      "nom": "Nom",
+      "prenom": "Prénom",
+      "telephone": "Téléphone",
       "email": "Email",
-      "emailPlaceholder": "contact{'@'}ecole.gn",
-      "address": "Adresse",
-      "addressPlaceholder": "Adresse complète",
-      "type": "Type d'établissement",
-      "typePlaceholder": "Sélectionnez le type",
-      "types": {
-        "preuniversitaire": "Pré-universitaire (Primaire, Collège, Lycée)",
-        "universitaire": "Universitaire (Licence, Master, Doctorat)",
-        "formationPro": "Formation Professionnelle (CAP, BEP, BTS)",
-        "francoArabe": "Franco-Arabe",
-        "public": "Public",
-        "priveLaique": "Privé Laïque",
-        "communautaire": "Communautaire"
-      },
-      "saved": "Informations de l'établissement enregistrées"
+      "identifiant": "Identifiant unique",
+      "qrCode": "QR Code",
+      "partagerQR": "Partager mon QR code",
+      "enregistrer": "Enregistrer",
+      "saveSuccess": "Profil enregistré avec succès",
+      "saveError": "Erreur lors de l'enregistrement du profil"
     },
-    "schoolYear": {
-      "title": "Année scolaire",
-      "description": "Sélectionnez l'année scolaire pour laquelle vous souhaitez configurer votre établissement.",
-      "selectLabel": "Année scolaire",
-      "selectPlaceholder": "Choisir une année scolaire",
-      "codeLabel": "Code",
-      "startDate": "Date de début",
-      "endDate": "Date de fin",
-      "effectiveStart": "Date de rentrée",
-      "periods": "Périodes",
-      "trimesters": "trimestres",
-      "semesters": "semestres",
-      "statusPreparation": "En préparation",
-      "statusActive": "Active",
-      "statusClosed": "Clôturée",
-      "statusArchived": "Archivée",
-      "noYearsAvailable": "Aucune année scolaire disponible",
-      "contactAdmin": "Contactez votre administrateur pour créer une année scolaire.",
-      "saved": "Année scolaire sélectionnée"
+    "competences": {
+      "title": "Mes compétences",
+      "matiere": "Matière",
+      "cycle": "Cycle",
+      "ajouter": "Ajouter une compétence",
+      "matierePlaceholder": "Ex: Mathématiques",
+      "fetchError": "Erreur lors du chargement des compétences",
+      "createSuccess": "Compétence ajoutée avec succès",
+      "createError": "Erreur lors de l'ajout de la compétence",
+      "deleteSuccess": "Compétence supprimée avec succès",
+      "deleteError": "Erreur lors de la suppression de la compétence"
     },
-    "classes": {
-      "title": "Niveaux et classes",
-      "description": "Sélectionnez les niveaux enseignés et créez vos classes. Cliquez sur un niveau pour ajouter une classe.",
-      "addedClasses": "Classes ajoutées",
-      "capacity": "places",
-      "empty": "Cliquez sur les niveaux ci-dessus pour ajouter des classes",
-      "existing": "Classes déjà enregistrées",
-      "saved": "Classes créées"
+    "etablissements": {
+      "title": "Mes établissements",
+      "liaisonsActives": "Liaisons actives",
+      "historique": "Historique des liaisons",
+      "nom": "Établissement",
+      "statut": "Statut",
+      "date": "Date",
+      "accepter": "Accepter",
+      "refuser": "Refuser",
+      "fetchError": "Erreur lors du chargement des établissements",
+      "acceptSuccess": "Liaison acceptée avec succès",
+      "acceptError": "Erreur lors de l'acceptation de la liaison",
+      "rejectSuccess": "Liaison refusée",
+      "rejectError": "Erreur lors du refus de la liaison"
     },
-    "subjects": {
-      "title": "Matières enseignées",
-      "description": "Sélectionnez les matières par cycle et ajustez les coefficients. Chaque coefficient est adapté au niveau de classe.",
-      "coefficient": "coeff.",
-      "addCustom": "Ajouter une matière personnalisée",
-      "addCustomHint": "La matière sera ajoutée à tous les cycles avec un coefficient par défaut de 2.",
+    "emploiDuTemps": {
+      "title": "Emploi du temps"
+    },
+    "heures": {
+      "title": "Suivi des heures",
+      "totalMois": "Total heures ce mois",
+      "date": "Date",
+      "etablissement": "Établissement",
+      "classe": "Classe",
+      "matiere": "Matière",
+      "duree": "Durée"
+    },
+    "bulletins": {
+      "title": "Bulletins auto-générés",
+      "subtitle": "Liste des bulletins générés par établissement",
+      "etablissement": "Établissement",
+      "classe": "Classe",
+      "trimestre": "Trimestre",
+      "date": "Date",
+      "statut": "Statut",
+      "genere": "Généré",
+      "en_attente": "En attente"
+    },
+    "forfait": {
+      "title": "Mon forfait",
+      "forfaitActuel": "Forfait actuel",
+      "nom": "Forfait",
+      "dateDebut": "Date début",
+      "dateFinEssai": "Fin période d'essai",
+      "prix": "Prix",
+      "statut": "Statut",
+      "historiquePaiements": "Historique des paiements",
+      "datePaiement": "Date",
+      "montant": "Montant",
+      "paye": "Payé"
+    }
+  },
+  "famille": {
+    "title": "Famille",
+    "dashboard": {
+      "title": "Tableau de bord famille",
+      "subtitle": "Suivez la scolarité de vos enfants",
+      "moyenne": "Moyenne",
+      "rang": "Rang",
+      "presence": "Présence",
+      "evolutionNotes": "Évolution des notes",
+      "graphiquePlaceholder": "Graphique d'évolution (à venir)",
+      "prochainsEvenements": "Prochains événements"
+    },
+    "enfants": {
+      "title": "Mes enfants",
+      "monQRCode": "Mon QR Code parent",
+      "qrDescription": "Présentez ce QR code à l'établissement pour lier votre compte",
+      "classe": "Classe",
+      "etablissement": "Établissement",
+      "fetchError": "Erreur lors du chargement des enfants"
+    },
+    "notes": {
+      "title": "Notes & bulletins",
+      "moyenneGenerale": "Moyenne générale",
+      "matiere": "Matière",
+      "note": "Note",
+      "coefficient": "Coeff.",
+      "appreciation": "Appréciation",
+      "enseignant": "Enseignant",
+      "paye": "Payé"
+    },
+    "emploiDuTemps": {
+      "title": "Emploi du temps"
+    },
+    "absences": {
+      "title": "Absences",
+      "date": "Date",
+      "motif": "Motif",
+      "duree": "Durée",
+      "justifie": "Justifié",
+      "oui": "Oui",
+      "non": "Non"
+    },
+    "communication": {
+      "title": "Messages"
+    },
+    "paiements": {
+      "title": "Paiement scolarité",
+      "montantDu": "Montant dû",
+      "montantPaye": "Montant payé",
+      "reste": "Reste à payer",
+      "payer": "Payer maintenant",
+      "historique": "Historique des paiements",
+      "date": "Date",
+      "montant": "Montant",
+      "methode": "Méthode",
+      "statut": "Statut",
+      "confirme": "Confirmé",
+      "fetchError": "Erreur lors du chargement des paiements",
+      "createSuccess": "Paiement enregistré avec succès",
+      "createError": "Erreur lors de l'enregistrement du paiement",
+      "paymentSuccess": "Paiement effectué avec succès",
+      "paymentError": "Erreur lors du paiement"
+    },
+    "documents": {
+      "title": "Documents",
+      "telecharger": "Télécharger"
+    },
+    "forfait": {
+      "title": "Mon forfait",
+      "actif": "Actif",
+      "classe": "Classe",
+      "forfaitNom": "Forfait",
+      "prix": "Prix",
+      "depuis": "Depuis",
+      "historiquePaiements": "Historique des paiements",
+      "datePaiement": "Date",
+      "montant": "Montant",
+      "description": "Description",
+      "statut": "Statut",
+      "paye": "Payé"
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "dashboard": "Tableau de bord",
+    "comingSoon": "Fonctionnalité à venir",
+    "kpi": {
+      "etablissements": "Établissements",
+      "enseignants": "Enseignants",
+      "parents": "Parents",
+      "eleves": "Élèves"
+    },
+    "revenus": {
+      "title": "Revenus mensuels"
+    },
+    "demographie": {
+      "title": "Répartition par région"
+    },
+    "ameliorations": {
+      "title": "Axes d'amélioration"
+    },
+    "usage": {
+      "connexionMoyenne": "Taux de connexion",
+      "tauxUtilisationNotes": "Utilisation notes",
+      "tauxPaiementEnLigne": "Paiement en ligne",
+      "smsEnvoyes": "SMS envoyés"
+    },
+    "forfaitStats": {
+      "title": "Taux de forfaits actifs"
+    },
+    "forfait": {
+      "title": "Forfaits & Gestes commerciaux",
+      "tabForfaits": "Forfaits",
+      "tabGestes": "Gestes commerciaux",
+      "nom": "Nom",
+      "type": "Type",
+      "montantMensuel": "Montant mensuel",
+      "montantAnnuel": "Montant annuel",
+      "dateEffet": "Date d'effet",
+      "statut": "Statut",
+      "edit": "Modifier le forfait",
+      "beneficiaire": "Bénéficiaire",
+      "typeGeste": "Type de geste",
+      "montant": "Montant",
+      "raison": "Raison",
+      "dateCreation": "Date de création",
+      "fetchError": "Erreur lors du chargement des forfaits",
+      "createSuccess": "Forfait créé avec succès",
+      "createError": "Erreur lors de la création du forfait",
+      "updateSuccess": "Forfait modifié avec succès",
+      "updateError": "Erreur lors de la modification du forfait",
+      "deleteSuccess": "Forfait supprimé avec succès",
+      "deleteError": "Erreur lors de la suppression du forfait"
+    },
+    "etablissement": {
+      "title": "Établissements",
+      "nom": "Nom",
+      "type": "Type",
+      "ville": "Ville",
+      "forfait": "Forfait",
+      "statut": "Statut",
+      "nbEleves": "Nb élèves",
+      "add": "Ajouter un établissement",
+      "edit": "Modifier l'établissement",
+      "deleteTitle": "Supprimer l'établissement",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet établissement ?",
+      "fetchError": "Erreur lors du chargement des établissements",
+      "updateSuccess": "Établissement modifié avec succès",
+      "updateError": "Erreur lors de la modification de l'établissement",
+      "telephone": "Téléphone",
+      "nbUtilisateurs": "Utilisateurs",
+      "directeur": "Directeur",
+      "region": "Région",
+      "prefecture": "Préfecture",
+      "commune": "Commune",
+      "sousPrefecture": "Sous-préfecture",
+      "adresse": "Adresse",
+      "selectRegion": "Sélectionner une région",
+      "selectPrefecture": "Sélectionner une préfecture",
+      "selectSousPrefecture": "Sélectionner une sous-préfecture",
+      "deleteError": "Erreur lors de la suppression",
+      "deleteSuccess": "Établissement supprimé avec succès"
+    },
+    "contenuIA": {
+      "title": "Contenu IA",
+      "rubrique": "Rubrique",
+      "titre": "Titre",
+      "dateModification": "Date modification",
+      "auteur": "Auteur",
+      "add": "Ajouter du contenu",
+      "edit": "Modifier le contenu",
+      "deleteTitle": "Supprimer le contenu",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce contenu ?",
+      "toutesRubriques": "Toutes les rubriques",
+      "pedagogique": "Pédagogique",
+      "systemeEducatif": "Système éducatif",
+      "datesImportantes": "Dates importantes",
+      "reglements": "Règlements",
+      "fetchError": "Erreur lors du chargement du contenu IA",
+      "createSuccess": "Contenu créé avec succès",
+      "createError": "Erreur lors de la création du contenu",
+      "updateSuccess": "Contenu modifié avec succès",
+      "updateError": "Erreur lors de la modification du contenu",
+      "deleteSuccess": "Contenu supprimé avec succès",
+      "deleteError": "Erreur lors de la suppression du contenu"
+    },
+    "sms": {
+      "title": "Configuration SMS",
+      "solde": "Solde",
+      "smsRestants": "SMS restants",
+      "coutUnitaire": "Coût unitaire",
+      "configApi": "Configuration API",
+      "apiKey": "Clé API",
+      "save": "Enregistrer",
+      "historique": "Historique des envois",
+      "destinataire": "Destinataire",
+      "message": "Message",
+      "statut": "Statut",
+      "date": "Date",
+      "cout": "Coût",
+      "saveSuccess": "Configuration SMS enregistrée",
+      "saveError": "Erreur lors de l'enregistrement de la configuration SMS"
+    },
+    "email": {
+      "title": "Configuration Email",
+      "smtpConfig": "Configuration SMTP",
+      "host": "Serveur SMTP",
+      "port": "Port",
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "Laisser vide pour ne pas modifier",
+      "expediteurNom": "Nom de l'expéditeur",
+      "expediteurEmail": "Email de l'expéditeur",
+      "enableTls": "Activer TLS",
+      "save": "Enregistrer",
+      "testTitle": "Envoyer un email de test",
+      "testRecipient": "Adresse email de test",
+      "sendTest": "Envoyer le test",
+      "saveSuccess": "Configuration email enregistrée",
+      "saveError": "Erreur lors de l'enregistrement",
+      "testSuccess": "Email de test envoyé avec succès",
+      "testError": "Erreur lors de l'envoi de l'email de test"
+    },
+    "paiement": {
+      "title": "Paiements Mobile Money",
+      "operateur": "Opérateur",
+      "type": "Type",
+      "montant": "Montant",
+      "reference": "Référence",
+      "date": "Date",
+      "statut": "Statut",
+      "historique": "Historique des transactions",
+      "numero": "Numéro de compte",
+      "addAccount": "Ajouter un compte",
+      "addSuccess": "Compte ajouté avec succès",
+      "addError": "Erreur lors de l'ajout du compte",
+      "fetchError": "Erreur lors du chargement des paiements",
+      "createSuccess": "Paiement créé avec succès",
+      "createError": "Erreur lors de la création du paiement",
+      "updateSuccess": "Paiement modifié avec succès",
+      "updateError": "Erreur lors de la modification du paiement",
+      "deleteSuccess": "Paiement supprimé avec succès",
+      "deleteError": "Erreur lors de la suppression du paiement"
+    },
+    "enseignant": {
+      "title": "Enseignants",
+      "nom": "Nom",
+      "telephone": "Téléphone",
+      "specialites": "Spécialités",
+      "nbEtablissements": "Établissements",
+      "forfait": "Forfait",
+      "prenom": "Prénom",
+      "sansTelephone": "Sans téléphone",
+      "add": "Ajouter un enseignant",
+      "edit": "Modifier l'enseignant",
+      "deleteTitle": "Supprimer l'enseignant",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet enseignant ?"
+    },
+    "parent": {
+      "title": "Parents",
+      "nom": "Nom",
+      "prenom": "Prénom",
+      "telephone": "Téléphone",
+      "nbEnfants": "Nb enfants",
+      "forfait": "Forfait",
+      "add": "Ajouter un parent",
+      "edit": "Modifier le parent",
+      "deleteTitle": "Supprimer le parent",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce parent ?"
+    },
+    "matiere": {
+      "title": "Matières",
       "code": "Code",
-      "name": "Nom",
-      "namePlaceholder": "Nom de la matière",
-      "add": "Ajouter",
-      "existing": "Matières déjà enregistrées",
-      "suggested": "Matières suggérées",
-      "noLevels": "Aucun niveau de classe n'a été créé. Veuillez d'abord créer des classes à l'étape précédente.",
-      "saved": "Matières configurées"
+      "libelle": "Libellé",
+      "categorie": "Catégorie",
+      "coefficient": "Coefficient",
+      "selectCategorie": "Sélectionner une catégorie",
+      "add": "Ajouter une matière",
+      "edit": "Modifier la matière",
+      "deleteTitle": "Supprimer la matière",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette matière ?"
     },
-    "complete": {
-      "title": "Votre établissement est prêt !",
-      "description": "Félicitations ! Vous avez terminé la configuration de votre école. Vous pouvez maintenant accéder à tous les modules depuis le tableau de bord.",
-      "goToDashboard": "Aller au tableau de bord"
+    "categorie": {
+      "title": "Catégories de matières",
+      "nom": "Nom",
+      "description": "Description",
+      "add": "Ajouter une catégorie",
+      "edit": "Modifier la catégorie",
+      "deleteTitle": "Supprimer la catégorie",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
+      "fetchError": "Erreur lors du chargement des catégories",
+      "createSuccess": "Catégorie créée avec succès",
+      "updateSuccess": "Catégorie mise à jour",
+      "deleteSuccess": "Catégorie supprimée"
+    },
+    "niveauClasse": {
+      "title": "Niveaux de classes",
+      "code": "Code",
+      "libelle": "Libellé",
+      "cycle": "Cycle",
+      "ordre": "Ordre",
+      "add": "Ajouter un niveau",
+      "edit": "Modifier le niveau",
+      "deleteTitle": "Supprimer le niveau",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce niveau ?"
+    },
+    "utilisateur": {
+      "title": "Utilisateurs",
+      "nom": "Nom",
+      "email": "Email",
+      "telephone": "Téléphone",
+      "role": "Rôle",
+      "etablissement": "Établissement",
+      "statut": "Statut",
+      "prenom": "Prénom",
+      "derniereConnexion": "Dernière connexion",
+      "edit": "Modifier l'utilisateur",
+      "deleteTitle": "Supprimer l'utilisateur",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+    }
+  },
+  "forfaitGating": {
+    "title": "Fonctionnalité Premium",
+    "description": "Cette fonctionnalité nécessite un forfait actif. Souscrivez pour débloquer toutes les fonctionnalités.",
+    "cta": "Voir les forfaits",
+    "studentLimit": {
+      "title": "Limite d'élèves atteinte",
+      "description": "Votre forfait gratuit est limité à {limit} élèves. Passez au forfait Standard pour un nombre illimité.",
+      "progress": "{current} / {limit} élèves"
+    },
+    "locked": "Forfait requis"
+  },
+  "forfait": {
+    "currentPlan": "Mon forfait actuel",
+    "noPlan": "Aucun forfait actif",
+    "noPlanDescription": "Souscrivez à un forfait pour débloquer toutes les fonctionnalités.",
+    "subscribe": "Souscrire",
+    "cancel": "Résilier",
+    "cancelConfirm": "Êtes-vous sûr de vouloir résilier votre forfait ? Votre accès restera actif jusqu'à la fin de la période payée.",
+    "cancelSuccess": "Forfait résilié avec succès",
+    "cancelError": "Erreur lors de la résiliation du forfait",
+    "subscribeSuccess": "Forfait souscrit avec succès",
+    "subscribeError": "Erreur lors de la souscription",
+    "fetchPlansError": "Erreur lors du chargement des plans",
+    "fetchHistoryError": "Erreur lors du chargement de l'historique",
+    "activeUntil": "Actif jusqu'au {date}",
+    "history": "Historique des abonnements",
+    "noHistory": "Aucun historique d'abonnement",
+    "availablePlans": "Plans disponibles",
+    "payMore": "Prolonger",
+    "perMonth": "par mois",
+    "trialDays": "{days} jours d'essai gratuit",
+    "perChild": "par élève",
+    "selectChild": "Sélectionner un enfant",
+    "status": {
+      "actif": "Actif",
+      "resilie": "Résilié",
+      "expire": "Expiré",
+      "essai": "Essai",
+      "annule": "Annulé"
+    },
+    "columns": {
+      "forfait": "Forfait",
+      "dateDebut": "Date de début",
+      "dateFin": "Date de fin",
+      "montant": "Montant",
+      "statut": "Statut"
     }
   }
 }

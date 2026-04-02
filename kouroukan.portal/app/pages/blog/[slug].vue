@@ -56,5 +56,9 @@ if (article.value) {
   useSeoMeta({ title: article.value.title, description: article.value.description })
 }
 
-const { formatDate } = useFormatDate()
+function formatDate(date: string): string {
+  const { locale } = useI18n()
+  const localeMap: Record<string, string> = { fr: 'fr-GN', en: 'en-US' }
+  return new Intl.DateTimeFormat(localeMap[locale.value] ?? locale.value, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(date))
+}
 </script>

@@ -12,7 +12,8 @@
         </UFormField>
       </div>
 
-      <UFormField :label="$t('inscription.step1.schoolName')" name="schoolName">
+      <!-- School name: only for etablissement -->
+      <UFormField v-if="accountType === 'etablissement'" :label="$t('inscription.step1.schoolName')" name="schoolName">
         <UInput
           v-model="data.schoolName"
           :placeholder="$t('inscription.step1.schoolNamePlaceholder')"
@@ -24,7 +25,11 @@
         <PhoneInput v-model="data.phone" />
       </UFormField>
 
-      <UFormField :label="$t('inscription.step1.email')" name="email">
+      <!-- Email: optional for parent, shown for others -->
+      <UFormField
+        :label="accountType === 'parent' ? $t('inscription.step1.emailOptional') : $t('inscription.step1.email')"
+        name="email"
+      >
         <UInput v-model="data.email" type="email" class="w-full" />
       </UFormField>
 
@@ -40,6 +45,8 @@
 </template>
 
 <script setup lang="ts">
+import type { AccountType } from '~/utils/types'
+
 defineProps<{
   data: {
     firstName: string
@@ -50,5 +57,6 @@ defineProps<{
     password: string
     confirmPassword: string
   }
+  accountType: AccountType | ''
 }>()
 </script>

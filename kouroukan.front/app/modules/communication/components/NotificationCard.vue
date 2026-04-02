@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 
 function getStatutEnvoiColor(estEnvoyee: boolean): string {
   return estEnvoyee ? 'success' : 'warning'
@@ -55,7 +56,7 @@ function getCanalIcon(canal: string): string {
       </p>
       <p v-if="notification.dateEnvoi">
         <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
-        {{ notification.dateEnvoi }}
+        {{ formatDate(notification.dateEnvoi) }}
       </p>
     </div>
 

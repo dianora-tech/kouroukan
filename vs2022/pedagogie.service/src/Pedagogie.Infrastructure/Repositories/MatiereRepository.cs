@@ -99,4 +99,50 @@ public sealed class MatiereRepository : IMatiereRepository
         var result = await connection.QueryAsync<TypeDto>(command).ConfigureAwait(false);
         return result.AsList().AsReadOnly();
     }
+
+    public async Task<TypeDto?> GetTypeByIdAsync(int id, CancellationToken ct = default)
+    {
+        const string sql = "SELECT id, name, description FROM pedagogie.type_matieres WHERE id = @Id AND is_deleted = FALSE";
+        using var connection = _connectionFactory.CreateConnection();
+        return await connection.QuerySingleOrDefaultAsync<TypeDto>(
+            new CommandDefinition(sql, new { Id = id }, cancellationToken: ct)).ConfigureAwait(false);
+    }
+
+    public async Task<TypeDto> AddTypeAsync(string name, string? description, CancellationToken ct = default)
+    {
+        const string sql = """
+            INSERT INTO pedagogie.type_matieres (name, description)
+            VALUES (@Name, @Description)
+            RETURNING id, name, description
+            """;
+        using var connection = _connectionFactory.CreateConnection();
+        return await connection.QuerySingleAsync<TypeDto>(
+            new CommandDefinition(sql, new { Name = name, Description = description }, cancellationToken: ct)).ConfigureAwait(false);
+    }
+
+    public async Task<bool> UpdateTypeAsync(int id, string name, string? description, CancellationToken ct = default)
+    {
+        const string sql = """
+            UPDATE pedagogie.type_matieres
+            SET name = @Name, description = @Description, updated_at = NOW()
+            WHERE id = @Id AND is_deleted = FALSE
+            """;
+        using var connection = _connectionFactory.CreateConnection();
+        var affected = await connection.ExecuteAsync(
+            new CommandDefinition(sql, new { Id = id, Name = name, Description = description }, cancellationToken: ct)).ConfigureAwait(false);
+        return affected > 0;
+    }
+
+    public async Task<bool> DeleteTypeAsync(int id, CancellationToken ct = default)
+    {
+        const string sql = """
+            UPDATE pedagogie.type_matieres
+            SET is_deleted = TRUE, deleted_at = NOW()
+            WHERE id = @Id AND is_deleted = FALSE
+            """;
+        using var connection = _connectionFactory.CreateConnection();
+        var affected = await connection.ExecuteAsync(
+            new CommandDefinition(sql, new { Id = id }, cancellationToken: ct)).ConfigureAwait(false);
+        return affected > 0;
+    }
 }

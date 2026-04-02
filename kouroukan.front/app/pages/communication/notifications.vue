@@ -11,7 +11,7 @@ import NotificationStats from '~/modules/communication/components/NotificationSt
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -39,7 +39,7 @@ const columns: Column[] = [
   { key: 'canal', label: t('communication.notification.canal'), sortable: true },
   { key: 'typeName', label: t('communication.notification.type'), sortable: false },
   { key: 'estEnvoyee', label: t('communication.notification.statut'), sortable: true },
-  { key: 'dateEnvoi', label: t('communication.notification.dateEnvoi'), sortable: true },
+  { key: 'dateEnvoi', label: t('communication.notification.dateEnvoi'), sortable: true, render: (row: any) => formatDate(row.dateEnvoi) },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
 
@@ -159,9 +159,6 @@ function getStatutEnvoiColor(estEnvoyee: boolean): string {
           <UBadge :color="getStatutEnvoiColor((row as Notification).estEnvoyee)" variant="subtle" size="sm">
             {{ (row as Notification).estEnvoyee ? $t('communication.notification.envoyee') : $t('communication.notification.enAttente') }}
           </UBadge>
-        </template>
-        <template #cell-dateEnvoi="{ row }">
-          {{ formatDateShort((row as Notification).dateEnvoi) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">

@@ -11,7 +11,7 @@ import SouscriptionStats from '~/modules/services-premium/components/Souscriptio
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -41,8 +41,8 @@ function formatMontant(montant: number): string {
 const columns: Column[] = [
   { key: 'serviceParentNom', label: t('servicesPremium.souscription.serviceParentId'), sortable: true },
   { key: 'parentNom', label: t('servicesPremium.souscription.parentId'), sortable: true },
-  { key: 'dateDebut', label: t('servicesPremium.souscription.dateDebut'), sortable: true },
-  { key: 'dateFin', label: t('servicesPremium.souscription.dateFin'), sortable: true },
+  { key: 'dateDebut', label: t('servicesPremium.souscription.dateDebut'), sortable: true, render: (row: any) => formatDate(row.dateDebut) },
+  { key: 'dateFin', label: t('servicesPremium.souscription.dateFin'), sortable: true, render: (row: any) => formatDate(row.dateFin) },
   { key: 'montantPaye', label: t('servicesPremium.souscription.montantPaye'), sortable: true },
   { key: 'statutSouscription', label: t('servicesPremium.souscription.statutSouscription'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
@@ -163,11 +163,8 @@ function getStatutColor(statut: string): string {
         <template #cell-parentNom="{ row }">
           {{ (row as Souscription).parentNom ?? `#${(row as Souscription).parentId}` }}
         </template>
-        <template #cell-dateDebut="{ row }">
-          {{ formatDateShort((row as Souscription).dateDebut) }}
-        </template>
         <template #cell-dateFin="{ row }">
-          <span v-if="(row as Souscription).dateFin">{{ formatDateShort((row as Souscription).dateFin) }}</span>
+          <span v-if="(row as Souscription).dateFin">{{ formatDate((row as Souscription).dateFin) }}</span>
           <span v-else class="text-gray-400">—</span>
         </template>
         <template #cell-montantPaye="{ row }">

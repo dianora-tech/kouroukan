@@ -11,7 +11,7 @@ import SignatureStats from '~/modules/documents/components/SignatureStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -42,7 +42,7 @@ const columns: Column[] = [
   { key: 'ordreSignature', label: t('documents.signature.ordreSignature'), sortable: true },
   { key: 'niveauSignature', label: t('documents.signature.niveauSignature'), sortable: true },
   { key: 'statutSignature', label: t('documents.signature.statutSignature'), sortable: true },
-  { key: 'dateSignature', label: t('documents.signature.dateSignature'), sortable: true },
+  { key: 'dateSignature', label: t('documents.signature.dateSignature'), sortable: true, render: (row: any) => formatDate(row.dateSignature) },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
 
@@ -166,7 +166,7 @@ function getStatutColor(statut: string): string {
           </UBadge>
         </template>
         <template #cell-dateSignature="{ row }">
-          {{ formatDateShort((row as Signature).dateSignature) }}
+          {{ formatDate((row as Signature).dateSignature) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">

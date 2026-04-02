@@ -330,8 +330,8 @@ public sealed class TokenService : ITokenService
 
         var companyId = await connection.ExecuteScalarAsync<int>(
             """
-            INSERT INTO auth.companies (name, phone_number, email, address, modules)
-            VALUES (@Name, @PhoneNumber, @Email, @Address, @Modules::text[])
+            INSERT INTO auth.companies (name, phone_number, email, address, modules, region_code, prefecture_code, sous_prefecture_code)
+            VALUES (@Name, @PhoneNumber, @Email, @Address, @Modules::text[], @RegionCode, @PrefectureCode, @SousPrefectureCode)
             RETURNING id
             """,
             new
@@ -340,7 +340,10 @@ public sealed class TokenService : ITokenService
                 PhoneNumber = request.PhoneNumber,
                 Email = string.IsNullOrWhiteSpace(request.Email) ? (string?)null : request.Email,
                 Address = request.Address,
-                Modules = request.Modules.ToArray()
+                Modules = request.Modules.ToArray(),
+                RegionCode = string.IsNullOrWhiteSpace(request.Region) ? (string?)null : request.Region.ToUpperInvariant(),
+                PrefectureCode = string.IsNullOrWhiteSpace(request.Prefecture) ? (string?)null : request.Prefecture.ToUpperInvariant(),
+                SousPrefectureCode = string.IsNullOrWhiteSpace(request.SousPrefecture) ? (string?)null : request.SousPrefecture.ToUpperInvariant()
             });
 
         // ── 7. Lier l'utilisateur a la company (role owner) ───────────────────

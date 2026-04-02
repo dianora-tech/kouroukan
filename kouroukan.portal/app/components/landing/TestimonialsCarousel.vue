@@ -77,9 +77,9 @@ function scrollTo(index: number) {
   if (cards[index]) {
     const card = cards[index] as HTMLElement
     const container = carouselRef.value
-    // Utiliser scrollLeft au lieu de scrollIntoView pour eviter de scroller la page entiere
+    // Scroll horizontally within the container only — never scroll the page
     container.scrollTo({
-      left: card.offsetLeft - container.offsetLeft - (container.clientWidth - card.clientWidth) / 2,
+      left: card.offsetLeft - container.offsetLeft,
       behavior: 'smooth',
     })
     currentIndex.value = index
@@ -87,25 +87,12 @@ function scrollTo(index: number) {
 }
 
 let autoplayInterval: ReturnType<typeof setInterval> | null = null
-const carouselVisible = ref(false)
 
 onMounted(() => {
-  // Ne demarrer l'autoplay que quand le carousel est visible dans le viewport
-  if (!carouselRef.value) return
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting && !carouselVisible.value) {
-        carouselVisible.value = true
-        autoplayInterval = setInterval(() => {
-          currentIndex.value = (currentIndex.value + 1) % TESTIMONIALS.length
-          scrollTo(currentIndex.value)
-        }, 5000)
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.3 },
-  )
-  observer.observe(carouselRef.value)
+  autoplayInterval = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % TESTIMONIALS.length
+    scrollTo(currentIndex.value)
+  }, 5000)
 })
 
 onUnmounted(() => {

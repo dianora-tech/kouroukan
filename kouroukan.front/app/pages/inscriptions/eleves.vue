@@ -11,7 +11,7 @@ import EleveStats from '~/modules/inscriptions/components/EleveStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -38,7 +38,7 @@ const columns: Column[] = [
   { key: 'numeroMatricule', label: t('inscriptions.eleve.numeroMatricule'), sortable: true },
   { key: 'lastName', label: t('inscriptions.eleve.lastName'), sortable: true },
   { key: 'firstName', label: t('inscriptions.eleve.firstName'), sortable: true },
-  { key: 'dateNaissance', label: t('inscriptions.eleve.dateNaissance'), sortable: true },
+  { key: 'dateNaissance', label: t('inscriptions.eleve.dateNaissance'), sortable: true, render: (row: any) => formatDate(row.dateNaissance) },
   { key: 'genre', label: t('inscriptions.eleve.genre'), sortable: false },
   { key: 'statutInscription', label: t('inscriptions.eleve.statutInscription'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
@@ -157,9 +157,6 @@ function getStatutColor(statut: string): string {
         @page-change="changePage"
         @sort="handleSort"
       >
-        <template #cell-dateNaissance="{ row }">
-          {{ formatDateShort((row as Eleve).dateNaissance) }}
-        </template>
         <template #cell-statutInscription="{ row }">
           <UBadge :color="getStatutColor((row as Eleve).statutInscription)" variant="subtle" size="sm">
             {{ $t(`inscriptions.eleve.statut.${(row as Eleve).statutInscription}`) }}

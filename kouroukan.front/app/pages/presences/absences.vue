@@ -11,7 +11,7 @@ import AbsenceStats from '~/modules/presences/components/AbsenceStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -38,7 +38,7 @@ const deletingEntity = ref<Absence | null>(null)
 const columns: Column[] = [
   { key: 'eleveNom', label: t('presences.absence.eleve'), sortable: true },
   { key: 'typeName', label: t('presences.absence.type'), sortable: true },
-  { key: 'dateAbsence', label: t('presences.absence.dateAbsence'), sortable: true },
+  { key: 'dateAbsence', label: t('presences.absence.dateAbsence'), sortable: true, render: (row: any) => formatDate(row.dateAbsence) },
   { key: 'heureDebut', label: t('presences.absence.heureDebut'), sortable: true },
   { key: 'heureFin', label: t('presences.absence.heureFin'), sortable: true },
   { key: 'estJustifiee', label: t('presences.absence.justification'), sortable: true },
@@ -146,9 +146,6 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       >
         <template #cell-eleveNom="{ row }">
           {{ (row as Absence).eleveNom ?? `#${(row as Absence).eleveId}` }}
-        </template>
-        <template #cell-dateAbsence="{ row }">
-          {{ formatDateShort((row as Absence).dateAbsence) }}
         </template>
         <template #cell-estJustifiee="{ row }">
           <UBadge :color="(row as Absence).estJustifiee ? 'success' : 'error'" variant="subtle" size="sm">

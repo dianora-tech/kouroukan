@@ -10,7 +10,4 @@ public sealed record UpdateMatiereCommand(
     string Name,
     string? Description,
     int TypeId,
-    string Code,
-    decimal Coefficient,
-    int NombreHeures,
-    int NiveauClasseId) : IRequest<bool>;
+    string Code) : IRequest<bool>;

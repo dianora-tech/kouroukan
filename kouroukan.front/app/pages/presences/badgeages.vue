@@ -11,7 +11,7 @@ import BadgeageStats from '~/modules/presences/components/BadgeageStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -38,7 +38,7 @@ const deletingEntity = ref<Badgeage | null>(null)
 const columns: Column[] = [
   { key: 'eleveNom', label: t('presences.badgeage.eleve'), sortable: true },
   { key: 'typeName', label: t('presences.badgeage.type'), sortable: true },
-  { key: 'dateBadgeage', label: t('presences.badgeage.dateBadgeage'), sortable: true },
+  { key: 'dateBadgeage', label: t('presences.badgeage.dateBadgeage'), sortable: true, render: (row: any) => formatDate(row.dateBadgeage) },
   { key: 'heureBadgeage', label: t('presences.badgeage.heureBadgeage'), sortable: true },
   { key: 'pointAcces', label: t('presences.badgeage.pointAcces'), sortable: true },
   { key: 'methodeBadgeage', label: t('presences.badgeage.methodeBadgeage'), sortable: true },
@@ -146,9 +146,6 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       >
         <template #cell-eleveNom="{ row }">
           {{ (row as Badgeage).eleveNom ?? `#${(row as Badgeage).eleveId}` }}
-        </template>
-        <template #cell-dateBadgeage="{ row }">
-          {{ formatDateShort((row as Badgeage).dateBadgeage) }}
         </template>
         <template #cell-pointAcces="{ row }">
           {{ $t(`presences.badgeage.pointAcces.${(row as Badgeage).pointAcces}`) }}

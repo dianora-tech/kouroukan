@@ -5,6 +5,16 @@ import type { PermissionKey } from './rbac'
  * Built dynamically from project modules.
  */
 export const ROUTE_PERMISSIONS: Record<string, PermissionKey> = {
+  // Espace admin (super_admin uniquement)
+  '/admin': 'admin:manage',
+
+  // Espace enseignant
+  '/enseignant': 'enseignant:manage',
+
+  // Espace famille (parent/élève)
+  '/famille': 'famille:read',
+
+  // Espace établissement
   '/inscriptions': 'inscriptions:read',
   '/pedagogie': 'pedagogie:read',
   '/evaluations': 'evaluations:read',

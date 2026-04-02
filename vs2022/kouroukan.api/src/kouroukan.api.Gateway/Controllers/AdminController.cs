@@ -1,0 +1,454 @@
+using Kouroukan.Api.Gateway.Models;
+using Kouroukan.Api.Gateway.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Kouroukan.Api.Gateway.Controllers;
+
+/// <summary>
+/// Controleur d'administration de la plateforme Kouroukan.
+/// Gere les forfaits, abonnements, gestes commerciaux, configurations,
+/// comptes Mobile Money, contenus IA et etablissements.
+/// Tous les endpoints necessitent la permission admin:manage.
+/// </summary>
+[ApiController]
+[Route("api/admin")]
+[Authorize(Policy = "RequirePermission:admin:manage")]
+public sealed class AdminController : ControllerBase
+{
+    private readonly IAdminService _adminService;
+
+    public AdminController(IAdminService adminService)
+    {
+        _adminService = adminService;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // FORFAITS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Liste les forfaits (pagine).
+    /// </summary>
+    [HttpGet("forfaits")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<ForfaitDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetForfaits([FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
+    {
+        var result = await _adminService.GetForfaitsAsync(page, pageSize, ct);
+        return Ok(ApiResponse<PagedResult<ForfaitDto>>.Ok(result));
+    }
+
+    /// <summary>
+    /// Recupere un forfait par son identifiant.
+    /// </summary>
+    [HttpGet("forfaits/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<ForfaitDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetForfait(int id, CancellationToken ct)
+    {
+        var forfait = await _adminService.GetForfaitByIdAsync(id, ct);
+        if (forfait is null)
+            return NotFound(ApiResponse<object>.Fail("Forfait introuvable."));
+
+        return Ok(ApiResponse<ForfaitDto>.Ok(forfait));
+    }
+
+    /// <summary>
+    /// Cree un nouveau forfait.
+    /// </summary>
+    [HttpPost("forfaits")]
+    [ProducesResponseType(typeof(ApiResponse<ForfaitDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateForfait([FromBody] CreateForfaitRequest request, CancellationToken ct)
+    {
+        var forfait = await _adminService.CreateForfaitAsync(request, ct);
+        return Ok(ApiResponse<ForfaitDto>.Ok(forfait, "Forfait cree avec succes."));
+    }
+
+    /// <summary>
+    /// Met a jour un forfait.
+    /// </summary>
+    [HttpPut("forfaits/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateForfait(int id, [FromBody] UpdateForfaitRequest request, CancellationToken ct)
+    {
+        await _adminService.UpdateForfaitAsync(id, request, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Forfait mis a jour."));
+    }
+
+    /// <summary>
+    /// Supprime un forfait (soft delete).
+    /// </summary>
+    [HttpDelete("forfaits/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteForfait(int id, CancellationToken ct)
+    {
+        await _adminService.DeleteForfaitAsync(id, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Forfait supprime."));
+    }
+
+    /// <summary>
+    /// Met a jour le tarif d'un forfait avec une date d'effet.
+    /// Insere un enregistrement dans auth.forfait_tarifs.
+    /// </summary>
+    [HttpPut("forfaits/{id:int}/tarif")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateForfaitTarif(int id, [FromBody] UpdateForfaitTarifRequest request, CancellationToken ct)
+    {
+        await _adminService.UpdateForfaitTarifAsync(id, request, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Tarif mis a jour."));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // ABONNEMENTS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Liste les abonnements (pagine, filtrable par type_cible).
+    /// </summary>
+    [HttpGet("abonnements")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<AbonnementDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAbonnements(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] int? companyId = null,
+        [FromQuery] int? userId = null,
+        CancellationToken ct = default)
+    {
+        var result = await _adminService.GetAbonnementsAsync(page, pageSize, companyId, userId, ct);
+        return Ok(ApiResponse<PagedResult<AbonnementDto>>.Ok(result));
+    }
+
+    /// <summary>
+    /// Cree un nouvel abonnement.
+    /// </summary>
+    [HttpPost("abonnements")]
+    [ProducesResponseType(typeof(ApiResponse<AbonnementDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateAbonnement([FromBody] CreateAbonnementRequest request, CancellationToken ct)
+    {
+        var abonnement = await _adminService.CreateAbonnementAsync(request, ct);
+        return Ok(ApiResponse<AbonnementDto>.Ok(abonnement, "Abonnement cree avec succes."));
+    }
+
+    /// <summary>
+    /// Met a jour un abonnement.
+    /// </summary>
+    [HttpPut("abonnements/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateAbonnement(int id, [FromBody] UpdateAbonnementRequest request, CancellationToken ct)
+    {
+        await _adminService.UpdateAbonnementAsync(id, request, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Abonnement mis a jour."));
+    }
+
+    /// <summary>
+    /// Supprime un abonnement (soft delete).
+    /// </summary>
+    [HttpDelete("abonnements/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteAbonnement(int id, CancellationToken ct)
+    {
+        await _adminService.DeleteAbonnementAsync(id, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Abonnement supprime."));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // GESTES COMMERCIAUX
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Liste les gestes commerciaux (filtrable par type_cible et company_id).
+    /// </summary>
+    [HttpGet("gestes-commerciaux")]
+    [ProducesResponseType(typeof(ApiResponse<List<GesteCommercialDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGestesCommerciaux(
+        [FromQuery] string? typeCible = null,
+        [FromQuery] int? companyId = null,
+        CancellationToken ct = default)
+    {
+        var items = await _adminService.GetGestesCommerciauxAsync(typeCible, companyId, ct);
+        return Ok(ApiResponse<List<GesteCommercialDto>>.Ok(items));
+    }
+
+    /// <summary>
+    /// Cree un nouveau geste commercial.
+    /// </summary>
+    [HttpPost("gestes-commerciaux")]
+    [ProducesResponseType(typeof(ApiResponse<GesteCommercialDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateGesteCommercial([FromBody] CreateGesteCommercialRequest request, CancellationToken ct)
+    {
+        var geste = await _adminService.CreateGesteCommercialAsync(request, ct);
+        return Ok(ApiResponse<GesteCommercialDto>.Ok(geste, "Geste commercial cree avec succes."));
+    }
+
+    /// <summary>
+    /// Met a jour un geste commercial.
+    /// </summary>
+    [HttpPut("gestes-commerciaux/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateGesteCommercial(int id, [FromBody] UpdateGesteCommercialRequest request, CancellationToken ct)
+    {
+        await _adminService.UpdateGesteCommercialAsync(id, request, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Geste commercial mis a jour."));
+    }
+
+    /// <summary>
+    /// Supprime un geste commercial (soft delete).
+    /// </summary>
+    [HttpDelete("gestes-commerciaux/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteGesteCommercial(int id, CancellationToken ct)
+    {
+        await _adminService.DeleteGesteCommercialAsync(id, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Geste commercial supprime."));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // EMAIL CONFIG
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Recupere la configuration email actuelle.
+    /// </summary>
+    [HttpGet("email-config")]
+    [ProducesResponseType(typeof(ApiResponse<EmailConfigDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetEmailConfig(CancellationToken ct)
+    {
+        var config = await _adminService.GetEmailConfigAsync(ct);
+        if (config is null)
+            return NotFound(ApiResponse<object>.Fail("Aucune configuration email trouvee."));
+
+        return Ok(ApiResponse<EmailConfigDto>.Ok(config));
+    }
+
+    /// <summary>
+    /// Met a jour la configuration email.
+    /// </summary>
+    [HttpPut("email-config")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateEmailConfig([FromBody] UpdateEmailConfigRequest request, CancellationToken ct)
+    {
+        await _adminService.UpdateEmailConfigAsync(request, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Configuration email mise a jour."));
+    }
+
+    /// <summary>
+    /// Envoie un email de test.
+    /// </summary>
+    [HttpPost("email-config/test")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SendTestEmail([FromBody] TestEmailRequest request, CancellationToken ct)
+    {
+        var success = await _adminService.SendTestEmailAsync(request, ct);
+        if (!success)
+            return BadRequest(ApiResponse<object>.Fail("Echec de l'envoi de l'email de test. Verifiez la configuration SMTP."));
+
+        return Ok(ApiResponse<object>.Ok(null!, "Email de test envoye avec succes."));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // SMS CONFIG
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Recupere la configuration SMS actuelle avec le solde.
+    /// </summary>
+    [HttpGet("sms-config")]
+    [ProducesResponseType(typeof(ApiResponse<SmsConfigDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetSmsConfig(CancellationToken ct)
+    {
+        var config = await _adminService.GetSmsConfigAsync(ct);
+        if (config is null)
+            return NotFound(ApiResponse<object>.Fail("Aucune configuration SMS trouvee."));
+
+        return Ok(ApiResponse<SmsConfigDto>.Ok(config));
+    }
+
+    /// <summary>
+    /// Met a jour la configuration SMS.
+    /// </summary>
+    [HttpPut("sms-config")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateSmsConfig([FromBody] UpdateSmsConfigRequest request, CancellationToken ct)
+    {
+        await _adminService.UpdateSmsConfigAsync(request, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Configuration SMS mise a jour."));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // COMPTES MOBILE MONEY
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Liste les comptes Mobile Money admin.
+    /// </summary>
+    [HttpGet("comptes-mobile")]
+    [ProducesResponseType(typeof(ApiResponse<List<CompteMobileDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetComptesMobile(CancellationToken ct)
+    {
+        var items = await _adminService.GetComptesMobileAsync(ct);
+        return Ok(ApiResponse<List<CompteMobileDto>>.Ok(items));
+    }
+
+    /// <summary>
+    /// Ajoute un compte Mobile Money.
+    /// </summary>
+    [HttpPost("comptes-mobile")]
+    [ProducesResponseType(typeof(ApiResponse<CompteMobileDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateCompteMobile([FromBody] CreateCompteMobileRequest request, CancellationToken ct)
+    {
+        var compte = await _adminService.CreateCompteMobileAsync(request, ct);
+        return Ok(ApiResponse<CompteMobileDto>.Ok(compte, "Compte Mobile Money ajoute."));
+    }
+
+    /// <summary>
+    /// Met a jour un compte Mobile Money.
+    /// </summary>
+    [HttpPut("comptes-mobile/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateCompteMobile(int id, [FromBody] UpdateCompteMobileRequest request, CancellationToken ct)
+    {
+        await _adminService.UpdateCompteMobileAsync(id, request, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Compte Mobile Money mis a jour."));
+    }
+
+    /// <summary>
+    /// Supprime un compte Mobile Money (soft delete).
+    /// </summary>
+    [HttpDelete("comptes-mobile/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteCompteMobile(int id, CancellationToken ct)
+    {
+        await _adminService.DeleteCompteMobileAsync(id, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Compte Mobile Money supprime."));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CONTENU IA
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Liste les contenus IA (filtrable par rubrique).
+    /// </summary>
+    [HttpGet("contenu-ia")]
+    [ProducesResponseType(typeof(ApiResponse<List<ContenuIaDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetContenusIa([FromQuery] string? rubrique = null, CancellationToken ct = default)
+    {
+        var items = await _adminService.GetContenusIaAsync(rubrique, ct);
+        return Ok(ApiResponse<List<ContenuIaDto>>.Ok(items));
+    }
+
+    /// <summary>
+    /// Recupere un contenu IA par son identifiant.
+    /// </summary>
+    [HttpGet("contenu-ia/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<ContenuIaDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetContenuIa(int id, CancellationToken ct)
+    {
+        var contenu = await _adminService.GetContenuIaByIdAsync(id, ct);
+        if (contenu is null)
+            return NotFound(ApiResponse<object>.Fail("Contenu IA introuvable."));
+
+        return Ok(ApiResponse<ContenuIaDto>.Ok(contenu));
+    }
+
+    /// <summary>
+    /// Cree un nouveau contenu IA.
+    /// </summary>
+    [HttpPost("contenu-ia")]
+    [ProducesResponseType(typeof(ApiResponse<ContenuIaDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateContenuIa([FromBody] CreateContenuIaRequest request, CancellationToken ct)
+    {
+        var contenu = await _adminService.CreateContenuIaAsync(request, ct);
+        return Ok(ApiResponse<ContenuIaDto>.Ok(contenu, "Contenu IA cree avec succes."));
+    }
+
+    /// <summary>
+    /// Met a jour un contenu IA.
+    /// </summary>
+    [HttpPut("contenu-ia/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateContenuIa(int id, [FromBody] UpdateContenuIaRequest request, CancellationToken ct)
+    {
+        await _adminService.UpdateContenuIaAsync(id, request, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Contenu IA mis a jour."));
+    }
+
+    /// <summary>
+    /// Supprime un contenu IA (soft delete).
+    /// </summary>
+    [HttpDelete("contenu-ia/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteContenuIa(int id, CancellationToken ct)
+    {
+        await _adminService.DeleteContenuIaAsync(id, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Contenu IA supprime."));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // ETABLISSEMENTS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Liste tous les etablissements avec nombre d'utilisateurs et forfait.
+    /// </summary>
+    [HttpGet("etablissements")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<AdminEtablissementDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEtablissements([FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
+    {
+        var result = await _adminService.GetEtablissementsAsync(page, pageSize, ct);
+        return Ok(ApiResponse<PagedResult<AdminEtablissementDto>>.Ok(result));
+    }
+
+    /// <summary>
+    /// Recupere le detail d'un etablissement.
+    /// </summary>
+    [HttpGet("etablissements/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<AdminEtablissementDetailDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetEtablissement(int id, CancellationToken ct)
+    {
+        var etablissement = await _adminService.GetEtablissementByIdAsync(id, ct);
+        if (etablissement is null)
+            return NotFound(ApiResponse<object>.Fail("Etablissement introuvable."));
+
+        return Ok(ApiResponse<AdminEtablissementDetailDto>.Ok(etablissement));
+    }
+
+    /// <summary>
+    /// Met a jour les metadonnees d'un etablissement.
+    /// </summary>
+    [HttpPut("etablissements/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<AdminEtablissementDetailDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateEtablissement(int id, [FromBody] UpdateEtablissementRequest request, CancellationToken ct)
+    {
+        var updated = await _adminService.UpdateEtablissementAsync(id, request, ct);
+        return Ok(ApiResponse<AdminEtablissementDetailDto>.Ok(updated, "Etablissement mis a jour."));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // STATISTIQUES FORFAITS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Recupere les statistiques globales des forfaits.
+    /// </summary>
+    [HttpGet("stats/forfaits")]
+    [ProducesResponseType(typeof(ApiResponse<ForfaitStatsDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetForfaitStats(CancellationToken ct)
+    {
+        var stats = await _adminService.GetForfaitStatsAsync(ct);
+        return Ok(ApiResponse<ForfaitStatsDto>.Ok(stats));
+    }
+
+    /// <summary>Supprime (soft delete) un etablissement.</summary>
+    [HttpDelete("etablissements/{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> DeleteEtablissement(int id, CancellationToken ct)
+    {
+        await _adminService.DeleteEtablissementAsync(id, ct);
+        return Ok(ApiResponse<object>.Ok(null!, "Etablissement supprime."));
+    }
+}

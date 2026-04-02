@@ -1,4 +1,4 @@
-import type { Module, PricingPlan, Testimonial, GeoRegion, GeoPrefecture, GeoSousPrefecture } from './types'
+import type { Module, PricingPlan, Testimonial, GeoRegion, GeoPrefecture, GeoSousPrefecture, ServiceDigital } from './types'
 
 export const MODULE_COLORS: Record<string, string> = {
   inscriptions: '#16a34a',
@@ -107,16 +107,22 @@ export const MODULE_LIST: Module[] = [
 
 export const PRICING_PLANS: PricingPlan[] = [
   {
-    key: 'starter',
-    name: 'pricing.plans.starter.name',
-    price: 'pricing.plans.starter.price',
-    description: 'pricing.plans.starter.description',
-    features: Array.from({ length: 6 }, (_, i) => `pricing.plans.starter.features[${i}]`)
+    key: 'gratuit',
+    name: 'pricing.plans.gratuit.name',
+    price: 'pricing.plans.gratuit.price',
+    priceAmount: 0,
+    priceUnit: 'GNF',
+    target: 'pricing.plans.gratuit.target',
+    description: 'pricing.plans.gratuit.description',
+    features: Array.from({ length: 5 }, (_, i) => `pricing.plans.gratuit.features[${i}]`)
   },
   {
     key: 'standard',
     name: 'pricing.plans.standard.name',
     price: 'pricing.plans.standard.price',
+    priceAmount: 100000,
+    priceUnit: 'GNF',
+    target: 'pricing.plans.standard.target',
     description: 'pricing.plans.standard.description',
     features: Array.from({ length: 6 }, (_, i) => `pricing.plans.standard.features[${i}]`),
     recommended: true
@@ -125,8 +131,44 @@ export const PRICING_PLANS: PricingPlan[] = [
     key: 'premium',
     name: 'pricing.plans.premium.name',
     price: 'pricing.plans.premium.price',
+    priceAmount: 180000,
+    priceUnit: 'GNF',
+    target: 'pricing.plans.premium.target',
     description: 'pricing.plans.premium.description',
     features: Array.from({ length: 6 }, (_, i) => `pricing.plans.premium.features[${i}]`)
+  },
+  {
+    key: 'enseignant',
+    name: 'pricing.plans.enseignant.name',
+    price: 'pricing.plans.enseignant.price',
+    priceAmount: 30000,
+    priceUnit: 'GNF',
+    target: 'pricing.plans.enseignant.target',
+    description: 'pricing.plans.enseignant.description',
+    features: Array.from({ length: 4 }, (_, i) => `pricing.plans.enseignant.features[${i}]`)
+  },
+  {
+    key: 'parent',
+    name: 'pricing.plans.parent.name',
+    price: 'pricing.plans.parent.price',
+    priceAmount: 5000,
+    priceUnit: 'GNF',
+    target: 'pricing.plans.parent.target',
+    description: 'pricing.plans.parent.description',
+    features: Array.from({ length: 4 }, (_, i) => `pricing.plans.parent.features[${i}]`)
+  }
+]
+
+export const SERVICES_DIGITAUX: ServiceDigital[] = [
+  {
+    key: 'communication',
+    icon: 'i-heroicons-chat-bubble-left-right',
+    available: true
+  },
+  {
+    key: 'gpsTracker',
+    icon: 'i-heroicons-map-pin',
+    available: false
   }
 ]
 

@@ -11,7 +11,7 @@ import BulletinStats from '~/modules/evaluations/components/BulletinStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -47,7 +47,7 @@ const columns: Column[] = [
   { key: 'moyenneGenerale', label: t('evaluations.bulletin.moyenneGenerale'), sortable: true },
   { key: 'rang', label: t('evaluations.bulletin.rang'), sortable: true },
   { key: 'estPublie', label: t('evaluations.bulletin.estPublie'), sortable: true },
-  { key: 'dateGeneration', label: t('evaluations.bulletin.dateGeneration'), sortable: true },
+  { key: 'dateGeneration', label: t('evaluations.bulletin.dateGeneration'), sortable: true, render: (row: any) => formatDate(row.dateGeneration) },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
 
@@ -172,7 +172,7 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           </UBadge>
         </template>
         <template #cell-dateGeneration="{ row }">
-          {{ formatDateShort((row as Bulletin).dateGeneration) }}
+          {{ formatDate((row as Bulletin).dateGeneration) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">

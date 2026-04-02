@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 </script>
 
 <template>
@@ -30,7 +31,7 @@ const { t } = useI18n()
         </div>
       </div>
       <span class="text-sm text-gray-500 dark:text-gray-400">
-        {{ cahier.dateSeance }}
+        {{ formatDate(cahier.dateSeance) }}
       </span>
     </div>
 

@@ -11,7 +11,7 @@ import FactureStats from '~/modules/finances/components/FactureStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -45,7 +45,7 @@ const columns: Column[] = [
   { key: 'eleveNom', label: t('finances.facture.eleveNom'), sortable: true },
   { key: 'montantTotal', label: t('finances.facture.montantTotal'), sortable: true },
   { key: 'solde', label: t('finances.facture.solde'), sortable: true },
-  { key: 'dateEcheance', label: t('finances.facture.dateEcheance'), sortable: true },
+  { key: 'dateEcheance', label: t('finances.facture.dateEcheance'), sortable: true, render: (row: any) => formatDate(row.dateEcheance) },
   { key: 'statutFacture', label: t('finances.facture.statutFacture'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -167,9 +167,6 @@ function getStatutColor(statut: string): string {
           <span :class="(row as Facture).solde > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'">
             {{ formatMontant((row as Facture).solde) }}
           </span>
-        </template>
-        <template #cell-dateEcheance="{ row }">
-          {{ formatDateShort((row as Facture).dateEcheance) }}
         </template>
         <template #cell-statutFacture="{ row }">
           <UBadge :color="getStatutColor((row as Facture).statutFacture)" variant="subtle" size="sm">

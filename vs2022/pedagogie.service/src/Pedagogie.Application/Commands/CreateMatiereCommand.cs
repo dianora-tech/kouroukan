@@ -10,7 +10,4 @@ public sealed record CreateMatiereCommand(
     string Name,
     string? Description,
     int TypeId,
-    string Code,
-    decimal Coefficient,
-    int NombreHeures,
-    int NiveauClasseId) : IRequest<Matiere>;
+    string Code) : IRequest<Matiere>;

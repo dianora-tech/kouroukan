@@ -11,7 +11,7 @@ import EnseignantStats from '~/modules/personnel/components/EnseignantStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -40,7 +40,7 @@ const columns: Column[] = [
   { key: 'typeName', label: t('personnel.enseignant.type'), sortable: true },
   { key: 'specialite', label: t('personnel.enseignant.specialite'), sortable: true },
   { key: 'telephone', label: t('personnel.enseignant.telephone'), sortable: false },
-  { key: 'dateEmbauche', label: t('personnel.enseignant.dateEmbauche'), sortable: true },
+  { key: 'dateEmbauche', label: t('personnel.enseignant.dateEmbauche'), sortable: true, render: (row: any) => formatDate(row.dateEmbauche) },
   { key: 'modeRemuneration', label: t('personnel.enseignant.modeRemunerationLabel'), sortable: true },
   { key: 'statutEnseignant', label: t('personnel.enseignant.statutEnseignantLabel'), sortable: true },
   { key: 'soldeCongesAnnuel', label: t('personnel.enseignant.soldeCongesAnnuel'), sortable: true },
@@ -156,9 +156,6 @@ function getStatutColor(statut: string): string {
         @page-change="changePage"
         @sort="handleSort"
       >
-        <template #cell-dateEmbauche="{ row }">
-          {{ formatDateShort((row as Enseignant).dateEmbauche) }}
-        </template>
         <template #cell-statutEnseignant="{ row }">
           <UBadge :color="getStatutColor((row as Enseignant).statutEnseignant)" variant="subtle" size="sm">
             {{ $t(`personnel.enseignant.statut.${(row as Enseignant).statutEnseignant}`) }}

@@ -3,6 +3,7 @@
     "home": "Accueil",
     "features": "Fonctionnalites",
     "pricing": "Tarifs",
+    "services": "Services",
     "about": "A propos",
     "testimonials": "Temoignages",
     "contact": "Contact",
@@ -11,6 +12,7 @@
     "help": "Aide",
     "blog": "Blog",
     "education": "Systeme educatif",
+    "verification": "Verification de documents",
     "register": "Commencer gratuitement",
     "login": "Se connecter"
   },
@@ -163,29 +165,36 @@
     "onQuote": "Sur devis",
     "recommended": "Recommande",
     "cta": "Commencer",
+    "ctaTrial": "Essai gratuit 30 jours",
     "ctaContact": "Nous contacter",
     "compare": "Comparer les plans en detail",
+    "rules": {
+      "trial": "Periode d'essai 30 jours pour les forfaits payants",
+      "vacation": "Vacances (Juil-Sept) : prix reduit de 50%",
+      "billing": "Paiement mensuel, trimestriel ou annuel"
+    },
     "plans": {
-      "starter": {
-        "name": "STARTER",
+      "gratuit": {
+        "name": "GRATUIT",
         "price": "0 GNF",
-        "description": "Ideal pour decouvrir la plateforme",
+        "target": "Etablissement",
+        "description": "Pour tout etablissement jusqu'a 30 eleves",
         "features": [
-          "Jusqu'a 100 eleves",
+          "Jusqu'a 30 eleves",
           "Inscriptions et dossiers",
           "Notes et bulletins",
           "Appels et presences",
-          "Emploi du temps basique",
           "Communication interne"
         ]
       },
       "standard": {
         "name": "STANDARD",
-        "price": "Sur devis",
-        "description": "Pour les etablissements en croissance",
+        "price": "100 000 GNF",
+        "target": "Etablissement",
+        "description": "Toutes les fonctionnalites pour votre etablissement",
         "features": [
           "Eleves illimites",
-          "Tout STARTER +",
+          "Toutes les fonctionnalites",
           "Paiements Mobile Money",
           "Gestion financiere",
           "Communication SMS/Push",
@@ -194,15 +203,40 @@
       },
       "premium": {
         "name": "PREMIUM",
-        "price": "Sur devis",
-        "description": "La solution complete pour les grands etablissements",
+        "price": "180 000 GNF",
+        "target": "Etablissement",
+        "description": "La solution complete avec support prioritaire",
         "features": [
           "Tout STANDARD +",
           "Signature electronique",
-          "Modeles documents personnalises",
+          "Documents personnalises",
           "Module BDE",
           "Multi-etablissements",
           "Support prioritaire"
+        ]
+      },
+      "enseignant": {
+        "name": "ENSEIGNANT",
+        "price": "30 000 GNF",
+        "target": "Enseignant",
+        "description": "Espace personnel pour les enseignants",
+        "features": [
+          "Espace personnel enseignant",
+          "Saisie des notes",
+          "Suivi des presences",
+          "Communication avec les parents"
+        ]
+      },
+      "parent": {
+        "name": "PARENT",
+        "price": "5 000 GNF/eleve",
+        "target": "Parent",
+        "description": "Suivi de la scolarite de vos enfants",
+        "features": [
+          "Suivi des notes et bulletins",
+          "Notifications en temps reel",
+          "Paiements Mobile Money",
+          "Communication avec l'etablissement"
         ]
       }
     }
@@ -306,10 +340,31 @@
     "title": "Creez votre compte",
     "subtitle": "Lancez-vous en quelques minutes",
     "steps": {
+      "accountType": "Type de compte",
       "profile": "Informations",
       "location": "Localisation",
-      "pricing": "Forfait",
       "confirmation": "Confirmation"
+    },
+    "step0": {
+      "title": "Choisissez votre type de compte",
+      "subtitle": "Selectionnez le profil qui correspond a votre situation",
+      "types": {
+        "etablissement": {
+          "name": "Etablissement",
+          "description": "Ecole, college, lycee, universite ou centre de formation. Gerez l'ensemble de votre etablissement.",
+          "price": "Gratuit jusqu'a 30 eleves, puis 100 000 GNF/mois"
+        },
+        "enseignant": {
+          "name": "Enseignant",
+          "description": "Espace personnel pour gerer vos notes, presences et communiquer avec les parents.",
+          "price": "30 000 GNF/mois"
+        },
+        "parent": {
+          "name": "Parent",
+          "description": "Suivez la scolarite de vos enfants, recevez les notifications et effectuez les paiements.",
+          "price": "5 000 GNF/eleve/mois"
+        }
+      }
     },
     "step1": {
       "title": "Vos informations",
@@ -319,7 +374,8 @@
       "schoolNamePlaceholder": "Ex: Groupe Scolaire Kouroukan",
       "phone": "Telephone",
       "phonePlaceholder": "+224 XX XX XX XX",
-      "email": "Email (optionnel)",
+      "email": "Email",
+      "emailOptional": "Email (optionnel)",
       "password": "Mot de passe",
       "confirmPassword": "Confirmer le mot de passe"
     },
@@ -347,6 +403,7 @@
     "confirmation": {
       "title": "Confirmation",
       "summary": "Recapitulatif de vos informations",
+      "planInfo": "Votre forfait",
       "submit": "Creer mon compte",
       "success": "Votre compte a ete cree avec succes !",
       "goToApp": "Acceder a votre espace",
@@ -363,6 +420,70 @@
       "emailFormat": "Adresse email invalide",
       "passwordMin": "Le mot de passe doit contenir au moins 8 caracteres",
       "passwordMatch": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "verification": {
+    "title": "Verification de document",
+    "subtitle": "Verifiez l'authenticite d'un document emis par Kouroukan",
+    "enterPassword": "Entrez le mot de passe fourni avec le document pour verifier son authenticite.",
+    "code": "Code de verification",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "Entrez le mot de passe du document",
+    "submit": "Verifier",
+    "valid": "Document authentique",
+    "invalid": "Document non valide",
+    "errorMessage": "Le code ou le mot de passe est incorrect. Veuillez verifier et reessayer.",
+    "documentType": "Type de document",
+    "date": "Date d'emission",
+    "etablissement": "Etablissement",
+    "authenticity": "Authenticite",
+    "confirmed": "Confirmee",
+    "verifyAnother": "Verifier un autre document",
+    "tryAgain": "Reessayer"
+  },
+  "servicesDigitaux": {
+    "badge": "Services Digitaux",
+    "title": "Des services numeriques pour toute la communaute scolaire",
+    "subtitle": "Au-dela de la gestion, Kouroukan propose des services digitaux pour les parents et les etablissements.",
+    "sectionTitle": "Services Digitaux",
+    "sectionSubtitle": "Des services complementaires pour parents et etablissements",
+    "communication": {
+      "badge": "Disponible",
+      "title": "Communication Etablissement",
+      "shortDescription": "Recevez les notes, absences et annonces de l'etablissement directement sur votre telephone.",
+      "description": "Le service Communication Etablissement permet aux parents de recevoir en temps reel toutes les informations de l'etablissement : notes, absences, annonces, convocations et rappels de paiement.",
+      "price": "5 000 GNF/mois/etablissement",
+      "cardTitle": "Ce que le parent recoit",
+      "cta": "S'inscrire comme parent",
+      "features": [
+        "Notifications des notes et bulletins en temps reel",
+        "Alertes absences et retards de votre enfant",
+        "Annonces et convocations de l'etablissement",
+        "Rappels de paiement et recus automatiques"
+      ],
+      "notifications": [
+        "Votre enfant a recu 16/20 en Maths",
+        "Absence signalee le 15 mars",
+        "Reunion parents-professeurs le 20 mars"
+      ]
+    },
+    "gpsTracker": {
+      "badge": "Bientot disponible",
+      "title": "Traceur GPS Enfant",
+      "shortDescription": "Suivez le trajet de votre enfant entre la maison et l'etablissement en temps reel.",
+      "description": "Le Traceur GPS Enfant permettra aux parents de suivre en temps reel le trajet de leur enfant entre la maison et l'etablissement. Un bracelet connecte securise pour plus de tranquillite.",
+      "cardTitle": "Apercu du service",
+      "cta": "Etre notifie du lancement",
+      "features": [
+        "Localisation en temps reel de votre enfant",
+        "Alertes arrivee et depart de l'etablissement",
+        "Historique des trajets et zones securisees"
+      ],
+      "preview": [
+        "Position en temps reel sur la carte",
+        "Alerte : arrivee a l'ecole a 7h45",
+        "Zone securisee : maison - ecole"
+      ]
     }
   },
   "modules": {

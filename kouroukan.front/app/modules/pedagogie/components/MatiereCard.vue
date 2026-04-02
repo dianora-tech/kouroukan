@@ -9,8 +9,6 @@ const emit = defineEmits<{
   (e: 'edit', matiere: Matiere): void
   (e: 'delete', matiere: Matiere): void
 }>()
-
-const { t } = useI18n()
 </script>
 
 <template>
@@ -24,25 +22,11 @@ const { t } = useI18n()
           <h3 class="font-semibold text-gray-900 dark:text-white">
             {{ matiere.name }}
           </h3>
-          <p v-if="matiere.niveauClasseName" class="text-sm text-gray-500 dark:text-gray-400">
-            {{ matiere.niveauClasseName }}
-          </p>
         </div>
       </div>
       <UBadge v-if="matiere.typeName" color="primary" variant="subtle" size="sm">
         {{ matiere.typeName }}
       </UBadge>
-    </div>
-
-    <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
-      <p>
-        <UIcon name="i-heroicons-scale" class="mr-1 inline h-4 w-4" />
-        {{ $t('pedagogie.matiere.coeffLabel', { coeff: matiere.coefficient }) }}
-      </p>
-      <p>
-        <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
-        {{ $t('pedagogie.matiere.heuresLabel', { heures: matiere.nombreHeures }) }}
-      </p>
     </div>
 
     <div class="mt-4 flex justify-end gap-2">

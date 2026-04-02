@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 
 function getStatutColor(statut: string): string {
   switch (statut) {
@@ -46,7 +47,7 @@ function getStatutColor(statut: string): string {
       </p>
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ $t('personnel.enseignant.dateEmbauche') }}: {{ enseignant.dateEmbauche }}
+        {{ $t('personnel.enseignant.dateEmbauche') }}: {{ formatDate(enseignant.dateEmbauche) }}
       </p>
       <p>
         <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />

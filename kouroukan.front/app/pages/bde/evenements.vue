@@ -12,7 +12,7 @@ import EvenementStats from '~/modules/bde/components/EvenementStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -46,7 +46,7 @@ const columns: Column[] = [
   { key: 'name', label: t('bde.evenement.name'), sortable: true },
   { key: 'typeName', label: t('bde.evenement.type'), sortable: true },
   { key: 'associationNom', label: t('bde.evenement.associationId'), sortable: true },
-  { key: 'dateEvenement', label: t('bde.evenement.dateEvenement'), sortable: true },
+  { key: 'dateEvenement', label: t('bde.evenement.dateEvenement'), sortable: true, render: (row: any) => formatDate(row.dateEvenement) },
   { key: 'lieu', label: t('bde.evenement.lieu'), sortable: true },
   { key: 'nombreInscrits', label: t('bde.evenement.nombreInscrits'), sortable: true },
   { key: 'statutEvenement', label: t('bde.evenement.statutEvenement'), sortable: true },
@@ -163,9 +163,6 @@ function getStatutColor(statut: string): string {
         @page-change="changePage"
         @sort="handleSort"
       >
-        <template #cell-dateEvenement="{ row }">
-          {{ formatDateShort((row as Evenement).dateEvenement) }}
-        </template>
         <template #cell-statutEvenement="{ row }">
           <UBadge :color="getStatutColor((row as Evenement).statutEvenement)" variant="subtle" size="sm">
             {{ $t(`bde.evenement.statut.${(row as Evenement).statutEvenement}`) }}

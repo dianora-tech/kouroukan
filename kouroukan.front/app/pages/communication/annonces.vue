@@ -11,7 +11,7 @@ import AnnonceStats from '~/modules/communication/components/AnnonceStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -40,7 +40,7 @@ const columns: Column[] = [
   { key: 'cibleAudience', label: t('communication.annonce.cibleAudience'), sortable: true },
   { key: 'priorite', label: t('communication.annonce.prioriteLabel'), sortable: true },
   { key: 'estActive', label: t('communication.annonce.statut'), sortable: true },
-  { key: 'dateDebut', label: t('communication.annonce.dateDebut'), sortable: true },
+  { key: 'dateDebut', label: t('communication.annonce.dateDebut'), sortable: true, render: (row: any) => formatDate(row.dateDebut) },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
 
@@ -174,9 +174,6 @@ function getPrioriteColor(priorite: number): string {
           <UBadge :color="getStatutColor((row as Annonce).estActive)" variant="subtle" size="sm">
             {{ (row as Annonce).estActive ? $t('communication.annonce.active') : $t('communication.annonce.inactive') }}
           </UBadge>
-        </template>
-        <template #cell-dateDebut="{ row }">
-          {{ formatDateShort((row as Annonce).dateDebut) }}
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">

@@ -11,7 +11,7 @@ import NoteStats from '~/modules/evaluations/components/NoteStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -47,7 +47,7 @@ const columns: Column[] = [
   { key: 'matiereName', label: t('evaluations.note.matiere'), sortable: true },
   { key: 'evaluationTypeName', label: t('evaluations.note.evaluationType'), sortable: true },
   { key: 'valeur', label: t('evaluations.note.valeur'), sortable: true },
-  { key: 'dateSaisie', label: t('evaluations.note.dateSaisie'), sortable: true },
+  { key: 'dateSaisie', label: t('evaluations.note.dateSaisie'), sortable: true, render: (row: any) => formatDate(row.dateSaisie) },
   { key: 'commentaire', label: t('evaluations.note.commentaire'), sortable: false },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -157,7 +157,7 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           </UBadge>
         </template>
         <template #cell-dateSaisie="{ row }">
-          {{ formatDateShort((row as Note).dateSaisie) }}
+          {{ formatDate((row as Note).dateSaisie) }}
         </template>
         <template #cell-commentaire="{ row }">
           <span class="max-w-[200px] truncate">{{ (row as Note).commentaire ?? '-' }}</span>

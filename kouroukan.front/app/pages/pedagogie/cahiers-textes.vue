@@ -11,7 +11,7 @@ import CahierTextesStats from '~/modules/pedagogie/components/CahierTextesStats.
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -35,7 +35,7 @@ const showDeleteDialog = ref(false)
 const deletingEntity = ref<CahierTextes | null>(null)
 
 const columns: Column[] = [
-  { key: 'dateSeance', label: t('pedagogie.cahierTextes.dateSeance'), sortable: true },
+  { key: 'dateSeance', label: t('pedagogie.cahierTextes.dateSeance'), sortable: true, render: (row: any) => formatDate(row.dateSeance) },
   { key: 'matiereName', label: t('pedagogie.cahierTextes.matiere'), sortable: true },
   { key: 'classeName', label: t('pedagogie.cahierTextes.classe'), sortable: true },
   { key: 'contenu', label: t('pedagogie.cahierTextes.contenu'), sortable: false },
@@ -146,9 +146,6 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         @page-change="changePage"
         @sort="handleSort"
       >
-        <template #cell-dateSeance="{ row }">
-          {{ formatDateShort((row as CahierTextes).dateSeance) }}
-        </template>
         <template #cell-contenu="{ row }">
           <span class="line-clamp-2 max-w-xs">{{ (row as CahierTextes).contenu }}</span>
         </template>

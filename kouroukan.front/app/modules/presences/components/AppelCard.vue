@@ -11,6 +11,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { formatDate } = useFormatDate()
 </script>
 
 <template>
@@ -32,7 +33,7 @@ const { t } = useI18n()
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ appel.dateAppel }}
+        {{ formatDate(appel.dateAppel) }}
       </p>
       <p>
         <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />

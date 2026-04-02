@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { DocumentGenere } from '../types/document-genere.types'
 
+const { formatDate } = useFormatDate()
+
 defineProps<{
   documentGenere: DocumentGenere
 }>()
@@ -11,7 +13,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
 
 function getStatutColor(statut: string): string {
   const colors: Record<string, string> = {
@@ -51,7 +52,7 @@ function getStatutColor(statut: string): string {
       </p>
       <p>
         <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
-        {{ formatDateShort(documentGenere.dateGeneration) }}
+        {{ formatDate(documentGenere.dateGeneration) }}
       </p>
     </div>
 

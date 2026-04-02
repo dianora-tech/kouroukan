@@ -11,7 +11,7 @@ import DocumentGenereStats from '~/modules/documents/components/DocumentGenereSt
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -40,7 +40,7 @@ const columns: Column[] = [
   { key: 'typeName', label: t('documents.documentGenere.type'), sortable: true },
   { key: 'modeleDocumentNom', label: t('documents.documentGenere.modeleDocumentId'), sortable: true },
   { key: 'eleveNom', label: t('documents.documentGenere.eleveId'), sortable: true },
-  { key: 'dateGeneration', label: t('documents.documentGenere.dateGeneration'), sortable: true },
+  { key: 'dateGeneration', label: t('documents.documentGenere.dateGeneration'), sortable: true, render: (row: any) => formatDate(row.dateGeneration) },
   { key: 'statutSignature', label: t('documents.documentGenere.statutSignature'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -155,7 +155,7 @@ function getStatutColor(statut: string): string {
         @sort="handleSort"
       >
         <template #cell-dateGeneration="{ row }">
-          {{ formatDateShort((row as DocumentGenere).dateGeneration) }}
+          {{ formatDate((row as DocumentGenere).dateGeneration) }}
         </template>
         <template #cell-statutSignature="{ row }">
           <UBadge :color="getStatutColor((row as DocumentGenere).statutSignature)" variant="subtle" size="sm">

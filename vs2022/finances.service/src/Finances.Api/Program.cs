@@ -92,12 +92,18 @@ try
     builder.Services.AddScoped<IPaiementService, PaiementService>();
     builder.Services.AddScoped<IDepenseService, DepenseService>();
     builder.Services.AddScoped<IRemunerationEnseignantService, RemunerationEnseignantService>();
+    builder.Services.AddScoped<IMoyenPaiementService, MoyenPaiementService>();
+    builder.Services.AddScoped<IJournalFinancierService, JournalFinancierService>();
+    builder.Services.AddScoped<IPalierFamilialService, PalierFamilialService>();
 
     // 10. Repositories
     builder.Services.AddScoped<IFactureRepository, FactureRepository>();
     builder.Services.AddScoped<IPaiementRepository, PaiementRepository>();
     builder.Services.AddScoped<IDepenseRepository, DepenseRepository>();
     builder.Services.AddScoped<IRemunerationEnseignantRepository, RemunerationEnseignantRepository>();
+    builder.Services.AddScoped<IMoyenPaiementRepository, MoyenPaiementRepository>();
+    builder.Services.AddScoped<IJournalFinancierRepository, JournalFinancierRepository>();
+    builder.Services.AddScoped<IPalierFamilialRepository, PalierFamilialRepository>();
 
     // 11. Swagger
     builder.Services.AddControllers();

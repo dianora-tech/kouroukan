@@ -12,7 +12,7 @@ import MembreBDEStats from '~/modules/bde/components/MembreBDEStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -46,7 +46,7 @@ const columns: Column[] = [
   { key: 'associationNom', label: t('bde.membreBde.associationId'), sortable: true },
   { key: 'eleveNom', label: t('bde.membreBde.eleveId'), sortable: true },
   { key: 'roleBDE', label: t('bde.membreBde.roleBDE'), sortable: true },
-  { key: 'dateAdhesion', label: t('bde.membreBde.dateAdhesion'), sortable: true },
+  { key: 'dateAdhesion', label: t('bde.membreBde.dateAdhesion'), sortable: true, render: (row: any) => formatDate(row.dateAdhesion) },
   { key: 'montantCotisation', label: t('bde.membreBde.montantCotisation'), sortable: true },
   { key: 'estActif', label: t('bde.membreBde.estActif'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
@@ -158,9 +158,6 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         </template>
         <template #cell-montantCotisation="{ row }">
           {{ (row as MembreBDE).montantCotisation ? formatMontant((row as MembreBDE).montantCotisation!) : '-' }}
-        </template>
-        <template #cell-dateAdhesion="{ row }">
-          {{ formatDateShort((row as MembreBDE).dateAdhesion) }}
         </template>
         <template #cell-estActif="{ row }">
           <UBadge :color="(row as MembreBDE).estActif ? 'success' : 'neutral'" variant="subtle" size="sm">

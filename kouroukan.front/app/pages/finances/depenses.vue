@@ -11,7 +11,7 @@ import DepenseStats from '~/modules/finances/components/DepenseStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -45,7 +45,7 @@ const columns: Column[] = [
   { key: 'categorie', label: t('finances.depense.categorie_label'), sortable: true },
   { key: 'montant', label: t('finances.depense.montant'), sortable: true },
   { key: 'beneficiaireNom', label: t('finances.depense.beneficiaireNom'), sortable: true },
-  { key: 'dateDemande', label: t('finances.depense.dateDemande'), sortable: true },
+  { key: 'dateDemande', label: t('finances.depense.dateDemande'), sortable: true, render: (row: any) => formatDate(row.dateDemande) },
   { key: 'statutDepense', label: t('finances.depense.statutDepense'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -168,9 +168,6 @@ function getStatutColor(statut: string): string {
           <UBadge color="neutral" variant="subtle" size="sm">
             {{ $t(`finances.depense.categorie.${(row as Depense).categorie}`) }}
           </UBadge>
-        </template>
-        <template #cell-dateDemande="{ row }">
-          {{ formatDateShort((row as Depense).dateDemande) }}
         </template>
         <template #cell-statutDepense="{ row }">
           <UBadge :color="getStatutColor((row as Depense).statutDepense)" variant="subtle" size="sm">

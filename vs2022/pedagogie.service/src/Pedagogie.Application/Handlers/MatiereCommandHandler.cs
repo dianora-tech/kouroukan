@@ -28,9 +28,6 @@ public sealed class MatiereCommandHandler :
             Description = request.Description,
             TypeId = request.TypeId,
             Code = request.Code,
-            Coefficient = request.Coefficient,
-            NombreHeures = request.NombreHeures,
-            NiveauClasseId = request.NiveauClasseId
         };
         return await _service.CreateAsync(entity, ct).ConfigureAwait(false);
     }
@@ -44,9 +41,6 @@ public sealed class MatiereCommandHandler :
             Description = request.Description,
             TypeId = request.TypeId,
             Code = request.Code,
-            Coefficient = request.Coefficient,
-            NombreHeures = request.NombreHeures,
-            NiveauClasseId = request.NiveauClasseId
         };
         return await _service.UpdateAsync(entity, ct).ConfigureAwait(false);
     }

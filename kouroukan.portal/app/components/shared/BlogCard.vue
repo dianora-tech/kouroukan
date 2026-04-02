@@ -35,6 +35,11 @@ const props = defineProps<{
   category?: string
 }>()
 
-const { formatDate } = useFormatDate()
-const formattedDate = computed(() => formatDate(props.date))
+const { locale } = useI18n()
+const localeMap: Record<string, string> = { fr: 'fr-GN', en: 'en-US' }
+
+const formattedDate = computed(() => {
+  if (!props.date) return ''
+  return new Intl.DateTimeFormat(localeMap[locale.value] ?? locale.value, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(props.date))
+})
 </script>

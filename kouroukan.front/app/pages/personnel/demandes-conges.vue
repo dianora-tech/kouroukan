@@ -11,7 +11,7 @@ import DemandeCongeStats from '~/modules/personnel/components/DemandeCongeStats.
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -38,8 +38,8 @@ const deletingEntity = ref<DemandeConge | null>(null)
 const columns: Column[] = [
   { key: 'typeName', label: t('personnel.demandeConge.type'), sortable: true },
   { key: 'enseignantNom', label: t('personnel.demandeConge.enseignant'), sortable: true },
-  { key: 'dateDebut', label: t('personnel.demandeConge.dateDebut'), sortable: true },
-  { key: 'dateFin', label: t('personnel.demandeConge.dateFin'), sortable: true },
+  { key: 'dateDebut', label: t('personnel.demandeConge.dateDebut'), sortable: true, render: (row: any) => formatDate(row.dateDebut) },
+  { key: 'dateFin', label: t('personnel.demandeConge.dateFin'), sortable: true, render: (row: any) => formatDate(row.dateFin) },
   { key: 'motif', label: t('personnel.demandeConge.motif'), sortable: false },
   { key: 'statutDemande', label: t('personnel.demandeConge.statutDemandeLabel'), sortable: true },
   { key: 'impactPaie', label: t('personnel.demandeConge.impactPaie'), sortable: true },
@@ -155,12 +155,6 @@ function getStatutColor(statut: string): string {
         @page-change="changePage"
         @sort="handleSort"
       >
-        <template #cell-dateDebut="{ row }">
-          {{ formatDateShort((row as DemandeConge).dateDebut) }}
-        </template>
-        <template #cell-dateFin="{ row }">
-          {{ formatDateShort((row as DemandeConge).dateFin) }}
-        </template>
         <template #cell-statutDemande="{ row }">
           <UBadge :color="getStatutColor((row as DemandeConge).statutDemande)" variant="subtle" size="sm">
             {{ $t(`personnel.demandeConge.statut.${(row as DemandeConge).statutDemande}`) }}

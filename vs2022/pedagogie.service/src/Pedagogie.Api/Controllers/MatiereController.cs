@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Pedagogie.Api.Controllers;
 
+public sealed record CreateTypeMatiereRequest(string Name, string? Description);
+public sealed record UpdateTypeMatiereRequest(string Name, string? Description);
+
 [ApiController]
 [Route("api/pedagogie/matieres")]
 [Authorize]
@@ -37,6 +40,50 @@ public sealed class MatiereController : ControllerBase
         var correlationId = HttpContext.Items["CorrelationId"]?.ToString();
         var types = await _matiereRepository.GetTypesAsync(ct);
         var response = ApiResponse<IReadOnlyList<TypeDto>>.Ok(types);
+        response.CorrelationId = correlationId;
+        return Ok(response);
+    }
+
+    /// <summary>Cree un nouveau type de matiere.</summary>
+    [HttpPost("types")]
+    [Authorize(Policy = "RequirePermission:pedagogie:create")]
+    public async Task<ActionResult<ApiResponse<TypeDto>>> CreateType(
+        [FromBody] CreateTypeMatiereRequest request, CancellationToken ct)
+    {
+        var correlationId = HttpContext.Items["CorrelationId"]?.ToString();
+        var created = await _matiereRepository.AddTypeAsync(request.Name, request.Description, ct);
+        var response = ApiResponse<TypeDto>.Ok(created, "Type de matiere cree avec succes.");
+        response.CorrelationId = correlationId;
+        return CreatedAtAction(nameof(GetTypes), response);
+    }
+
+    /// <summary>Met a jour un type de matiere.</summary>
+    [HttpPut("types/{id:int}")]
+    [Authorize(Policy = "RequirePermission:pedagogie:update")]
+    public async Task<ActionResult<ApiResponse<bool>>> UpdateType(
+        int id, [FromBody] UpdateTypeMatiereRequest request, CancellationToken ct)
+    {
+        var correlationId = HttpContext.Items["CorrelationId"]?.ToString();
+        var result = await _matiereRepository.UpdateTypeAsync(id, request.Name, request.Description, ct);
+        if (!result)
+            return NotFound(ApiResponse<bool>.Fail($"Type de matiere {id} introuvable."));
+
+        var response = ApiResponse<bool>.Ok(true, "Type de matiere mis a jour.");
+        response.CorrelationId = correlationId;
+        return Ok(response);
+    }
+
+    /// <summary>Supprime un type de matiere (suppression logique).</summary>
+    [HttpDelete("types/{id:int}")]
+    [Authorize(Policy = "RequirePermission:pedagogie:delete")]
+    public async Task<ActionResult<ApiResponse<bool>>> DeleteType(int id, CancellationToken ct)
+    {
+        var correlationId = HttpContext.Items["CorrelationId"]?.ToString();
+        var result = await _matiereRepository.DeleteTypeAsync(id, ct);
+        if (!result)
+            return NotFound(ApiResponse<bool>.Fail($"Type de matiere {id} introuvable."));
+
+        var response = ApiResponse<bool>.Ok(true, "Type de matiere supprime.");
         response.CorrelationId = correlationId;
         return Ok(response);
     }

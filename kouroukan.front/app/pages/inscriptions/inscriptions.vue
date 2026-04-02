@@ -11,7 +11,7 @@ import InscriptionStats from '~/modules/inscriptions/components/InscriptionStats
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -43,7 +43,7 @@ const columns: Column[] = [
   { key: 'eleveNom', label: t('inscriptions.inscription.eleveNom'), sortable: true },
   { key: 'typeName', label: t('inscriptions.inscription.type'), sortable: true },
   { key: 'classeName', label: t('inscriptions.inscription.classe'), sortable: true },
-  { key: 'dateInscription', label: t('inscriptions.inscription.dateInscription'), sortable: true },
+  { key: 'dateInscription', label: t('inscriptions.inscription.dateInscription'), sortable: true, render: (row: any) => formatDate(row.dateInscription) },
   { key: 'montantInscription', label: t('inscriptions.inscription.montantInscription'), sortable: true },
   { key: 'statutInscription', label: t('inscriptions.inscription.statutInscription'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
@@ -159,9 +159,6 @@ function getStatutColor(statut: string): string {
       >
         <template #cell-montantInscription="{ row }">
           {{ formatMontant((row as Inscription).montantInscription) }}
-        </template>
-        <template #cell-dateInscription="{ row }">
-          {{ formatDateShort((row as Inscription).dateInscription) }}
         </template>
         <template #cell-statutInscription="{ row }">
           <UBadge :color="getStatutColor((row as Inscription).statutInscription)" variant="subtle" size="sm">

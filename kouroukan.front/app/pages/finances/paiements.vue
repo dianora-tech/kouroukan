@@ -11,7 +11,7 @@ import PaiementStats from '~/modules/finances/components/PaiementStats.vue'
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
-const { formatDateShort } = useFormatDate()
+const { formatDate } = useFormatDate()
 const {
   items,
   loading,
@@ -45,7 +45,7 @@ const columns: Column[] = [
   { key: 'factureNumero', label: t('finances.paiement.facture'), sortable: true },
   { key: 'montantPaye', label: t('finances.paiement.montantPaye'), sortable: true },
   { key: 'moyenPaiement', label: t('finances.paiement.moyenPaiement'), sortable: true },
-  { key: 'datePaiement', label: t('finances.paiement.datePaiement'), sortable: true },
+  { key: 'datePaiement', label: t('finances.paiement.datePaiement'), sortable: true, render: (row: any) => formatDate(row.datePaiement) },
   { key: 'statutPaiement', label: t('finances.paiement.statutPaiement'), sortable: true },
   { key: 'actions', label: '', sortable: false, class: 'w-24' },
 ]
@@ -178,7 +178,7 @@ function getMoyenColor(moyen: string): string {
           </UBadge>
         </template>
         <template #cell-datePaiement="{ row }">
-          {{ formatDateShort((row as Paiement).datePaiement) }}
+          {{ formatDate((row as Paiement).datePaiement) }}
         </template>
         <template #cell-statutPaiement="{ row }">
           <UBadge :color="getStatutColor((row as Paiement).statutPaiement)" variant="subtle" size="sm">
