@@ -81,7 +81,7 @@ services:
       - "traefik.http.routers.portal.entrypoints=https"
       - "traefik.http.routers.portal.tls=true"
       - "traefik.http.routers.portal.tls.certresolver=letsencrypt"
-      - "traefik.http.services.portal.loadbalancer.server.port=3000"
+      - "traefik.http.services.portal.loadbalancer.server.port=80"
 
   # ==========================================================================
   # FRONTEND APPLICATIF (Nuxt 4 SSR)
@@ -487,10 +487,10 @@ services:
   # Exposé sur → https://cache.kouroukan.dianora.org
   # ==========================================================================
   redis-commander:
-    image: rediscommander/redis-commander:latest
+    image: redis/redisinsight:latest
     container_name: kouroukan-redis-commander
     environment:
-      REDIS_HOSTS: "cache:${CACHE_HOST:-cache}:${CACHE_PORT:-6379}"
+      RI_PROXY_PATH: "/"
     restart: unless-stopped
     depends_on:
       - cache
@@ -501,7 +501,7 @@ services:
       - "traefik.http.routers.redis-commander.entrypoints=https"
       - "traefik.http.routers.redis-commander.tls=true"
       - "traefik.http.routers.redis-commander.tls.certresolver=letsencrypt"
-      - "traefik.http.services.redis-commander.loadbalancer.server.port=8081"
+      - "traefik.http.services.redis-commander.loadbalancer.server.port=5540"
 
   # ==========================================================================
   # MONITORING
