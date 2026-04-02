@@ -74,6 +74,7 @@ services:
       dockerfile: Dockerfile
       args:
         APP_URL: https://app.kouroukan.dianora.org
+        APP_VERSION: ${APP_VERSION:-v1.0-dev}
     container_name: kouroukan-portal
     restart: unless-stopped
     <<: *app-networks
@@ -94,6 +95,8 @@ services:
     build:
       context: ./kouroukan.front
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-v1.0-dev}
     container_name: kouroukan-frontend
     environment:
       # URL interne : le SSR fait ses appels API en direct dans le réseau Docker
@@ -120,6 +123,8 @@ services:
     build:
       context: ./vs2022
       dockerfile: kouroukan.api/Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-v1.0-dev}
     container_name: kouroukan-gateway
     environment:
       - ConnectionStrings__DefaultConnection=Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
@@ -173,9 +178,15 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   pedagogie-service:
     build:
@@ -189,9 +200,15 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   evaluations-service:
     build:
@@ -205,9 +222,15 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   presences-service:
     build:
@@ -221,9 +244,15 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   finances-service:
     build:
@@ -237,9 +266,15 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   personnel-service:
     build:
@@ -253,9 +288,15 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   communication-service:
     build:
@@ -269,9 +310,15 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   bde-service:
     build:
@@ -285,9 +332,15 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   documents-service:
     build:
@@ -312,7 +365,9 @@ services:
       minio:
         condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   services-premium-service:
     build:
@@ -326,15 +381,16 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
-  # Support Service — Ollama exclu en environnement Coolify (4 Go RAM trop
-  # lourds pour un VPS standard). Le service fonctionne sans IA : laisser
-  # Ollama__BaseUrl vide ou ne pas la définir du tout pour désactiver le module.
-  # Pour l'activer ultérieurement, définir la variable dans Coolify et pointer
-  # vers une instance Ollama externe (ex: http://mon-gpu-server:11434).
   support-service:
     build:
       context: ./vs2022
@@ -347,13 +403,17 @@ services:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
       RabbitMQ__Password: ${RABBITMQ_PASSWORD}
-      # Laisser vide pour désactiver l'IA ; pointer vers une instance externe
-      # si disponible (ex: http://gpu-host:11434)
       Ollama__BaseUrl: ${OLLAMA_BASE_URL:-}
       Ollama__Model: ${OLLAMA_MODEL:-mistral}
-    <<: *infra-depends
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     restart: unless-stopped
-    <<: *app-networks
+    networks:
+      - coolify
+      - kouroukan-internal
 
   # ==========================================================================
   # CACHE SERVICE (MemoryCache L1 + Redis L2 + Quartz.NET)

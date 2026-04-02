@@ -248,7 +248,20 @@ try
     app.MapControllers();
     app.MapReverseProxy();
 
-    Log.Information("Kouroukan API Gateway demarre sur le port 5000");
+    // Version endpoint (public, pas d'auth)
+    var appVersion = Environment.GetEnvironmentVariable("APP_VERSION") ?? "v1.0-dev";
+    app.MapGet("/api/version", () => Results.Ok(new { version = appVersion }))
+        .AllowAnonymous()
+        .WithTags("System");
+
+    // Header X-App-Version sur toutes les reponses
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers["X-App-Version"] = appVersion;
+        await next();
+    });
+
+    Log.Information("Kouroukan API Gateway {Version} demarre sur le port 5000", appVersion);
 
     app.Run();
 }

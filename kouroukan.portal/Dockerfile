@@ -12,6 +12,8 @@ RUN npm ci --prefer-offline --no-audit
 COPY . .
 ARG APP_URL=https://app.kouroukan.dianora.org
 ENV APP_URL=${APP_URL}
+ARG APP_VERSION=v1.0-dev
+ENV NUXT_PUBLIC_APP_VERSION=${APP_VERSION}
 RUN npm run generate
 
 # Stage 2 : Serve with Nginx

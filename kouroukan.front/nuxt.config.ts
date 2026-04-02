@@ -52,6 +52,7 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:5000',
       appName: 'Kouroukan',
+      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || 'v1.0-dev',
       cguVersion: process.env.CGU_VERSION || '1.0.0',
     },
   },

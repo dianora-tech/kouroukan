@@ -288,18 +288,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Generate app version
+        id: version
+        run: |
+          BASE_VERSION=$(cat VERSION | tr -d '[:space:]')
+          BRANCH="${GITHUB_REF_NAME}"
+          TIMESTAMP=$(date -u +%Y%m%d%H%M%S)
+
+          if [ "$BRANCH" = "main" ]; then
+            APP_VERSION="v${BASE_VERSION}"
+          elif [ "$BRANCH" = "develop" ]; then
+            APP_VERSION="v${BASE_VERSION}-dev.${TIMESTAMP}"
+          else
+            # Nettoyer le nom de branche (feat/xxx → feat-xxx)
+            CLEAN_BRANCH=$(echo "$BRANCH" | sed 's/[^a-zA-Z0-9]/-/g' | head -c 30)
+            APP_VERSION="v${BASE_VERSION}-${CLEAN_BRANCH}.${TIMESTAMP}"
+          fi
+
+          echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "Generated version: $APP_VERSION"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       # --- Production (main) : rebuild complet ---
       - name: Build ALL images (production)
         if: github.ref == 'refs/heads/main'
+        env:
+          APP_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker compose -f docker-compose.production.yml build --parallel
+          docker compose -f docker-compose.production.yml build --parallel \
+            --build-arg APP_VERSION=$APP_VERSION
 
       # --- Test (develop) : rebuild selectif ---
       - name: Build changed images only (test)
         if: github.ref != 'refs/heads/main'
+        env:
+          APP_VERSION: ${{ steps.version.outputs.version }}
         run: |
           SERVICES=""
 
@@ -334,7 +359,8 @@ jobs:
           fi
 
           echo "Building services: $SERVICES"
-          docker compose -f docker-compose.coolify.yml build --parallel $SERVICES
+          docker compose -f docker-compose.coolify.yml build --parallel $SERVICES \
+            --build-arg APP_VERSION=$APP_VERSION
 
   # ===========================================================================
   # Security — Scan avec Trivy

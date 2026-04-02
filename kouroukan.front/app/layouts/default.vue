@@ -6,11 +6,14 @@ import { useForfaitGating } from '~/composables/useForfaitGating'
 
 const { t, locale, locales, setLocale } = useI18n()
 const localePath = useLocalePath()
+const config = useRuntimeConfig()
 const auth = useAuthStore()
 const ui = useUiStore()
 const route = useRoute()
 const colorMode = useColorMode()
 const toast = useToast()
+
+const appVersion = config.public.appVersion
 const { userType } = useForfaitGating()
 
 function handleLockedClick() {
@@ -186,6 +189,9 @@ async function handleLogout(): Promise<void> {
         <div class="flex items-center gap-2 px-2">
           <NetworkIndicator />
           <SyncStatus v-if="!ui.sidebarCollapsed" />
+        </div>
+        <div v-if="!ui.sidebarCollapsed" class="mt-1 px-2 text-center text-[10px] text-gray-400 dark:text-gray-500">
+          {{ appVersion }}
         </div>
       </div>
     </aside>

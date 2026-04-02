@@ -36,6 +36,9 @@ COPY --from=build --chown=kouroukan:kouroukan /app/publish .
 
 USER kouroukan
 
+ARG APP_VERSION=v1.0-dev
+ENV APP_VERSION=${APP_VERSION}
+
 ENV ASPNETCORE_URLS=http://+:5000
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENV DOTNET_RUNNING_IN_CONTAINER=true
