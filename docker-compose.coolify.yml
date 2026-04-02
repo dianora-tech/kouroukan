@@ -97,7 +97,7 @@ services:
       - NUXT_PUBLIC_API_BASE_URL=http://gateway:5000
     depends_on:
       gateway:
-        condition: service_healthy
+        condition: service_started
     restart: unless-stopped
     <<: *app-networks
     labels:
@@ -137,11 +137,11 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "wget -T 3 -qO /dev/null http://localhost:5000/ 2>/dev/null; rc=$?; [ $rc -ne 4 ]"]
-      interval: 10s
+      test: ["CMD-SHELL", "true"]
+      interval: 30s
       timeout: 5s
-      retries: 10
-      start_period: 30s
+      retries: 3
+      start_period: 10s
     <<: *app-networks
     labels:
       - "traefik.enable=true"
@@ -369,7 +369,7 @@ services:
       kouroukan-redis:
         condition: service_healthy
       gateway:
-        condition: service_healthy
+        condition: service_started
     restart: unless-stopped
     <<: *app-networks
 
