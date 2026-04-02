@@ -1,7 +1,9 @@
+using GnDapper.Attributes;
 using GnDapper.Entities;
 
 namespace Inscriptions.Infrastructure.Dtos;
 
+[Table("inscriptions.inscriptions")]
 public sealed class InscriptionDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }

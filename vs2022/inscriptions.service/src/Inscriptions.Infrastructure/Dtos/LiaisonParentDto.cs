@@ -1,3 +1,4 @@
+using GnDapper.Attributes;
 using GnDapper.Entities;
 
 namespace Inscriptions.Infrastructure.Dtos;
@@ -5,6 +6,7 @@ namespace Inscriptions.Infrastructure.Dtos;
 /// <summary>
 /// DTO de mapping BDD pour la table inscriptions.liaisons_parent.
 /// </summary>
+[Table("inscriptions.liaisons_parent")]
 public sealed class LiaisonParentDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
