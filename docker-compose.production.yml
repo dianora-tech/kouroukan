@@ -53,6 +53,7 @@ services:
       dockerfile: Dockerfile
       args:
         APP_URL: https://app.kouroukan.gn
+        APP_VERSION: ${APP_VERSION:-v1.0}
     container_name: prod-kouroukan-portal
     restart: unless-stopped
     <<: *app-networks
@@ -77,6 +78,8 @@ services:
     build:
       context: ./kouroukan.front
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-v1.0}
     container_name: prod-kouroukan-frontend
     environment:
       - NUXT_PUBLIC_API_BASE_URL=http://gateway:5000
@@ -101,6 +104,8 @@ services:
     build:
       context: ./vs2022
       dockerfile: kouroukan.api/Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-v1.0}
     container_name: prod-kouroukan-gateway
     environment:
       - ConnectionStrings__DefaultConnection=Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}

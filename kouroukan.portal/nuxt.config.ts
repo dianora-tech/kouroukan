@@ -100,6 +100,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       appUrl: process.env.APP_URL || 'http://localhost',
+      appVersion: process.env.NUXT_PUBLIC_APP_VERSION || 'v1.0-dev',
     },
   },
 

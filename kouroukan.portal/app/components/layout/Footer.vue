@@ -63,15 +63,18 @@
       <!-- Bottom bar -->
       <div class="mt-12 pt-6 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p class="text-sm text-gray-500">&copy; {{ new Date().getFullYear() }} {{ $t('footer.copyright') }}</p>
-        <div class="flex items-center gap-2 text-sm text-gray-500">
-          <span class="inline-block w-5 h-3.5 rounded-sm overflow-hidden">
-            <div class="flex h-full">
-              <div class="w-1/3 bg-red-600"></div>
-              <div class="w-1/3 bg-yellow-400"></div>
-              <div class="w-1/3 bg-green-600"></div>
-            </div>
-          </span>
-          {{ $t('footer.madeIn') }}
+        <div class="flex items-center gap-4 text-sm text-gray-500">
+          <span class="text-xs text-gray-600">{{ appVersion }}</span>
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-5 h-3.5 rounded-sm overflow-hidden">
+              <div class="flex h-full">
+                <div class="w-1/3 bg-red-600"></div>
+                <div class="w-1/3 bg-yellow-400"></div>
+                <div class="w-1/3 bg-green-600"></div>
+              </div>
+            </span>
+            {{ $t('footer.madeIn') }}
+          </div>
         </div>
       </div>
     </div>
@@ -80,4 +83,6 @@
 
 <script setup lang="ts">
 const localePath = useLocalePath()
+const config = useRuntimeConfig()
+const appVersion = config.public.appVersion
 </script>
