@@ -124,10 +124,11 @@ jobs:
             Verifier les logs GitHub Actions.
 
   # ===========================================================================
-  # Deploy Production (main → a configurer plus tard)
+  # Deploy Production (main → Coolify env production)
+  # Domaines : kouroukan.gn, app.kouroukan.gn, api.kouroukan.gn
   # ===========================================================================
   deploy-production:
-    name: Deploy to Production
+    name: Deploy to Production (Coolify)
     runs-on: ubuntu-latest
     if: >
       github.event.workflow_run.conclusion == 'success' &&
@@ -135,7 +136,96 @@ jobs:
     environment: production
 
     steps:
-      - name: Placeholder
+      - name: Trigger Coolify deployment
         run: |
-          echo "Production deployment via Coolify will be configured later."
-          echo "For now, production deploys require manual trigger."
+          echo "Triggering Coolify PRODUCTION deployment for main branch..."
+          RESPONSE=$(curl -sf --max-time 30 \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}" \
+            -H "Accept: application/json" \
+            "${{ secrets.COOLIFY_URL }}/api/v1/deploy?uuid=${{ secrets.COOLIFY_APP_UUID }}&force=false")
+
+          echo "Response: $RESPONSE"
+          DEPLOYMENT_UUID=$(echo "$RESPONSE" | jq -r '.deployments[0].deployment_uuid // empty')
+
+          if [ -z "$DEPLOYMENT_UUID" ]; then
+            echo "::error::Failed to trigger production deployment"
+            exit 1
+          fi
+
+          echo "Production deployment queued: $DEPLOYMENT_UUID"
+          echo "DEPLOYMENT_UUID=$DEPLOYMENT_UUID" >> $GITHUB_ENV
+
+      - name: Wait for deployment to complete
+        run: |
+          echo "Waiting for production deployment $DEPLOYMENT_UUID to complete..."
+          for i in $(seq 1 80); do
+            STATUS=$(curl -sf --max-time 10 \
+              -H "Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}" \
+              -H "Accept: application/json" \
+              "${{ secrets.COOLIFY_URL }}/api/v1/deployments/$DEPLOYMENT_UUID" \
+              | jq -r '.status // "unknown"')
+
+            echo "  Attempt $i: status=$STATUS"
+
+            case "$STATUS" in
+              finished)
+                echo "Production deployment succeeded!"
+                exit 0
+                ;;
+              failed|cancelled)
+                echo "::error::Production deployment $STATUS"
+                exit 1
+                ;;
+            esac
+
+            sleep 15
+          done
+
+          echo "::error::Production deployment timed out after 20 minutes"
+          exit 1
+
+      - name: Health check
+        if: success()
+        run: |
+          echo "Running production health checks..."
+          sleep 15
+
+          for domain in kouroukan.gn app.kouroukan.gn api.kouroukan.gn; do
+            HTTP_CODE=$(curl -sk --max-time 15 -o /dev/null -w '%{http_code}' "https://$domain" || echo "000")
+            if [ "$HTTP_CODE" = "000" ]; then
+              echo "::warning::$domain is unreachable (timeout)"
+            elif [ "$HTTP_CODE" -ge 500 ] && [ "$domain" != "api.kouroukan.gn" ]; then
+              echo "::error::$domain returned HTTP $HTTP_CODE"
+              exit 1
+            else
+              echo "  $domain -> HTTP $HTTP_CODE OK"
+            fi
+          done
+
+          echo "All production health checks passed"
+
+      - name: Notify success
+        if: success()
+        uses: appleboy/telegram-action@master
+        continue-on-error: true
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            🚀 Kouroukan deploye en PRODUCTION (Coolify)
+            Commit: ${{ github.event.workflow_run.head_sha }}
+            Branche: main
+            Domaine: https://kouroukan.gn
+
+      - name: Notify failure
+        if: failure()
+        uses: appleboy/telegram-action@master
+        continue-on-error: true
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ❌ Echec deploiement Kouroukan (PRODUCTION)
+            Commit: ${{ github.event.workflow_run.head_sha }}
+            Verifier les logs GitHub Actions immediatement.

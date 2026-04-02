@@ -71,6 +71,7 @@ jobs:
             docker:
               - 'docker/**'
               - 'docker-compose.coolify.yml'
+              - 'docker-compose.production.yml'
             sql:
               - 'sql/**'
 
@@ -267,7 +268,9 @@ jobs:
           echo "All migrations executed successfully"
 
   # ===========================================================================
-  # Docker — Build (only on push + if any source changed)
+  # Docker — Build images
+  # develop : selective (only changed services) pour des builds rapides
+  # main    : full rebuild (toutes les images) pour la production
   # ===========================================================================
   build-docker:
     name: Build Docker Images
@@ -277,7 +280,8 @@ jobs:
       always() &&
       github.event_name == 'push' &&
       !contains(needs.*.result, 'failure') &&
-      (needs.changes.outputs.frontend == 'true' ||
+      (github.ref == 'refs/heads/main' ||
+       needs.changes.outputs.frontend == 'true' ||
        needs.changes.outputs.portal == 'true' ||
        needs.changes.outputs.backend == 'true' ||
        needs.changes.outputs.docker == 'true')
@@ -287,12 +291,50 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build all images
-        working-directory: docker
+      # --- Production (main) : rebuild complet ---
+      - name: Build ALL images (production)
+        if: github.ref == 'refs/heads/main'
         run: |
-          cp .env.example .env
-          sed -i 's/CHANGE_ME/ci-test-password/g' .env
-          docker compose build --parallel
+          docker compose -f docker-compose.production.yml build --parallel
+
+      # --- Test (develop) : rebuild selectif ---
+      - name: Build changed images only (test)
+        if: github.ref != 'refs/heads/main'
+        run: |
+          SERVICES=""
+
+          # Frontend
+          if [ "${{ needs.changes.outputs.frontend }}" = "true" ]; then
+            SERVICES="$SERVICES frontend"
+          fi
+
+          # Portal
+          if [ "${{ needs.changes.outputs.portal }}" = "true" ]; then
+            SERVICES="$SERVICES portal"
+          fi
+
+          # Gateway
+          if [ "${{ needs.changes.outputs.gateway }}" = "true" ] || [ "${{ needs.changes.outputs.shared-libs }}" = "true" ]; then
+            SERVICES="$SERVICES gateway cache"
+          fi
+
+          # Microservices backend
+          if [ "${{ needs.changes.outputs.backend-services }}" = "true" ] || [ "${{ needs.changes.outputs.shared-libs }}" = "true" ]; then
+            SERVICES="$SERVICES inscriptions-service pedagogie-service evaluations-service presences-service finances-service personnel-service communication-service bde-service documents-service services-premium-service support-service"
+          fi
+
+          # Docker/infra changes
+          if [ "${{ needs.changes.outputs.docker }}" = "true" ]; then
+            SERVICES="$SERVICES kouroukan-db kouroukan-redis rabbitmq minio"
+          fi
+
+          if [ -z "$SERVICES" ]; then
+            echo "No services to build"
+            exit 0
+          fi
+
+          echo "Building services: $SERVICES"
+          docker compose -f docker-compose.coolify.yml build --parallel $SERVICES
 
   # ===========================================================================
   # Security — Scan avec Trivy

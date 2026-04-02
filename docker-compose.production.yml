@@ -1,0 +1,487 @@
+# =============================================================================
+# Kouroukan - Docker Compose pour Coolify (PRODUCTION)
+# =============================================================================
+#
+# Identique a docker-compose.coolify.yml (test) sauf :
+#   - Domaines sur kouroukan.gn (au lieu de kouroukan.dianora.org)
+#   - Pas de redis-commander ni uptime-kuma exposes publiquement
+#   - Container names prefixes "prod-" pour eviter les conflits
+#   - Ressources limitees (memory limits) pour la stabilite
+#
+# Domaines :
+#   portal       → https://kouroukan.gn
+#   frontend     → https://app.kouroukan.gn
+#   gateway      → https://api.kouroukan.gn
+#   rabbitmq mgmt→ https://mq.kouroukan.gn       (acces restreint)
+#   minio console→ https://storage.kouroukan.gn   (acces restreint)
+#   monitoring   → https://monitor.kouroukan.gn   (acces restreint)
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Ancres YAML reutilisables
+# ---------------------------------------------------------------------------
+x-jwt-env: &jwt-env
+  Jwt__Key: ${JWT_SECRET}
+  Jwt__Issuer: ${JWT_ISSUER:-kouroukan.gn}
+  Jwt__Audience: ${JWT_AUDIENCE:-kouroukan-app}
+
+x-rabbitmq-env: &rabbitmq-env
+  RabbitMQ__Host: rabbitmq
+  RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+  RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+
+x-infra-depends: &infra-depends
+  depends_on:
+    kouroukan-db:
+      condition: service_healthy
+    rabbitmq:
+      condition: service_healthy
+
+x-app-networks: &app-networks
+  networks:
+    - coolify
+    - kouroukan-internal
+
+services:
+
+  # ==========================================================================
+  # PORTAIL PUBLIC (Nuxt 4 SSG)
+  # ==========================================================================
+  portal:
+    build:
+      context: ./kouroukan.portal
+      dockerfile: Dockerfile
+      args:
+        APP_URL: https://app.kouroukan.gn
+    container_name: prod-kouroukan-portal
+    restart: unless-stopped
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.portal.rule=Host(`kouroukan.gn`) || Host(`www.kouroukan.gn`)"
+      - "traefik.http.routers.portal.entrypoints=https"
+      - "traefik.http.routers.portal.tls=true"
+      - "traefik.http.routers.portal.tls.certresolver=letsencrypt"
+      - "traefik.http.services.portal.loadbalancer.server.port=80"
+      # Redirect www → apex
+      - "traefik.http.middlewares.www-redirect.redirectregex.regex=^https://www\\.kouroukan\\.gn/(.*)"
+      - "traefik.http.middlewares.www-redirect.redirectregex.replacement=https://kouroukan.gn/$${1}"
+      - "traefik.http.middlewares.www-redirect.redirectregex.permanent=true"
+      - "traefik.http.routers.portal.middlewares=www-redirect"
+
+  # ==========================================================================
+  # FRONTEND APPLICATIF (Nuxt 4 SSR)
+  # ==========================================================================
+  frontend:
+    build:
+      context: ./kouroukan.front
+      dockerfile: Dockerfile
+    container_name: prod-kouroukan-frontend
+    environment:
+      - NUXT_PUBLIC_API_BASE_URL=http://gateway:5000
+    depends_on:
+      gateway:
+        condition: service_started
+    restart: unless-stopped
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.frontend.rule=Host(`app.kouroukan.gn`)"
+      - "traefik.http.routers.frontend.entrypoints=https"
+      - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+
+  # ==========================================================================
+  # GATEWAY API (.NET 8 / YARP)
+  # ==========================================================================
+  gateway:
+    build:
+      context: ./vs2022
+      dockerfile: kouroukan.api/Dockerfile
+    container_name: prod-kouroukan-gateway
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      - GnDapper__ConnectionString=Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
+      - Redis__ConnectionString=kouroukan-redis:6379,abortConnect=false,connectTimeout=5000
+      - ConnectionStrings__Redis=kouroukan-redis:6379,abortConnect=false,connectTimeout=5000
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      kouroukan-redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "true"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.gateway.rule=Host(`api.kouroukan.gn`)"
+      - "traefik.http.routers.gateway.entrypoints=https"
+      - "traefik.http.routers.gateway.tls=true"
+      - "traefik.http.routers.gateway.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gateway.loadbalancer.server.port=5000"
+
+  # ==========================================================================
+  # MICROSERVICES (internes uniquement)
+  # ==========================================================================
+
+  inscriptions-service:
+    build:
+      context: ./vs2022
+      dockerfile: inscriptions.service/Dockerfile
+    container_name: prod-kouroukan-inscriptions
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  pedagogie-service:
+    build:
+      context: ./vs2022
+      dockerfile: pedagogie.service/Dockerfile
+    container_name: prod-kouroukan-pedagogie
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  evaluations-service:
+    build:
+      context: ./vs2022
+      dockerfile: evaluations.service/Dockerfile
+    container_name: prod-kouroukan-evaluations
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  presences-service:
+    build:
+      context: ./vs2022
+      dockerfile: presences.service/Dockerfile
+    container_name: prod-kouroukan-presences
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  finances-service:
+    build:
+      context: ./vs2022
+      dockerfile: finances.service/Dockerfile
+    container_name: prod-kouroukan-finances
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  personnel-service:
+    build:
+      context: ./vs2022
+      dockerfile: personnel.service/Dockerfile
+    container_name: prod-kouroukan-personnel
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  communication-service:
+    build:
+      context: ./vs2022
+      dockerfile: communication.service/Dockerfile
+    container_name: prod-kouroukan-communication
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  bde-service:
+    build:
+      context: ./vs2022
+      dockerfile: bde.service/Dockerfile
+    container_name: prod-kouroukan-bde
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  documents-service:
+    build:
+      context: ./vs2022
+      dockerfile: documents.service/Dockerfile
+    container_name: prod-kouroukan-documents
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      MinIO__Endpoint: minio:9000
+      MinIO__AccessKey: ${MINIO_ACCESS_KEY:-kouroukan}
+      MinIO__SecretKey: ${MINIO_SECRET_KEY}
+    depends_on:
+      kouroukan-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+    <<: *app-networks
+
+  services-premium-service:
+    build:
+      context: ./vs2022
+      dockerfile: services-premium.service/Dockerfile
+    container_name: prod-kouroukan-services-premium
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  support-service:
+    build:
+      context: ./vs2022
+      dockerfile: support.service/Dockerfile
+    container_name: prod-kouroukan-support
+    environment:
+      <<: *jwt-env
+      ConnectionStrings__DefaultConnection: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+      Ollama__BaseUrl: ${OLLAMA_BASE_URL:-}
+      Ollama__Model: ${OLLAMA_MODEL:-mistral}
+    <<: *infra-depends
+    restart: unless-stopped
+    <<: *app-networks
+
+  # ==========================================================================
+  # CACHE SERVICE (MemoryCache L1 + Redis L2 + Quartz.NET)
+  # ==========================================================================
+  cache:
+    build:
+      context: ./vs2022
+      dockerfile: gn-cache/Dockerfile
+    container_name: prod-kouroukan-cache
+    environment:
+      Redis__ConnectionString: kouroukan-redis:6379
+      GnDapper__ConnectionString: Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
+      Gateway__BaseUrl: http://gateway:5000
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: ${RABBITMQ_USER:-kouroukan}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD}
+    depends_on:
+      kouroukan-redis:
+        condition: service_healthy
+      gateway:
+        condition: service_started
+    restart: unless-stopped
+    <<: *app-networks
+
+  # ==========================================================================
+  # INFRASTRUCTURE
+  # ==========================================================================
+
+  kouroukan-db:
+    image: postgres:16-alpine
+    container_name: prod-kouroukan-postgres
+    environment:
+      - POSTGRES_USER=${DB_USER:-kouroukan}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME:-kouroukan}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-kouroukan} -d ${DB_NAME:-kouroukan}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - kouroukan-internal
+
+  kouroukan-redis:
+    image: redis:7-alpine
+    container_name: prod-kouroukan-redis
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - kouroukan-internal
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: prod-kouroukan-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-kouroukan}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - coolify
+      - kouroukan-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.rabbitmq-mgmt.rule=Host(`mq.kouroukan.gn`)"
+      - "traefik.http.routers.rabbitmq-mgmt.entrypoints=https"
+      - "traefik.http.routers.rabbitmq-mgmt.tls=true"
+      - "traefik.http.routers.rabbitmq-mgmt.tls.certresolver=letsencrypt"
+      - "traefik.http.services.rabbitmq-mgmt.loadbalancer.server.port=15672"
+
+  minio:
+    image: minio/minio:latest
+    container_name: prod-kouroukan-minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY:-kouroukan}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - coolify
+      - kouroukan-internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.minio-console.rule=Host(`storage.kouroukan.gn`)"
+      - "traefik.http.routers.minio-console.entrypoints=https"
+      - "traefik.http.routers.minio-console.tls=true"
+      - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
+      - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
+
+  # ==========================================================================
+  # MONITORING (Uptime Kuma)
+  # ==========================================================================
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: prod-kouroukan-uptime-kuma
+    volumes:
+      - uptime-kuma-data:/app/data
+    restart: unless-stopped
+    <<: *app-networks
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.uptime-kuma.rule=Host(`monitor.kouroukan.gn`)"
+      - "traefik.http.routers.uptime-kuma.entrypoints=https"
+      - "traefik.http.routers.uptime-kuma.tls=true"
+      - "traefik.http.routers.uptime-kuma.tls.certresolver=letsencrypt"
+      - "traefik.http.services.uptime-kuma.loadbalancer.server.port=3001"
+
+# =============================================================================
+# VOLUMES
+# =============================================================================
+volumes:
+  pgdata:
+    name: prod-kouroukan-pgdata
+  redisdata:
+    name: prod-kouroukan-redisdata
+  rabbitmqdata:
+    name: prod-kouroukan-rabbitmqdata
+  miniodata:
+    name: prod-kouroukan-miniodata
+  uptime-kuma-data:
+    name: prod-kouroukan-uptime-kuma-data
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+networks:
+  coolify:
+    external: true
+  kouroukan-internal:
+    driver: bridge
+    name: prod-kouroukan-internal
