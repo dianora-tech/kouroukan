@@ -75,13 +75,8 @@ services:
     container_name: kouroukan-portal
     restart: unless-stopped
     <<: *app-networks
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portal.rule=Host(`kouroukan.dianora.org`)"
-      - "traefik.http.routers.portal.entrypoints=https"
-      - "traefik.http.routers.portal.tls=true"
-      - "traefik.http.routers.portal.tls.certresolver=letsencrypt"
-      - "traefik.http.services.portal.loadbalancer.server.port=80"
+    # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
+    # Coolify auto-génère les routers Traefik (http redirect + https + gzip)
 
   # ==========================================================================
   # FRONTEND APPLICATIF (Nuxt 4 SSR)
@@ -100,13 +95,7 @@ services:
         condition: service_started
     restart: unless-stopped
     <<: *app-networks
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`app.kouroukan.dianora.org`)"
-      - "traefik.http.routers.frontend.entrypoints=https"
-      - "traefik.http.routers.frontend.tls=true"
-      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
-      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+    # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
 
   # ==========================================================================
   # GATEWAY API (.NET 8 / YARP)
@@ -143,13 +132,7 @@ services:
       retries: 3
       start_period: 10s
     <<: *app-networks
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.gateway.rule=Host(`api.kouroukan.dianora.org`)"
-      - "traefik.http.routers.gateway.entrypoints=https"
-      - "traefik.http.routers.gateway.tls=true"
-      - "traefik.http.routers.gateway.tls.certresolver=letsencrypt"
-      - "traefik.http.services.gateway.loadbalancer.server.port=5000"
+    # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
 
   # ==========================================================================
   # MICROSERVICES
@@ -441,13 +424,9 @@ services:
       - coolify
       - kouroukan-internal
     labels:
-      - "traefik.enable=true"
-      # Routeur pour la management UI (port 15672)
-      - "traefik.http.routers.rabbitmq-mgmt.rule=Host(`mq.kouroukan.dianora.org`)"
-      - "traefik.http.routers.rabbitmq-mgmt.entrypoints=https"
-      - "traefik.http.routers.rabbitmq-mgmt.tls=true"
-      - "traefik.http.routers.rabbitmq-mgmt.tls.certresolver=letsencrypt"
-      - "traefik.http.services.rabbitmq-mgmt.loadbalancer.server.port=15672"
+      # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
+      # Service port obligatoire car RabbitMQ expose 2 ports (5672 + 15672)
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
   # --------------------------------------------------------------------------
   # MinIO (Stockage fichiers S3-compatible, self-hosted)
@@ -514,13 +493,7 @@ services:
       - uptime-kuma-data:/app/data
     restart: unless-stopped
     <<: *app-networks
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.uptime-kuma.rule=Host(`monitor.kouroukan.dianora.org`)"
-      - "traefik.http.routers.uptime-kuma.entrypoints=https"
-      - "traefik.http.routers.uptime-kuma.tls=true"
-      - "traefik.http.routers.uptime-kuma.tls.certresolver=letsencrypt"
-      - "traefik.http.services.uptime-kuma.loadbalancer.server.port=3001"
+    # Domaine géré via Coolify docker_compose_domains → pas de labels router ici
 
 # =============================================================================
 # VOLUMES
