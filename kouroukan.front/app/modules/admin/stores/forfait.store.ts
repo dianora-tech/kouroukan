@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Forfait,
   CreateForfaitPayload,
@@ -7,6 +6,7 @@ import type {
   UpdateTarifPayload,
   AdminFilters,
 } from '../types/admin.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/admin/forfaits'
 
@@ -44,7 +44,7 @@ export const useForfaitStore = defineStore('admin-forfait', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<AdminFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AdminFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Forfait>(API_PATH, {

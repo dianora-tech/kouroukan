@@ -15,7 +15,7 @@ export function usePalierFamilial() {
   const isEmpty = computed(() => store.isEmpty)
   const pagination = computed(() => store.pagination)
 
-  async function fetchAll(params?: { page?: number; pageSize?: number }): Promise<void> {
+  async function fetchAll(params?: { page?: number, pageSize?: number }): Promise<void> {
     try {
       await store.fetchAll(params)
     }

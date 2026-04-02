@@ -152,28 +152,61 @@ async function handleDelete(): Promise<void> {
           {{ $t('admin.enseignant.title') }}
         </h1>
       </div>
-      <UButton color="primary" icon="i-heroicons-plus" @click="openCreate">
+      <UButton
+        color="primary"
+        icon="i-heroicons-plus"
+        @click="openCreate"
+      >
         {{ $t('admin.enseignant.add') }}
       </UButton>
     </div>
 
-    <DataTable :columns="columns" :data="{ items: fakeData, totalCount: fakeData.length, page: 1, pageSize: 10 }" :loading="false">
+    <DataTable
+      :columns="columns"
+      :data="{ items: fakeData, totalCount: fakeData.length, page: 1, pageSize: 10 }"
+      :loading="false"
+    >
       <template #cell-nom="{ row }">
         {{ (row as Enseignant).nom }} {{ (row as Enseignant).prenom }}
       </template>
       <template #cell-telephone="{ row }">
         <span v-if="(row as Enseignant).telephone">{{ (row as Enseignant).telephone }}</span>
-        <UBadge v-else color="warning" variant="subtle" size="xs">{{ $t('admin.enseignant.sansTelephone') }}</UBadge>
+        <UBadge
+          v-else
+          color="warning"
+          variant="subtle"
+          size="xs"
+        >
+          {{ $t('admin.enseignant.sansTelephone') }}
+        </UBadge>
       </template>
       <template #cell-specialites="{ row }">
         <div class="flex flex-wrap gap-1">
-          <UBadge v-for="s in (row as Enseignant).specialites" :key="s" variant="subtle" size="xs">{{ s }}</UBadge>
+          <UBadge
+            v-for="s in (row as Enseignant).specialites"
+            :key="s"
+            variant="subtle"
+            size="xs"
+          >
+            {{ s }}
+          </UBadge>
         </div>
       </template>
       <template #cell-actions="{ row }">
         <div class="flex gap-1">
-          <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as Enseignant)" />
-          <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as Enseignant)" />
+          <UButton
+            variant="ghost"
+            size="xs"
+            icon="i-heroicons-pencil-square"
+            @click="openEdit(row as Enseignant)"
+          />
+          <UButton
+            variant="ghost"
+            size="xs"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="openDelete(row as Enseignant)"
+          />
         </div>
       </template>
     </DataTable>
@@ -185,29 +218,77 @@ async function handleDelete(): Promise<void> {
         </h3>
       </template>
       <template #body>
-        <UForm :schema="formSchema" :state="formState" class="space-y-4 p-4" @submit="handleFormSubmit">
+        <UForm
+          :schema="formSchema"
+          :state="formState"
+          class="space-y-4 p-4"
+          @submit="handleFormSubmit"
+        >
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <UFormField :label="$t('admin.enseignant.prenom')" name="prenom" required>
-              <UInput v-model="formState.prenom" class="w-full" />
+            <UFormField
+              :label="$t('admin.enseignant.prenom')"
+              name="prenom"
+              required
+            >
+              <UInput
+                v-model="formState.prenom"
+                class="w-full"
+              />
             </UFormField>
-            <UFormField :label="$t('admin.enseignant.nom')" name="nom" required>
-              <UInput v-model="formState.nom" class="w-full" />
+            <UFormField
+              :label="$t('admin.enseignant.nom')"
+              name="nom"
+              required
+            >
+              <UInput
+                v-model="formState.nom"
+                class="w-full"
+              />
             </UFormField>
           </div>
-          <UFormField :label="$t('admin.enseignant.telephone')" name="telephone" required>
-            <UInput v-model="formState.telephone" class="w-full" />
+          <UFormField
+            :label="$t('admin.enseignant.telephone')"
+            name="telephone"
+            required
+          >
+            <UInput
+              v-model="formState.telephone"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField label="Email" name="email">
-            <UInput v-model="formState.email" type="email" class="w-full" />
+          <UFormField
+            label="Email"
+            name="email"
+          >
+            <UInput
+              v-model="formState.email"
+              type="email"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.enseignant.specialites')" name="specialite" required>
-            <USelect v-model="formState.specialite" class="w-full" :items="matiereOptions" />
+          <UFormField
+            :label="$t('admin.enseignant.specialites')"
+            name="specialite"
+            required
+          >
+            <USelect
+              v-model="formState.specialite"
+              class="w-full"
+              :items="matiereOptions"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ editingEntity ? $t('actions.save') : $t('actions.create') }}
             </UButton>
           </div>

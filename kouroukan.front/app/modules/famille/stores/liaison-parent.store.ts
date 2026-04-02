@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type { LiaisonParent } from '../types/famille.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/inscriptions/liaisons-parent'
 

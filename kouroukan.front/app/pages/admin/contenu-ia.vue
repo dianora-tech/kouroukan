@@ -160,7 +160,11 @@ function getRubriqueLabel(rubrique: string): string {
           {{ $t('admin.contenuIA.title') }}
         </h1>
       </div>
-      <UButton color="primary" icon="i-heroicons-plus" @click="openCreate">
+      <UButton
+        color="primary"
+        icon="i-heroicons-plus"
+        @click="openCreate"
+      >
         {{ $t('admin.contenuIA.add') }}
       </UButton>
     </div>
@@ -178,16 +182,35 @@ function getRubriqueLabel(rubrique: string): string {
       </UButton>
     </div>
 
-    <DataTable :columns="columns" :data="{ items: filteredData, totalCount: filteredData.length, page: 1, pageSize: 20 }" :loading="loading">
+    <DataTable
+      :columns="columns"
+      :data="{ items: filteredData, totalCount: filteredData.length, page: 1, pageSize: 20 }"
+      :loading="loading"
+    >
       <template #cell-rubrique="{ row }">
-        <UBadge :color="getRubriqueColor((row as ContenuIA).rubrique)" variant="subtle" size="sm">
+        <UBadge
+          :color="getRubriqueColor((row as ContenuIA).rubrique)"
+          variant="subtle"
+          size="sm"
+        >
           {{ getRubriqueLabel((row as ContenuIA).rubrique) }}
         </UBadge>
       </template>
       <template #cell-actions="{ row }">
         <div class="flex gap-1">
-          <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as ContenuIA)" />
-          <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as ContenuIA)" />
+          <UButton
+            variant="ghost"
+            size="xs"
+            icon="i-heroicons-pencil-square"
+            @click="openEdit(row as ContenuIA)"
+          />
+          <UButton
+            variant="ghost"
+            size="xs"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="openDelete(row as ContenuIA)"
+          />
         </div>
       </template>
     </DataTable>
@@ -199,26 +222,61 @@ function getRubriqueLabel(rubrique: string): string {
         </h3>
       </template>
       <template #body>
-        <UForm :schema="formSchema" :state="formState" class="space-y-4 p-4" @submit="handleFormSubmit">
-          <UFormField :label="$t('admin.contenuIA.rubrique')" name="rubrique" required>
-            <USelect v-model="formState.rubrique" class="w-full" :items="[
-              { label: $t('admin.contenuIA.pedagogique'), value: 'pedagogique' },
-              { label: $t('admin.contenuIA.systemeEducatif'), value: 'systeme' },
-              { label: $t('admin.contenuIA.datesImportantes'), value: 'dates' },
-              { label: $t('admin.contenuIA.reglements'), value: 'reglements' },
-            ]" />
+        <UForm
+          :schema="formSchema"
+          :state="formState"
+          class="space-y-4 p-4"
+          @submit="handleFormSubmit"
+        >
+          <UFormField
+            :label="$t('admin.contenuIA.rubrique')"
+            name="rubrique"
+            required
+          >
+            <USelect
+              v-model="formState.rubrique"
+              class="w-full"
+              :items="[
+                { label: $t('admin.contenuIA.pedagogique'), value: 'pedagogique' },
+                { label: $t('admin.contenuIA.systemeEducatif'), value: 'systeme' },
+                { label: $t('admin.contenuIA.datesImportantes'), value: 'dates' },
+                { label: $t('admin.contenuIA.reglements'), value: 'reglements' },
+              ]"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.contenuIA.titre')" name="titre" required>
-            <UInput v-model="formState.titre" class="w-full" />
+          <UFormField
+            :label="$t('admin.contenuIA.titre')"
+            name="titre"
+            required
+          >
+            <UInput
+              v-model="formState.titre"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField label="Contenu" name="contenu" required>
-            <UTextarea v-model="formState.contenu" class="w-full" :rows="8" />
+          <UFormField
+            label="Contenu"
+            name="contenu"
+            required
+          >
+            <UTextarea
+              v-model="formState.contenu"
+              class="w-full"
+              :rows="8"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ isEdit ? $t('actions.save') : $t('actions.create') }}
             </UButton>
           </div>

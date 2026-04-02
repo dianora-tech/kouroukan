@@ -70,10 +70,10 @@ const subjectDefinitions = computed<SubjectDef[]>(() => {
       { code: 'ECM', nom: 'Education Civique et Morale', coefficients: { Primaire: 1, College: 1, Lycee: 1 } },
     ],
     Universitaire: [
-      { code: 'UE1', nom: "Unite d'Enseignement 1", coefficients: { Licence: 3, Master: 4, Doctorat: 5 } },
-      { code: 'UE2', nom: "Unite d'Enseignement 2", coefficients: { Licence: 3, Master: 4, Doctorat: 5 } },
-      { code: 'UE3', nom: "Unite d'Enseignement 3", coefficients: { Licence: 3, Master: 3, Doctorat: 4 } },
-      { code: 'UE4', nom: "Unite d'Enseignement 4", coefficients: { Licence: 2, Master: 3 } },
+      { code: 'UE1', nom: 'Unite d\'Enseignement 1', coefficients: { Licence: 3, Master: 4, Doctorat: 5 } },
+      { code: 'UE2', nom: 'Unite d\'Enseignement 2', coefficients: { Licence: 3, Master: 4, Doctorat: 5 } },
+      { code: 'UE3', nom: 'Unite d\'Enseignement 3', coefficients: { Licence: 3, Master: 3, Doctorat: 4 } },
+      { code: 'UE4', nom: 'Unite d\'Enseignement 4', coefficients: { Licence: 2, Master: 3 } },
       { code: 'LANG', nom: 'Langues', coefficients: { Licence: 1, Master: 1 } },
       { code: 'INFO', nom: 'Informatique', coefficients: { Licence: 2, Master: 2 } },
     ],
@@ -237,7 +237,9 @@ onMounted(() => {
 })
 
 // Auto-save draft
-watch(groups, (val) => { saveDraft({ groups: JSON.parse(JSON.stringify(val)) }) }, { deep: true })
+watch(groups, (val) => {
+  saveDraft({ groups: JSON.parse(JSON.stringify(val)) })
+}, { deep: true })
 
 // Active group
 const activeGroup = computed(() => groups.value.find(g => g.key === activeGroupKey.value))
@@ -293,7 +295,9 @@ function getCurrentData() {
   }
   return { matieres }
 }
-function isValid() { return groups.value.some(g => g.subjects.some(s => s.selected)) }
+function isValid() {
+  return groups.value.some(g => g.subjects.some(s => s.selected))
+}
 defineExpose({ getCurrentData, isValid })
 </script>
 
@@ -307,8 +311,14 @@ defineExpose({ getCurrentData, isValid })
     </p>
 
     <!-- No classes created -->
-    <div v-if="groups.length === 0" class="mb-6 rounded-lg border-2 border-dashed border-gray-300 p-6 text-center dark:border-gray-600">
-      <UIcon name="i-heroicons-exclamation-triangle" class="mx-auto h-8 w-8 text-amber-400" />
+    <div
+      v-if="groups.length === 0"
+      class="mb-6 rounded-lg border-2 border-dashed border-gray-300 p-6 text-center dark:border-gray-600"
+    >
+      <UIcon
+        name="i-heroicons-exclamation-triangle"
+        class="mx-auto h-8 w-8 text-amber-400"
+      />
       <p class="mt-2 text-sm text-gray-500">
         {{ $t('onboarding.subjects.noLevels') }}
       </p>
@@ -317,12 +327,25 @@ defineExpose({ getCurrentData, isValid })
     <template v-else>
       <!-- Tabs par cycle, puis par groupe -->
       <div class="mb-6">
-        <div v-for="(cycleGroups, cycle) in groupsByCycle" :key="cycle" class="mb-4">
+        <div
+          v-for="(cycleGroups, cycle) in groupsByCycle"
+          :key="cycle"
+          class="mb-4"
+        >
           <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-            <UIcon name="i-heroicons-academic-cap" class="h-4 w-4 text-green-600" />
+            <UIcon
+              name="i-heroicons-academic-cap"
+              class="h-4 w-4 text-green-600"
+            />
             {{ cycle }}
-            <span v-if="!cycleGroups[0]?.isPerClass" class="text-xs font-normal text-gray-400">(memes matieres par niveau)</span>
-            <span v-else class="text-xs font-normal text-gray-400">(matieres par classe)</span>
+            <span
+              v-if="!cycleGroups[0]?.isPerClass"
+              class="text-xs font-normal text-gray-400"
+            >(memes matieres par niveau)</span>
+            <span
+              v-else
+              class="text-xs font-normal text-gray-400"
+            >(matieres par classe)</span>
           </h3>
 
           <div class="flex flex-wrap gap-1.5">
@@ -342,12 +365,18 @@ defineExpose({ getCurrentData, isValid })
       </div>
 
       <!-- Active group subjects -->
-      <div v-if="activeGroup" class="mb-6">
+      <div
+        v-if="activeGroup"
+        class="mb-6"
+      >
         <div class="mb-3">
           <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">
             Matieres pour
             <span class="text-green-600">{{ activeGroup.label }}</span>
-            <span v-if="!activeGroup.isPerClass" class="text-xs font-normal text-gray-400">
+            <span
+              v-if="!activeGroup.isPerClass"
+              class="text-xs font-normal text-gray-400"
+            >
               (s'applique a toutes les classes {{ activeGroup.niveauCode }})
             </span>
           </h4>
@@ -381,13 +410,35 @@ defineExpose({ getCurrentData, isValid })
         <!-- Ajouter une matiere personnalisee -->
         <div class="mt-4 rounded-lg border border-dashed border-gray-300 p-3 dark:border-gray-600">
           <div class="flex items-end gap-3">
-            <UFormField label="Code" class="w-20">
-              <UInput v-model="newSubject.code" placeholder="ART" size="sm" class="w-full" />
+            <UFormField
+              label="Code"
+              class="w-20"
+            >
+              <UInput
+                v-model="newSubject.code"
+                placeholder="ART"
+                size="sm"
+                class="w-full"
+              />
             </UFormField>
-            <UFormField label="Nom" class="flex-1">
-              <UInput v-model="newSubject.nom" placeholder="Nom de la matiere" size="sm" class="w-full" />
+            <UFormField
+              label="Nom"
+              class="flex-1"
+            >
+              <UInput
+                v-model="newSubject.nom"
+                placeholder="Nom de la matiere"
+                size="sm"
+                class="w-full"
+              />
             </UFormField>
-            <UButton size="sm" color="primary" variant="outline" icon="i-heroicons-plus" @click="addCustomSubject">
+            <UButton
+              size="sm"
+              color="primary"
+              variant="outline"
+              icon="i-heroicons-plus"
+              @click="addCustomSubject"
+            >
               Ajouter
             </UButton>
           </div>
@@ -396,10 +447,17 @@ defineExpose({ getCurrentData, isValid })
     </template>
 
     <div class="flex justify-between pt-4">
-      <UButton variant="ghost" color="neutral" @click="emit('prev')">
+      <UButton
+        variant="ghost"
+        color="neutral"
+        @click="emit('prev')"
+      >
         {{ $t('onboarding.previous') }}
       </UButton>
-      <UButton color="primary" @click="onSubmit">
+      <UButton
+        color="primary"
+        @click="onSubmit"
+      >
         {{ $t('onboarding.next') }}
       </UButton>
     </div>

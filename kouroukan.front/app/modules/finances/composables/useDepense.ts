@@ -46,7 +46,7 @@ export function useDepense() {
     store.items.filter(d => ['Demande', 'ValideN1', 'ValideFinance'].includes(d.statutDepense)).length,
   )
 
-  async function fetchAll(params?: Partial<DepenseFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<DepenseFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

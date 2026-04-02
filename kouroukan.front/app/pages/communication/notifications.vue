@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Notification, CreateNotificationPayload, UpdateNotificationPayload } from '~/modules/communication/types/notification.types'
+import type { Notification, CreateNotificationPayload, UpdateNotificationPayload, NotificationFilters } from '~/modules/communication/types/notification.types'
 import { useNotification } from '~/modules/communication/composables/useNotification'
-import type { NotificationFilters } from '~/modules/communication/types/notification.types'
 import NotificationForm from '~/modules/communication/components/NotificationForm.vue'
 import NotificationCard from '~/modules/communication/components/NotificationCard.vue'
 import NotificationFiltersComponent from '~/modules/communication/components/NotificationFilters.vue'
@@ -135,10 +134,16 @@ function getStatutEnvoiColor(estEnvoyee: boolean): string {
     </div>
 
     <!-- Stats -->
-    <NotificationStats :items="items" :total-count="pagination.totalCount" />
+    <NotificationStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
     <!-- Filters -->
-    <NotificationFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <NotificationFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <!-- Table view -->
     <template v-if="viewMode === 'table'">
@@ -151,12 +156,20 @@ function getStatutEnvoiColor(estEnvoyee: boolean): string {
         @sort="handleSort"
       >
         <template #cell-canal="{ row }">
-          <UBadge color="info" variant="subtle" size="sm">
+          <UBadge
+            color="info"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`communication.notification.canal.${(row as Notification).canal}`) }}
           </UBadge>
         </template>
         <template #cell-estEnvoyee="{ row }">
-          <UBadge :color="getStatutEnvoiColor((row as Notification).estEnvoyee)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutEnvoiColor((row as Notification).estEnvoyee)"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Notification).estEnvoyee ? $t('communication.notification.envoyee') : $t('communication.notification.enAttente') }}
           </UBadge>
         </template>
@@ -192,7 +205,10 @@ function getStatutEnvoiColor(estEnvoyee: boolean): string {
 
     <!-- Grid view -->
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <NotificationCard
           v-for="notification in items"
           :key="notification.id"

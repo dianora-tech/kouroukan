@@ -31,7 +31,9 @@ onMounted(() => {
 })
 
 // Auto-save draft on change
-watch(() => ({ ...state }), (val) => { saveDraft(val) }, { deep: true })
+watch(() => ({ ...state }), (val) => {
+  saveDraft(val)
+}, { deep: true })
 
 const schema = z.object({
   name: z.string().min(2, t('onboarding.validation.required')),
@@ -65,12 +67,29 @@ defineExpose({ getCurrentData, isValid })
       {{ $t('onboarding.establishment.description') }}
     </p>
 
-    <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormField :label="$t('onboarding.establishment.name')" name="name" required>
-        <UInput v-model="state.name" :placeholder="$t('onboarding.establishment.namePlaceholder')" class="w-full" />
+    <UForm
+      :schema="schema"
+      :state="state"
+      class="space-y-4"
+      @submit="onSubmit"
+    >
+      <UFormField
+        :label="$t('onboarding.establishment.name')"
+        name="name"
+        required
+      >
+        <UInput
+          v-model="state.name"
+          :placeholder="$t('onboarding.establishment.namePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="$t('onboarding.establishment.type')" name="typeEtablissement" required>
+      <UFormField
+        :label="$t('onboarding.establishment.type')"
+        name="typeEtablissement"
+        required
+      >
         <USelect
           v-model="state.typeEtablissement"
           :items="typeOptions"
@@ -80,25 +99,53 @@ defineExpose({ getCurrentData, isValid })
         />
       </UFormField>
 
-      <UFormField :label="$t('onboarding.establishment.descriptionLabel')" name="description">
-        <UTextarea v-model="state.description" :placeholder="$t('onboarding.establishment.descriptionPlaceholder')" class="w-full" />
+      <UFormField
+        :label="$t('onboarding.establishment.descriptionLabel')"
+        name="description"
+      >
+        <UTextarea
+          v-model="state.description"
+          :placeholder="$t('onboarding.establishment.descriptionPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UFormField :label="$t('onboarding.establishment.phone')" name="phoneNumber">
+        <UFormField
+          :label="$t('onboarding.establishment.phone')"
+          name="phoneNumber"
+        >
           <PhoneInput v-model="state.phoneNumber" />
         </UFormField>
-        <UFormField :label="$t('onboarding.establishment.email')" name="email">
-          <UInput v-model="state.email" type="email" :placeholder="$t('onboarding.establishment.emailPlaceholder')" class="w-full" />
+        <UFormField
+          :label="$t('onboarding.establishment.email')"
+          name="email"
+        >
+          <UInput
+            v-model="state.email"
+            type="email"
+            :placeholder="$t('onboarding.establishment.emailPlaceholder')"
+            class="w-full"
+          />
         </UFormField>
       </div>
 
-      <UFormField :label="$t('onboarding.establishment.address')" name="address">
-        <UInput v-model="state.address" :placeholder="$t('onboarding.establishment.addressPlaceholder')" class="w-full" />
+      <UFormField
+        :label="$t('onboarding.establishment.address')"
+        name="address"
+      >
+        <UInput
+          v-model="state.address"
+          :placeholder="$t('onboarding.establishment.addressPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
       <div class="flex justify-end pt-4">
-        <UButton type="submit" color="primary">
+        <UButton
+          type="submit"
+          color="primary"
+        >
           {{ $t('onboarding.next') }}
         </UButton>
       </div>

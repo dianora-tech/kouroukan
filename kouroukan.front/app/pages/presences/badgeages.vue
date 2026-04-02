@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Badgeage, CreateBadgeagePayload, UpdateBadgeagePayload } from '~/modules/presences/types/badgeage.types'
-import type { BadgeageFilters } from '~/modules/presences/types/badgeage.types'
+import type { Badgeage, CreateBadgeagePayload, UpdateBadgeagePayload, BadgeageFilters } from '~/modules/presences/types/badgeage.types'
 import { useBadgeage } from '~/modules/presences/composables/useBadgeage'
 import BadgeageForm from '~/modules/presences/components/BadgeageForm.vue'
 import BadgeageCard from '~/modules/presences/components/BadgeageCard.vue'
@@ -131,9 +130,15 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <BadgeageStats :items="items" :total-count="pagination.totalCount" />
+    <BadgeageStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <BadgeageFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <BadgeageFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -151,7 +156,11 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
           {{ $t(`presences.badgeage.pointAcces.${(row as Badgeage).pointAcces}`) }}
         </template>
         <template #cell-methodeBadgeage="{ row }">
-          <UBadge color="primary" variant="subtle" size="sm">
+          <UBadge
+            color="primary"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Badgeage).methodeBadgeage }}
           </UBadge>
         </template>
@@ -186,7 +195,10 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <BadgeageCard
           v-for="badgeage in items"
           :key="badgeage.id"

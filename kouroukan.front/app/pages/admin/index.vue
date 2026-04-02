@@ -94,9 +94,11 @@ async function fetchForfaitStats() {
   try {
     const res = await apiClient.get<{ data: ForfaitStats }>('/api/admin/stats/forfaits')
     forfaitStats.value = res.data
-  } catch {
+  }
+  catch {
     // silently fail — stats section simply won't show
-  } finally {
+  }
+  finally {
     forfaitStatsLoading.value = false
   }
 }
@@ -128,12 +130,23 @@ onMounted(() => {
         class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800"
       >
         <div class="flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-lg" :class="kpi.bg">
-            <UIcon :name="kpi.icon" class="h-5 w-5" :class="kpi.color" />
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-lg"
+            :class="kpi.bg"
+          >
+            <UIcon
+              :name="kpi.icon"
+              class="h-5 w-5"
+              :class="kpi.color"
+            />
           </div>
           <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ kpi.label }}</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ kpi.value.toLocaleString() }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              {{ kpi.label }}
+            </p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ kpi.value.toLocaleString() }}
+            </p>
           </div>
         </div>
       </div>
@@ -142,9 +155,15 @@ onMounted(() => {
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <!-- Revenus du mois -->
       <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ $t('admin.revenus.title') }}</h2>
+        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          {{ $t('admin.revenus.title') }}
+        </h2>
         <div class="space-y-3">
-          <div v-for="r in revenusMensuels" :key="r.mois" class="flex items-center gap-3">
+          <div
+            v-for="r in revenusMensuels"
+            :key="r.mois"
+            class="flex items-center gap-3"
+          >
             <span class="w-10 text-sm text-gray-500">{{ r.mois }}</span>
             <div class="flex-1 rounded-full bg-gray-100 dark:bg-gray-700">
               <div
@@ -161,9 +180,15 @@ onMounted(() => {
 
       <!-- Repartition par region -->
       <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ $t('admin.demographie.title') }}</h2>
+        <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          {{ $t('admin.demographie.title') }}
+        </h2>
         <div class="space-y-3">
-          <div v-for="region in regions" :key="region.nom" class="flex items-center gap-3">
+          <div
+            v-for="region in regions"
+            :key="region.nom"
+            class="flex items-center gap-3"
+          >
             <span class="w-20 text-sm text-gray-700 dark:text-gray-300">{{ region.nom }}</span>
             <div class="flex-1 rounded-full bg-gray-100 dark:bg-gray-700">
               <div
@@ -178,8 +203,13 @@ onMounted(() => {
     </div>
 
     <!-- Taux de forfaits actifs -->
-    <div v-if="forfaitStats" class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ $t('admin.forfaitStats.title') }}</h2>
+    <div
+      v-if="forfaitStats"
+      class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800"
+    >
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+        {{ $t('admin.forfaitStats.title') }}
+      </h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div
           v-for="card in forfaitStatsCards"
@@ -187,8 +217,15 @@ onMounted(() => {
           class="rounded-lg border border-gray-100 p-4 dark:border-gray-700"
         >
           <div class="flex items-center gap-2 mb-3">
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg" :class="card.bg">
-              <UIcon :name="card.icon" class="h-4 w-4" :class="card.color" />
+            <div
+              class="flex h-8 w-8 items-center justify-center rounded-lg"
+              :class="card.bg"
+            >
+              <UIcon
+                :name="card.icon"
+                class="h-4 w-4"
+                :class="card.color"
+              />
             </div>
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ card.label }}</span>
           </div>
@@ -211,17 +248,27 @@ onMounted(() => {
 
     <!-- Axes d'amelioration -->
     <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ $t('admin.ameliorations.title') }}</h2>
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+        {{ $t('admin.ameliorations.title') }}
+      </h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div
           v-for="item in ameliorations"
           :key="item.label"
           class="rounded-lg border border-gray-100 p-4 dark:border-gray-700"
         >
-          <p class="text-sm text-gray-500 dark:text-gray-400">{{ item.label }}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ item.label }}
+          </p>
           <div class="mt-1 flex items-baseline gap-2">
             <span class="text-xl font-bold text-gray-900 dark:text-white">{{ item.value }}</span>
-            <UBadge color="success" variant="subtle" size="xs">{{ item.trend }}</UBadge>
+            <UBadge
+              color="success"
+              variant="subtle"
+              size="xs"
+            >
+              {{ item.trend }}
+            </UBadge>
           </div>
         </div>
       </div>

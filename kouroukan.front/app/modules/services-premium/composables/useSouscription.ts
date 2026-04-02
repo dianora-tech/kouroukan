@@ -41,7 +41,7 @@ export function useSouscription() {
     store.items.filter(s => s.statutSouscription === 'Essai').length,
   )
 
-  async function fetchAll(params?: Partial<SouscriptionFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<SouscriptionFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

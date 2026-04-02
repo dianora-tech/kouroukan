@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type { LiaisonEnseignant } from '../types/enseignant.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/auth/liaisons-enseignant'
 

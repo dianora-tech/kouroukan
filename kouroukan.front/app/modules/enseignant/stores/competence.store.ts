@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Competence,
   CreateCompetencePayload,
 } from '../types/enseignant.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/pedagogie/competences-enseignant'
 

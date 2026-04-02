@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Inscription, CreateInscriptionPayload, UpdateInscriptionPayload } from '~/modules/inscriptions/types/inscription.types'
+import type { Inscription, CreateInscriptionPayload, UpdateInscriptionPayload, InscriptionFilters } from '~/modules/inscriptions/types/inscription.types'
 import { useInscription } from '~/modules/inscriptions/composables/useInscription'
-import type { InscriptionFilters } from '~/modules/inscriptions/types/inscription.types'
 import InscriptionForm from '~/modules/inscriptions/components/InscriptionForm.vue'
 import InscriptionCard from '~/modules/inscriptions/components/InscriptionCard.vue'
 import InscriptionFiltersComponent from '~/modules/inscriptions/components/InscriptionFilters.vue'
@@ -144,9 +143,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <InscriptionStats :items="items" :total-count="pagination.totalCount" />
+    <InscriptionStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <InscriptionFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <InscriptionFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -161,7 +166,11 @@ function getStatutColor(statut: string): string {
           {{ formatMontant((row as Inscription).montantInscription) }}
         </template>
         <template #cell-statutInscription="{ row }">
-          <UBadge :color="getStatutColor((row as Inscription).statutInscription)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Inscription).statutInscription)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`inscriptions.inscription.statut.${(row as Inscription).statutInscription}`) }}
           </UBadge>
         </template>
@@ -196,7 +205,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <InscriptionCard
           v-for="inscription in items"
           :key="inscription.id"

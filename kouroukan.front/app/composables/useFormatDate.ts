@@ -31,7 +31,7 @@ export function useFormatDate() {
     if (!dateStr) return '—'
     try {
       const date = new Date(dateStr)
-      if (isNaN(date.getTime())) return '—'
+      if (Number.isNaN(date.getTime())) return '—'
       return new Intl.DateTimeFormat(getLocale(), {
         day: 'numeric',
         month: 'long',
@@ -51,7 +51,7 @@ export function useFormatDate() {
     if (!dateStr) return '—'
     try {
       const date = new Date(dateStr)
-      if (isNaN(date.getTime())) return '—'
+      if (Number.isNaN(date.getTime())) return '—'
       return new Intl.DateTimeFormat(getLocale(), {
         day: '2-digit',
         month: '2-digit',
@@ -71,7 +71,7 @@ export function useFormatDate() {
     if (!dateStr) return '—'
     try {
       const date = new Date(dateStr)
-      if (isNaN(date.getTime())) return '—'
+      if (Number.isNaN(date.getTime())) return '—'
       return new Intl.DateTimeFormat(getLocale(), {
         day: 'numeric',
         month: 'long',
@@ -93,7 +93,7 @@ export function useFormatDate() {
     if (!dateStr) return '—'
     try {
       const date = new Date(dateStr)
-      if (isNaN(date.getTime())) return '—'
+      if (Number.isNaN(date.getTime())) return '—'
       return new Intl.DateTimeFormat(getLocale(), {
         hour: '2-digit',
         minute: '2-digit',
@@ -112,7 +112,7 @@ export function useFormatDate() {
     if (!dateStr) return '—'
     try {
       const date = new Date(dateStr)
-      if (isNaN(date.getTime())) return '—'
+      if (Number.isNaN(date.getTime())) return '—'
       return new Intl.DateTimeFormat(getLocale(), {
         day: 'numeric',
         month: 'short',

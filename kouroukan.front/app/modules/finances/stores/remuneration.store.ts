@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   RemunerationEnseignant,
   RemunerationFilters,
   CreateRemunerationPayload,
   UpdateRemunerationPayload,
 } from '../types/remuneration.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/finances/remunerations-enseignants'
 
@@ -46,7 +46,7 @@ export const useRemunerationStore = defineStore('finances-remuneration', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<RemunerationFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<RemunerationFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<RemunerationEnseignant>(API_PATH, {

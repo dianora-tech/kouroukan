@@ -38,22 +38,35 @@ function formatMontant(montant: number): string {
           {{ depense.typeName }} - {{ depense.associationNom }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(depense.statutValidation)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(depense.statutValidation)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`bde.depenseBde.statut.${depense.statutValidation}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(depense.montant) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-tag" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-tag"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t(`bde.depenseBde.categorie.${depense.categorie}`) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-document-text" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-document-text"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ depense.motif }}
       </p>
     </div>

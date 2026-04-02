@@ -34,7 +34,7 @@ export function useDossierAdmission() {
     store.types.map(t => ({ label: t.name, value: t.id })),
   )
 
-  async function fetchAll(params?: Partial<DossierAdmissionFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<DossierAdmissionFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

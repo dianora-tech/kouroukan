@@ -37,28 +37,53 @@ onMounted(async () => {
       <div class="flex flex-col items-center gap-4 sm:flex-row">
         <div class="flex h-32 w-32 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
           <div v-if="qrLoading">
-            <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-gray-400" />
+            <UIcon
+              name="i-heroicons-arrow-path"
+              class="h-8 w-8 animate-spin text-gray-400"
+            />
           </div>
-          <img v-else-if="qrCodeUrl" :src="qrCodeUrl" alt="QR Code" class="h-full w-full object-contain" />
-          <UIcon v-else name="i-heroicons-qr-code" class="h-12 w-12 text-gray-400" />
+          <img
+            v-else-if="qrCodeUrl"
+            :src="qrCodeUrl"
+            alt="QR Code"
+            class="h-full w-full object-contain"
+          >
+          <UIcon
+            v-else
+            name="i-heroicons-qr-code"
+            class="h-12 w-12 text-gray-400"
+          />
         </div>
         <div>
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
             {{ $t('famille.enfants.monQRCode') }}
           </h2>
-          <p class="text-sm text-gray-500">{{ $t('famille.enfants.qrDescription') }}</p>
-          <p class="mt-2 font-mono text-sm font-bold text-gray-900 dark:text-white">{{ parentCode }}</p>
+          <p class="text-sm text-gray-500">
+            {{ $t('famille.enfants.qrDescription') }}
+          </p>
+          <p class="mt-2 font-mono text-sm font-bold text-gray-900 dark:text-white">
+            {{ parentCode }}
+          </p>
         </div>
       </div>
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-gray-400" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
     </div>
 
     <!-- Liste enfants -->
-    <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div
+      v-else
+      class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+    >
       <div
         v-for="enfant in enfants"
         :key="enfant.id"
@@ -69,8 +94,12 @@ onMounted(async () => {
             {{ enfant.enfantPrenom.charAt(0) }}
           </div>
           <div>
-            <p class="font-semibold text-gray-900 dark:text-white">{{ enfant.enfantPrenom }} {{ enfant.enfantNom }}</p>
-            <p class="text-sm text-gray-500">{{ enfant.matricule }}</p>
+            <p class="font-semibold text-gray-900 dark:text-white">
+              {{ enfant.enfantPrenom }} {{ enfant.enfantNom }}
+            </p>
+            <p class="text-sm text-gray-500">
+              {{ enfant.matricule }}
+            </p>
           </div>
         </div>
         <div class="space-y-2 text-sm">

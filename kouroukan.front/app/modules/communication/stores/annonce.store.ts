@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia'
+import type { Annonce, AnnonceFilters, CreateAnnoncePayload, UpdateAnnoncePayload } from '../types/annonce.types'
 import { apiClient } from '~/core/api/client'
 import type { PaginatedResult } from '~/core/api/types'
-import type { Annonce, AnnonceFilters, CreateAnnoncePayload, UpdateAnnoncePayload } from '../types/annonce.types'
 
 const API_PATH = '/api/communication/annonces'
 
 interface AnnonceState {
   items: Annonce[]
   currentItem: Annonce | null
-  types: { id: number; name: string }[]
+  types: { id: number, name: string }[]
   loading: boolean
   saving: boolean
   filters: AnnonceFilters
@@ -45,7 +45,7 @@ export const useAnnonceStore = defineStore('communication-annonce', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<AnnonceFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AnnonceFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Annonce>(API_PATH, {
@@ -87,7 +87,7 @@ export const useAnnonceStore = defineStore('communication-annonce', {
 
     async fetchTypes(): Promise<void> {
       try {
-        const response = await apiClient.get<{ id: number; name: string }[]>(`${API_PATH}/types`)
+        const response = await apiClient.get<{ id: number, name: string }[]>(`${API_PATH}/types`)
         if (response.success && response.data) {
           this.types = response.data
         }

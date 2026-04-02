@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Depense, CreateDepensePayload, UpdateDepensePayload } from '~/modules/finances/types/depense.types'
+import type { Depense, CreateDepensePayload, UpdateDepensePayload, DepenseFilters } from '~/modules/finances/types/depense.types'
 import { useDepense } from '~/modules/finances/composables/useDepense'
-import type { DepenseFilters } from '~/modules/finances/types/depense.types'
 import DepenseForm from '~/modules/finances/components/DepenseForm.vue'
 import DepenseCard from '~/modules/finances/components/DepenseCard.vue'
 import DepenseFiltersComponent from '~/modules/finances/components/DepenseFilters.vue'
@@ -148,9 +147,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <DepenseStats :items="items" :total-count="pagination.totalCount" />
+    <DepenseStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <DepenseFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <DepenseFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -165,12 +170,20 @@ function getStatutColor(statut: string): string {
           {{ formatMontant((row as Depense).montant) }}
         </template>
         <template #cell-categorie="{ row }">
-          <UBadge color="neutral" variant="subtle" size="sm">
+          <UBadge
+            color="neutral"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.depense.categorie.${(row as Depense).categorie}`) }}
           </UBadge>
         </template>
         <template #cell-statutDepense="{ row }">
-          <UBadge :color="getStatutColor((row as Depense).statutDepense)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Depense).statutDepense)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.depense.statut.${(row as Depense).statutDepense}`) }}
           </UBadge>
         </template>
@@ -205,7 +218,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <DepenseCard
           v-for="depense in items"
           :key="depense.id"

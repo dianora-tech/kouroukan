@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   CompteAdmin,
   CreateCompteAdminPayload,
@@ -7,6 +6,7 @@ import type {
   TransactionAdmin,
   AdminFilters,
 } from '../types/admin.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/admin/comptes-mobile'
 
@@ -44,7 +44,7 @@ export const useCompteAdminStore = defineStore('admin-compte', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<AdminFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AdminFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<CompteAdmin>(API_PATH, {
@@ -69,7 +69,7 @@ export const useCompteAdminStore = defineStore('admin-compte', {
       }
     },
 
-    async fetchTransactions(params?: { page?: number; pageSize?: number }): Promise<void> {
+    async fetchTransactions(params?: { page?: number, pageSize?: number }): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<TransactionAdmin>(`${API_PATH}/transactions`, {

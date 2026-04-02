@@ -70,48 +70,123 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('bde.membreBde.associationId')" name="associationId" required>
-      <USelect v-model="state.associationId" :items="associationOptions" value-key="value" :placeholder="t('bde.membreBde.associationPlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('bde.membreBde.associationId')"
+      name="associationId"
+      required
+    >
+      <USelect
+        v-model="state.associationId"
+        :items="associationOptions"
+        value-key="value"
+        :placeholder="t('bde.membreBde.associationPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.membreBde.name')" name="name" required>
-      <UInput v-model="state.name" :placeholder="t('bde.membreBde.namePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.membreBde.name')"
+      name="name"
+      required
+    >
+      <UInput
+        v-model="state.name"
+        :placeholder="t('bde.membreBde.namePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.membreBde.eleveId')" name="eleveId" required>
-      <UInput v-model.number="state.eleveId" type="number" :placeholder="t('bde.membreBde.eleveIdPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.membreBde.eleveId')"
+      name="eleveId"
+      required
+    >
+      <UInput
+        v-model.number="state.eleveId"
+        type="number"
+        :placeholder="t('bde.membreBde.eleveIdPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('bde.membreBde.description')" name="description">
-      <UTextarea v-model="state.description" :placeholder="t('bde.membreBde.descriptionPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('bde.membreBde.description')"
+      name="description"
+    >
+      <UTextarea
+        v-model="state.description"
+        :placeholder="t('bde.membreBde.descriptionPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('bde.membreBde.roleBDE')" name="roleBDE" required>
-        <USelect v-model="state.roleBDE" :items="roleOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('bde.membreBde.roleBDE')"
+        name="roleBDE"
+        required
+      >
+        <USelect
+          v-model="state.roleBDE"
+          :items="roleOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('bde.membreBde.dateAdhesion')" name="dateAdhesion" required>
-        <UInput v-model="state.dateAdhesion" type="date" class="w-full" />
+      <UFormField
+        :label="t('bde.membreBde.dateAdhesion')"
+        name="dateAdhesion"
+        required
+      >
+        <UInput
+          v-model="state.dateAdhesion"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('bde.membreBde.montantCotisation')" name="montantCotisation">
-        <UInput v-model.number="state.montantCotisation" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('bde.membreBde.montantCotisation')"
+        name="montantCotisation"
+      >
+        <UInput
+          v-model.number="state.montantCotisation"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('bde.membreBde.estActif')" name="estActif">
+      <UFormField
+        :label="t('bde.membreBde.estActif')"
+        name="estActif"
+      >
         <UToggle v-model="state.estActif" />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

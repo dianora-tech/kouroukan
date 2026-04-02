@@ -25,7 +25,7 @@ export function useJournalFinancier() {
     hasPreviousPage: store.pagination.page > 1,
   }))
 
-  async function fetchAll(params?: { page?: number; pageSize?: number; enfantId?: number }): Promise<void> {
+  async function fetchAll(params?: { page?: number, pageSize?: number, enfantId?: number }): Promise<void> {
     try {
       await store.fetchAll(params)
     }

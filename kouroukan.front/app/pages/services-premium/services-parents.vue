@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { ServiceParent, CreateServiceParentPayload, UpdateServiceParentPayload } from '~/modules/services-premium/types/service-parent.types'
+import type { ServiceParent, CreateServiceParentPayload, UpdateServiceParentPayload, ServiceParentFilters } from '~/modules/services-premium/types/service-parent.types'
 import { useServiceParent } from '~/modules/services-premium/composables/useServiceParent'
-import type { ServiceParentFilters } from '~/modules/services-premium/types/service-parent.types'
 import ServiceParentForm from '~/modules/services-premium/components/ServiceParentForm.vue'
 import ServiceParentCard from '~/modules/services-premium/components/ServiceParentCard.vue'
 import ServiceParentFiltersComponent from '~/modules/services-premium/components/ServiceParentFilters.vue'
@@ -134,9 +133,15 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <ServiceParentStats :items="items" :total-count="pagination.totalCount" />
+    <ServiceParentStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <ServiceParentFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <ServiceParentFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -157,10 +162,17 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
           <span v-if="(row as ServiceParent).periodeEssaiJours">
             {{ (row as ServiceParent).periodeEssaiJours }} {{ $t('servicesPremium.serviceParent.jours') }}
           </span>
-          <span v-else class="text-gray-400">—</span>
+          <span
+            v-else
+            class="text-gray-400"
+          >—</span>
         </template>
         <template #cell-estActif="{ row }">
-          <UBadge :color="(row as ServiceParent).estActif ? 'success' : 'neutral'" variant="subtle" size="sm">
+          <UBadge
+            :color="(row as ServiceParent).estActif ? 'success' : 'neutral'"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as ServiceParent).estActif ? $t('servicesPremium.serviceParent.actif') : $t('servicesPremium.serviceParent.inactif') }}
           </UBadge>
         </template>
@@ -195,7 +207,10 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <ServiceParentCard
           v-for="service in items"
           :key="service.id"

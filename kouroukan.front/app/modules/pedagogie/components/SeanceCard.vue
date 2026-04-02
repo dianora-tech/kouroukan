@@ -30,33 +30,52 @@ function getJourColor(jour: number): string {
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
-          <UIcon name="i-heroicons-clock" class="h-5 w-5" />
+          <UIcon
+            name="i-heroicons-clock"
+            class="h-5 w-5"
+          />
         </div>
         <div>
           <h3 class="font-semibold text-gray-900 dark:text-white">
             {{ seance.matiereName ?? seance.matiereCode }}
           </h3>
-          <p v-if="seance.classeName" class="text-sm text-gray-500 dark:text-gray-400">
+          <p
+            v-if="seance.classeName"
+            class="text-sm text-gray-500 dark:text-gray-400"
+          >
             {{ seance.classeName }}
           </p>
         </div>
       </div>
-      <UBadge :color="getJourColor(seance.jourSemaine)" variant="subtle" size="sm">
+      <UBadge
+        :color="getJourColor(seance.jourSemaine)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`pedagogie.seance.jour.${seance.jourSemaine}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-clock"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ seance.heureDebut }} - {{ seance.heureFin }}
       </p>
       <p v-if="seance.enseignantNom">
-        <UIcon name="i-heroicons-user" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-user"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ seance.enseignantNom }}
       </p>
       <p v-if="seance.salleName">
-        <UIcon name="i-heroicons-building-office-2" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-building-office-2"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ seance.salleName }}
       </p>
     </div>

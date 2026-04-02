@@ -101,7 +101,7 @@ async function handleDelete(): Promise<void> {
 }
 
 function getRoleColor(role: string): string {
-  const colors: Record<string, string> = { Admin: 'error', Directeur: 'primary', Enseignant: 'info', Parent: 'success', 'Secrétaire': 'warning' }
+  const colors: Record<string, string> = { Admin: 'error', Directeur: 'primary', Enseignant: 'info', Parent: 'success', Secrétaire: 'warning' }
   return colors[role] ?? 'neutral'
 }
 </script>
@@ -120,59 +120,126 @@ function getRoleColor(role: string): string {
       </h1>
     </div>
 
-    <DataTable :columns="columns" :data="{ items: fakeData, totalCount: fakeData.length, page: 1, pageSize: 20 }" :loading="false">
+    <DataTable
+      :columns="columns"
+      :data="{ items: fakeData, totalCount: fakeData.length, page: 1, pageSize: 20 }"
+      :loading="false"
+    >
       <template #cell-nom="{ row }">
         {{ (row as Utilisateur).nom }} {{ (row as Utilisateur).prenom }}
       </template>
       <template #cell-role="{ row }">
-        <UBadge :color="getRoleColor((row as Utilisateur).role)" variant="subtle" size="sm">
+        <UBadge
+          :color="getRoleColor((row as Utilisateur).role)"
+          variant="subtle"
+          size="sm"
+        >
           {{ (row as Utilisateur).role }}
         </UBadge>
       </template>
       <template #cell-statut="{ row }">
-        <UBadge :color="(row as Utilisateur).statut === 'Actif' ? 'success' : 'neutral'" variant="subtle" size="sm">
+        <UBadge
+          :color="(row as Utilisateur).statut === 'Actif' ? 'success' : 'neutral'"
+          variant="subtle"
+          size="sm"
+        >
           {{ (row as Utilisateur).statut }}
         </UBadge>
       </template>
       <template #cell-actions="{ row }">
         <div class="flex gap-1">
-          <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as Utilisateur)" />
-          <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as Utilisateur)" />
+          <UButton
+            variant="ghost"
+            size="xs"
+            icon="i-heroicons-pencil-square"
+            @click="openEdit(row as Utilisateur)"
+          />
+          <UButton
+            variant="ghost"
+            size="xs"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="openDelete(row as Utilisateur)"
+          />
         </div>
       </template>
     </DataTable>
 
     <USlideover v-model:open="showForm">
       <template #header>
-        <h3 class="text-lg font-semibold">{{ $t('admin.utilisateur.edit') }}</h3>
+        <h3 class="text-lg font-semibold">
+          {{ $t('admin.utilisateur.edit') }}
+        </h3>
       </template>
       <template #body>
-        <UForm :schema="formSchema" :state="formState" class="space-y-4 p-4" @submit="handleFormSubmit">
+        <UForm
+          :schema="formSchema"
+          :state="formState"
+          class="space-y-4 p-4"
+          @submit="handleFormSubmit"
+        >
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <UFormField :label="$t('admin.utilisateur.prenom')" name="prenom" required>
-              <UInput v-model="formState.prenom" class="w-full" />
+            <UFormField
+              :label="$t('admin.utilisateur.prenom')"
+              name="prenom"
+              required
+            >
+              <UInput
+                v-model="formState.prenom"
+                class="w-full"
+              />
             </UFormField>
-            <UFormField :label="$t('admin.utilisateur.nom')" name="nom" required>
-              <UInput v-model="formState.nom" class="w-full" />
+            <UFormField
+              :label="$t('admin.utilisateur.nom')"
+              name="nom"
+              required
+            >
+              <UInput
+                v-model="formState.nom"
+                class="w-full"
+              />
             </UFormField>
           </div>
-          <UFormField :label="$t('admin.utilisateur.email')" name="email" required>
-            <UInput v-model="formState.email" type="email" class="w-full" />
+          <UFormField
+            :label="$t('admin.utilisateur.email')"
+            name="email"
+            required
+          >
+            <UInput
+              v-model="formState.email"
+              type="email"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.utilisateur.role')" name="role" required>
-            <USelect v-model="formState.role" class="w-full" :items="[
-              { label: 'Admin', value: 'Admin' },
-              { label: 'Directeur', value: 'Directeur' },
-              { label: 'Enseignant', value: 'Enseignant' },
-              { label: 'Parent', value: 'Parent' },
-              { label: 'Secrétaire', value: 'Secrétaire' },
-            ]" />
+          <UFormField
+            :label="$t('admin.utilisateur.role')"
+            name="role"
+            required
+          >
+            <USelect
+              v-model="formState.role"
+              class="w-full"
+              :items="[
+                { label: 'Admin', value: 'Admin' },
+                { label: 'Directeur', value: 'Directeur' },
+                { label: 'Enseignant', value: 'Enseignant' },
+                { label: 'Parent', value: 'Parent' },
+                { label: 'Secrétaire', value: 'Secrétaire' },
+              ]"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ $t('actions.save') }}
             </UButton>
           </div>

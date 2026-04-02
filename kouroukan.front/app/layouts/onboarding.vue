@@ -18,7 +18,9 @@
         <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-green-600 text-xl font-bold text-white shadow-lg">
           K
         </div>
-        <h1 class="text-xl font-bold text-gray-900 dark:text-white">Kouroukan</h1>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+          Kouroukan
+        </h1>
       </div>
 
       <!-- Slot -->

@@ -24,8 +24,14 @@ const absences = ref([
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="famille" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="famille"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div>
       <UBreadcrumb
         :items="[
@@ -38,23 +44,44 @@ const absences = ref([
       </h1>
     </div>
 
-    <USelect v-model="selectedEnfant" :items="enfants" class="w-72" />
+    <USelect
+      v-model="selectedEnfant"
+      :items="enfants"
+      class="w-72"
+    />
 
     <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
       <table class="w-full text-left text-sm">
         <thead class="border-b border-gray-200 dark:border-gray-700">
           <tr>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.absences.date') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.absences.motif') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.absences.duree') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.absences.justifie') }}</th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.absences.date') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.absences.motif') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.absences.duree') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.absences.justifie') }}
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-          <tr v-for="a in absences" :key="a.id">
-            <td class="px-4 py-3 text-gray-900 dark:text-white">{{ formatDate(a.date) }}</td>
-            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ a.motif }}</td>
-            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ a.duree }}</td>
+          <tr
+            v-for="a in absences"
+            :key="a.id"
+          >
+            <td class="px-4 py-3 text-gray-900 dark:text-white">
+              {{ formatDate(a.date) }}
+            </td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+              {{ a.motif }}
+            </td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+              {{ a.duree }}
+            </td>
             <td class="px-4 py-3">
               <UBadge
                 :color="a.justifie ? 'success' : 'error'"

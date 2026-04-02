@@ -140,19 +140,38 @@ async function handleDelete(): Promise<void> {
           {{ $t('admin.categorie.title') }}
         </h1>
       </div>
-      <UButton color="primary" icon="i-heroicons-plus" @click="openCreate">
+      <UButton
+        color="primary"
+        icon="i-heroicons-plus"
+        @click="openCreate"
+      >
         {{ $t('admin.categorie.add') }}
       </UButton>
     </div>
 
-    <DataTable :columns="columns" :data="{ items, totalCount: items.length, page: 1, pageSize: 100 }" :loading="loading">
+    <DataTable
+      :columns="columns"
+      :data="{ items, totalCount: items.length, page: 1, pageSize: 100 }"
+      :loading="loading"
+    >
       <template #cell-description="{ row }">
         <span class="text-gray-500">{{ (row as Categorie).description || '—' }}</span>
       </template>
       <template #cell-actions="{ row }">
         <div class="flex gap-1">
-          <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as Categorie)" />
-          <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as Categorie)" />
+          <UButton
+            variant="ghost"
+            size="xs"
+            icon="i-heroicons-pencil-square"
+            @click="openEdit(row as Categorie)"
+          />
+          <UButton
+            variant="ghost"
+            size="xs"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="openDelete(row as Categorie)"
+          />
         </div>
       </template>
     </DataTable>
@@ -164,18 +183,44 @@ async function handleDelete(): Promise<void> {
         </h3>
       </template>
       <template #body>
-        <UForm :schema="formSchema" :state="formState" class="space-y-4 p-4" @submit="handleFormSubmit">
-          <UFormField :label="$t('admin.categorie.nom')" name="name" required>
-            <UInput v-model="formState.name" class="w-full" />
+        <UForm
+          :schema="formSchema"
+          :state="formState"
+          class="space-y-4 p-4"
+          @submit="handleFormSubmit"
+        >
+          <UFormField
+            :label="$t('admin.categorie.nom')"
+            name="name"
+            required
+          >
+            <UInput
+              v-model="formState.name"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.categorie.description')" name="description">
-            <UTextarea v-model="formState.description" class="w-full" :rows="3" />
+          <UFormField
+            :label="$t('admin.categorie.description')"
+            name="description"
+          >
+            <UTextarea
+              v-model="formState.description"
+              class="w-full"
+              :rows="3"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ editingEntity ? $t('actions.save') : $t('actions.create') }}
             </UButton>
           </div>

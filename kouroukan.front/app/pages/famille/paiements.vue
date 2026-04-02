@@ -75,8 +75,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="famille" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="famille"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div>
       <UBreadcrumb
         :items="[
@@ -89,15 +95,31 @@ onMounted(async () => {
       </h1>
     </div>
 
-    <USelect v-if="enfantOptions.length > 0" v-model="selectedEnfant" :items="enfantOptions" class="w-72" />
+    <USelect
+      v-if="enfantOptions.length > 0"
+      v-model="selectedEnfant"
+      :items="enfantOptions"
+      class="w-72"
+    />
 
     <!-- Loading state -->
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-gray-400" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
     </div>
 
     <template v-else>
-      <UButton color="primary" icon="i-heroicons-credit-card" size="lg" @click="showPaymentForm = true">
+      <UButton
+        color="primary"
+        icon="i-heroicons-credit-card"
+        size="lg"
+        @click="showPaymentForm = true"
+      >
         {{ $t('famille.paiements.payer') }}
       </UButton>
 
@@ -109,19 +131,40 @@ onMounted(async () => {
         <table class="w-full text-left text-sm">
           <thead class="border-b border-gray-200 dark:border-gray-700">
             <tr>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.paiements.date') }}</th>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.paiements.montant') }}</th>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.paiements.methode') }}</th>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.paiements.statut') }}</th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('famille.paiements.date') }}
+              </th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('famille.paiements.montant') }}
+              </th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('famille.paiements.methode') }}
+              </th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('famille.paiements.statut') }}
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-            <tr v-for="p in historique" :key="p.id">
-              <td class="px-4 py-3 text-gray-900 dark:text-white">{{ formatDate(p.date) }}</td>
-              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ p.montant.toLocaleString('fr-GN') }} GNF</td>
-              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ p.methode }}</td>
+            <tr
+              v-for="p in historique"
+              :key="p.id"
+            >
+              <td class="px-4 py-3 text-gray-900 dark:text-white">
+                {{ formatDate(p.date) }}
+              </td>
+              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+                {{ p.montant.toLocaleString('fr-GN') }} GNF
+              </td>
+              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+                {{ p.methode }}
+              </td>
               <td class="px-4 py-3">
-                <UBadge :color="p.statut === 'confirme' ? 'success' : 'warning'" variant="subtle" size="sm">
+                <UBadge
+                  :color="p.statut === 'confirme' ? 'success' : 'warning'"
+                  variant="subtle"
+                  size="sm"
+                >
                   {{ p.statut === 'confirme' ? $t('famille.paiements.confirme') : p.statut }}
                 </UBadge>
               </td>
@@ -133,25 +176,56 @@ onMounted(async () => {
 
     <USlideover v-model:open="showPaymentForm">
       <template #header>
-        <h3 class="text-lg font-semibold">{{ $t('famille.paiements.payer') }}</h3>
+        <h3 class="text-lg font-semibold">
+          {{ $t('famille.paiements.payer') }}
+        </h3>
       </template>
       <template #body>
-        <UForm :schema="paymentSchema" :state="paymentState" class="space-y-4 p-4" @submit="handlePayment">
-          <UFormField :label="$t('famille.paiements.montant')" name="montant" required>
-            <UInput v-model.number="paymentState.montant" type="number" class="w-full" placeholder="0" />
+        <UForm
+          :schema="paymentSchema"
+          :state="paymentState"
+          class="space-y-4 p-4"
+          @submit="handlePayment"
+        >
+          <UFormField
+            :label="$t('famille.paiements.montant')"
+            name="montant"
+            required
+          >
+            <UInput
+              v-model.number="paymentState.montant"
+              type="number"
+              class="w-full"
+              placeholder="0"
+            />
           </UFormField>
-          <UFormField :label="$t('famille.paiements.methode')" name="methode" required>
-            <USelect v-model="paymentState.methode" class="w-full" :items="[
-              { label: 'Orange Money', value: 'orange_money' },
-              { label: 'MTN MoMo', value: 'mtn_momo' },
-              { label: 'Soutra Money', value: 'soutra_money' },
-            ]" />
+          <UFormField
+            :label="$t('famille.paiements.methode')"
+            name="methode"
+            required
+          >
+            <USelect
+              v-model="paymentState.methode"
+              class="w-full"
+              :items="[
+                { label: 'Orange Money', value: 'orange_money' },
+                { label: 'MTN MoMo', value: 'mtn_momo' },
+                { label: 'Soutra Money', value: 'soutra_money' },
+              ]"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showPaymentForm = false">
+            <UButton
+              variant="outline"
+              @click="showPaymentForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="paymentSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="paymentSaving"
+            >
               {{ $t('famille.paiements.payer') }}
             </UButton>
           </div>

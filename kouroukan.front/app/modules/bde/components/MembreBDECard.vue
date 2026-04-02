@@ -29,22 +29,35 @@ function formatMontant(montant: number): string {
           {{ membre.associationNom }}
         </p>
       </div>
-      <UBadge :color="membre.estActif ? 'success' : 'neutral'" variant="subtle" size="sm">
+      <UBadge
+        :color="membre.estActif ? 'success' : 'neutral'"
+        variant="subtle"
+        size="sm"
+      >
         {{ membre.estActif ? $t('bde.membreBde.actif') : $t('bde.membreBde.inactif') }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-identification" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-identification"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t(`bde.membreBde.role.${membre.roleBDE}`) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatDate(membre.dateAdhesion) }}
       </p>
       <p v-if="membre.montantCotisation">
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(membre.montantCotisation) }}
       </p>
     </div>

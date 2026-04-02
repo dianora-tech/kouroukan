@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   DocumentGenere,
   DocumentGenereFilters,
@@ -7,6 +6,7 @@ import type {
   CreateDocumentGenerePayload,
   UpdateDocumentGenerePayload,
 } from '../types/document-genere.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/documents/documentsgeneres'
 
@@ -49,7 +49,7 @@ export const useDocumentGenereStore = defineStore('documents-document-genere', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<DocumentGenereFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<DocumentGenereFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<DocumentGenere>(API_PATH, {

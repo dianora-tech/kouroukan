@@ -42,8 +42,14 @@ onMounted(() => {
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-gray-400" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
     </div>
 
     <template v-else>
@@ -59,22 +65,38 @@ onMounted(() => {
               {{ enfant.nom.charAt(0) }}
             </div>
             <div>
-              <p class="font-semibold text-gray-900 dark:text-white">{{ enfant.nom }}</p>
-              <p class="text-xs text-gray-500">{{ enfant.classe }} - {{ enfant.etablissement }}</p>
+              <p class="font-semibold text-gray-900 dark:text-white">
+                {{ enfant.nom }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ enfant.classe }} - {{ enfant.etablissement }}
+              </p>
             </div>
           </div>
           <div class="grid grid-cols-3 gap-3 text-center">
             <div>
-              <p class="text-lg font-bold text-gray-900 dark:text-white">{{ enfant.moyenne || '-' }}</p>
-              <p class="text-xs text-gray-500">{{ $t('famille.dashboard.moyenne') }}</p>
+              <p class="text-lg font-bold text-gray-900 dark:text-white">
+                {{ enfant.moyenne || '-' }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ $t('famille.dashboard.moyenne') }}
+              </p>
             </div>
             <div>
-              <p class="text-lg font-bold text-gray-900 dark:text-white">{{ enfant.rang || '-' }}</p>
-              <p class="text-xs text-gray-500">{{ $t('famille.dashboard.rang') }}</p>
+              <p class="text-lg font-bold text-gray-900 dark:text-white">
+                {{ enfant.rang || '-' }}
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ $t('famille.dashboard.rang') }}
+              </p>
             </div>
             <div>
-              <p class="text-lg font-bold text-gray-900 dark:text-white">{{ enfant.tauxPresence || '-' }}%</p>
-              <p class="text-xs text-gray-500">{{ $t('famille.dashboard.presence') }}</p>
+              <p class="text-lg font-bold text-gray-900 dark:text-white">
+                {{ enfant.tauxPresence || '-' }}%
+              </p>
+              <p class="text-xs text-gray-500">
+                {{ $t('famille.dashboard.presence') }}
+              </p>
             </div>
           </div>
         </div>
@@ -87,8 +109,13 @@ onMounted(() => {
         </h2>
         <div class="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
           <div class="text-center text-gray-400">
-            <UIcon name="i-heroicons-chart-bar" class="mx-auto h-12 w-12" />
-            <p class="mt-2 text-sm">{{ $t('famille.dashboard.graphiquePlaceholder') }}</p>
+            <UIcon
+              name="i-heroicons-chart-bar"
+              class="mx-auto h-12 w-12"
+            />
+            <p class="mt-2 text-sm">
+              {{ $t('famille.dashboard.graphiquePlaceholder') }}
+            </p>
           </div>
         </div>
       </div>

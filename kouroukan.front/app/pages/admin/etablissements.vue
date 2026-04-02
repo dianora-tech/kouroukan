@@ -33,9 +33,9 @@ const editingEntity = ref<EtablissementAdmin | null>(null)
 const deletingEntity = ref<EtablissementAdmin | null>(null)
 const formSaving = ref(false)
 
-const regionOptions = ref<{ label: string; value: string }[]>([])
-const prefectureOptions = ref<{ label: string; value: string }[]>([])
-const sousPrefectureOptions = ref<{ label: string; value: string }[]>([])
+const regionOptions = ref<{ label: string, value: string }[]>([])
+const prefectureOptions = ref<{ label: string, value: string }[]>([])
+const sousPrefectureOptions = ref<{ label: string, value: string }[]>([])
 
 const formState = reactive({
   name: '',
@@ -55,13 +55,19 @@ async function loadRegionOptions() {
 }
 
 async function loadPrefectureOptions(regionCode: string) {
-  if (!regionCode) { prefectureOptions.value = []; return }
+  if (!regionCode) {
+    prefectureOptions.value = []
+    return
+  }
   const prefs = await fetchPrefectures(regionCode)
   prefectureOptions.value = prefs.map(p => ({ label: p.name, value: p.code }))
 }
 
 async function loadSousPrefectureOptions(prefectureCode: string) {
-  if (!prefectureCode || isConakry.value) { sousPrefectureOptions.value = []; return }
+  if (!prefectureCode || isConakry.value) {
+    sousPrefectureOptions.value = []
+    return
+  }
   const sps = await fetchSousPrefectures(prefectureCode)
   sousPrefectureOptions.value = sps.map(sp => ({ label: sp.name, value: sp.code }))
 }
@@ -187,9 +193,18 @@ async function handleDelete(): Promise<void> {
       </div>
     </div>
 
-    <DataTable :columns="columns" :data="paginatedData" :loading="loading" @page-change="changePage">
+    <DataTable
+      :columns="columns"
+      :data="paginatedData"
+      :loading="loading"
+      @page-change="changePage"
+    >
       <template #cell-isActive="{ row }">
-        <UBadge :color="(row as EtablissementAdmin).isActive ? 'success' : 'error'" variant="subtle" size="sm">
+        <UBadge
+          :color="(row as EtablissementAdmin).isActive ? 'success' : 'error'"
+          variant="subtle"
+          size="sm"
+        >
           {{ (row as EtablissementAdmin).isActive ? 'Actif' : 'Inactif' }}
         </UBadge>
       </template>
@@ -204,8 +219,19 @@ async function handleDelete(): Promise<void> {
       </template>
       <template #cell-actions="{ row }">
         <div class="flex gap-1">
-          <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as EtablissementAdmin)" />
-          <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as EtablissementAdmin)" />
+          <UButton
+            variant="ghost"
+            size="xs"
+            icon="i-heroicons-pencil-square"
+            @click="openEdit(row as EtablissementAdmin)"
+          />
+          <UButton
+            variant="ghost"
+            size="xs"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="openDelete(row as EtablissementAdmin)"
+          />
         </div>
       </template>
     </DataTable>
@@ -217,15 +243,31 @@ async function handleDelete(): Promise<void> {
         </h3>
       </template>
       <template #body>
-        <form class="space-y-4 p-4" @submit.prevent="handleFormSubmit">
-          <UFormField :label="$t('admin.etablissement.nom')" required>
-            <UInput v-model="formState.name" class="w-full" />
+        <form
+          class="space-y-4 p-4"
+          @submit.prevent="handleFormSubmit"
+        >
+          <UFormField
+            :label="$t('admin.etablissement.nom')"
+            required
+          >
+            <UInput
+              v-model="formState.name"
+              class="w-full"
+            />
           </UFormField>
           <UFormField label="Email">
-            <UInput v-model="formState.email" type="email" class="w-full" />
+            <UInput
+              v-model="formState.email"
+              type="email"
+              class="w-full"
+            />
           </UFormField>
           <UFormField :label="$t('admin.etablissement.telephone')">
-            <UInput v-model="formState.phoneNumber" class="w-full" />
+            <UInput
+              v-model="formState.phoneNumber"
+              class="w-full"
+            />
           </UFormField>
 
           <!-- Localisation -->
@@ -239,7 +281,10 @@ async function handleDelete(): Promise<void> {
             />
           </UFormField>
 
-          <UFormField v-if="formState.regionCode" :label="isConakry ? $t('admin.etablissement.commune') : $t('admin.etablissement.prefecture')">
+          <UFormField
+            v-if="formState.regionCode"
+            :label="isConakry ? $t('admin.etablissement.commune') : $t('admin.etablissement.prefecture')"
+          >
             <USelect
               v-model="formState.prefectureCode"
               :items="prefectureOptions"
@@ -250,7 +295,10 @@ async function handleDelete(): Promise<void> {
             />
           </UFormField>
 
-          <UFormField v-if="formState.prefectureCode && !isConakry" :label="$t('admin.etablissement.sousPrefecture')">
+          <UFormField
+            v-if="formState.prefectureCode && !isConakry"
+            :label="$t('admin.etablissement.sousPrefecture')"
+          >
             <USelect
               v-model="formState.sousPrefectureCode"
               :items="sousPrefectureOptions"
@@ -261,14 +309,24 @@ async function handleDelete(): Promise<void> {
           </UFormField>
 
           <UFormField :label="$t('admin.etablissement.adresse')">
-            <UInput v-model="formState.address" class="w-full" />
+            <UInput
+              v-model="formState.address"
+              class="w-full"
+            />
           </UFormField>
 
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ $t('actions.save') }}
             </UButton>
           </div>

@@ -35,25 +35,40 @@ function formatMontant(montant: number): string {
         </h3>
         <p class="text-sm text-gray-500 dark:text-gray-400">
           {{ association.typeName }}
-          <template v-if="association.sigle"> ({{ association.sigle }})</template>
+          <template v-if="association.sigle">
+            ({{ association.sigle }})
+          </template>
         </p>
       </div>
-      <UBadge :color="getStatutColor(association.statut)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(association.statut)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`bde.association.statut.${association.statut}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(association.budgetAnnuel) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ association.anneeScolaire }}
       </p>
       <p v-if="association.superviseurNom">
-        <UIcon name="i-heroicons-user" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-user"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ association.superviseurNom }}
       </p>
     </div>

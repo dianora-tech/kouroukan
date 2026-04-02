@@ -92,52 +92,143 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('finances.remuneration.mois_label')" name="mois" required>
-        <USelect v-model="state.mois" :items="moisOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('finances.remuneration.mois_label')"
+        name="mois"
+        required
+      >
+        <USelect
+          v-model="state.mois"
+          :items="moisOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('finances.remuneration.annee')" name="annee" required>
-        <USelect v-model="state.annee" :items="anneeOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('finances.remuneration.annee')"
+        name="annee"
+        required
+      >
+        <USelect
+          v-model="state.annee"
+          :items="anneeOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('finances.remuneration.modeRemuneration')" name="modeRemuneration" required>
-      <USelect v-model="state.modeRemuneration" :items="modeOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('finances.remuneration.modeRemuneration')"
+      name="modeRemuneration"
+      required
+    >
+      <USelect
+        v-model="state.modeRemuneration"
+        :items="modeOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
-    <div v-if="showForfait" class="grid grid-cols-1 gap-4 sm:grid-cols-1">
-      <UFormField :label="t('finances.remuneration.montantForfait')" name="montantForfait">
-        <UInput v-model.number="state.montantForfait" type="number" min="0" step="1" class="w-full" />
+    <div
+      v-if="showForfait"
+      class="grid grid-cols-1 gap-4 sm:grid-cols-1"
+    >
+      <UFormField
+        :label="t('finances.remuneration.montantForfait')"
+        name="montantForfait"
+      >
+        <UInput
+          v-model.number="state.montantForfait"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <div v-if="showHeures" class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('finances.remuneration.nombreHeures')" name="nombreHeures">
-        <UInput v-model.number="state.nombreHeures" type="number" min="0" step="0.5" class="w-full" />
+    <div
+      v-if="showHeures"
+      class="grid grid-cols-1 gap-4 sm:grid-cols-2"
+    >
+      <UFormField
+        :label="t('finances.remuneration.nombreHeures')"
+        name="nombreHeures"
+      >
+        <UInput
+          v-model.number="state.nombreHeures"
+          type="number"
+          min="0"
+          step="0.5"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('finances.remuneration.tauxHoraire')" name="tauxHoraire">
-        <UInput v-model.number="state.tauxHoraire" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('finances.remuneration.tauxHoraire')"
+        name="tauxHoraire"
+      >
+        <UInput
+          v-model.number="state.tauxHoraire"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('finances.remuneration.montantTotal')" name="montantTotal" required>
-        <UInput v-model.number="state.montantTotal" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('finances.remuneration.montantTotal')"
+        name="montantTotal"
+        required
+      >
+        <UInput
+          v-model.number="state.montantTotal"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('finances.remuneration.statutPaiement')" name="statutPaiement" required>
-        <USelect v-model="state.statutPaiement" :items="statutOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('finances.remuneration.statutPaiement')"
+        name="statutPaiement"
+        required
+      >
+        <USelect
+          v-model="state.statutPaiement"
+          :items="statutOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

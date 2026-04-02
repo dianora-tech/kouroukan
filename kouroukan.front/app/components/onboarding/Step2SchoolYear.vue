@@ -105,8 +105,14 @@ function onSubmit() {
     </p>
 
     <!-- Loading -->
-    <div v-if="loading" class="flex items-center justify-center py-8">
-      <UIcon name="i-heroicons-arrow-path" class="h-6 w-6 animate-spin text-gray-400" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-8"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-6 w-6 animate-spin text-gray-400"
+      />
     </div>
 
     <!-- No years available -->
@@ -114,7 +120,10 @@ function onSubmit() {
       v-else-if="anneesDisponibles.length === 0"
       class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-center dark:border-amber-700 dark:bg-amber-900/20"
     >
-      <UIcon name="i-heroicons-exclamation-triangle" class="mx-auto mb-2 h-8 w-8 text-amber-500" />
+      <UIcon
+        name="i-heroicons-exclamation-triangle"
+        class="mx-auto mb-2 h-8 w-8 text-amber-500"
+      />
       <p class="text-sm font-medium text-amber-800 dark:text-amber-300">
         {{ $t('onboarding.schoolYear.noYearsAvailable') }}
       </p>
@@ -156,7 +165,11 @@ function onSubmit() {
               <h3 class="text-base font-semibold text-gray-900 dark:text-white">
                 {{ selectedYear.libelle }}
               </h3>
-              <UBadge :color="getStatutColor(selectedYear.statut)" variant="subtle" size="sm">
+              <UBadge
+                :color="getStatutColor(selectedYear.statut)"
+                variant="subtle"
+                size="sm"
+              >
                 {{ getStatutLabel(selectedYear.statut) }}
               </UBadge>
             </div>
@@ -165,23 +178,31 @@ function onSubmit() {
               <!-- Code -->
               <div v-if="selectedYear.code">
                 <span class="text-gray-500 dark:text-gray-400">{{ $t('onboarding.schoolYear.codeLabel') }}</span>
-                <p class="font-medium text-gray-900 dark:text-white">{{ selectedYear.code }}</p>
+                <p class="font-medium text-gray-900 dark:text-white">
+                  {{ selectedYear.code }}
+                </p>
               </div>
 
               <!-- Dates -->
               <div>
                 <span class="text-gray-500 dark:text-gray-400">{{ $t('onboarding.schoolYear.startDate') }}</span>
-                <p class="font-medium text-gray-900 dark:text-white">{{ formatDate(selectedYear.dateDebut) }}</p>
+                <p class="font-medium text-gray-900 dark:text-white">
+                  {{ formatDate(selectedYear.dateDebut) }}
+                </p>
               </div>
               <div>
                 <span class="text-gray-500 dark:text-gray-400">{{ $t('onboarding.schoolYear.endDate') }}</span>
-                <p class="font-medium text-gray-900 dark:text-white">{{ formatDate(selectedYear.dateFin) }}</p>
+                <p class="font-medium text-gray-900 dark:text-white">
+                  {{ formatDate(selectedYear.dateFin) }}
+                </p>
               </div>
 
               <!-- Date rentrée -->
               <div v-if="selectedYear.dateRentree">
                 <span class="text-gray-500 dark:text-gray-400">{{ $t('onboarding.schoolYear.effectiveStart') }}</span>
-                <p class="font-medium text-gray-900 dark:text-white">{{ formatDate(selectedYear.dateRentree) }}</p>
+                <p class="font-medium text-gray-900 dark:text-white">
+                  {{ formatDate(selectedYear.dateRentree) }}
+                </p>
               </div>
 
               <!-- Périodes -->
@@ -195,8 +216,13 @@ function onSubmit() {
             </div>
 
             <!-- Description -->
-            <div v-if="selectedYear.description" class="mt-3 border-t border-gray-200 pt-3 dark:border-gray-700">
-              <p class="text-sm text-gray-600 dark:text-gray-400">{{ selectedYear.description }}</p>
+            <div
+              v-if="selectedYear.description"
+              class="mt-3 border-t border-gray-200 pt-3 dark:border-gray-700"
+            >
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                {{ selectedYear.description }}
+              </p>
             </div>
           </div>
         </Transition>
@@ -204,10 +230,18 @@ function onSubmit() {
 
       <!-- Actions -->
       <div class="flex justify-between pt-6">
-        <UButton variant="ghost" color="neutral" @click="emit('prev')">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          @click="emit('prev')"
+        >
           {{ $t('onboarding.previous') }}
         </UButton>
-        <UButton color="primary" :disabled="!selectedId" @click="onSubmit">
+        <UButton
+          color="primary"
+          :disabled="!selectedId"
+          @click="onSubmit"
+        >
           {{ $t('onboarding.next') }}
         </UButton>
       </div>

@@ -62,52 +62,130 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('documents.modeleDocument.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('documents.modeleDocument.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('documents.modeleDocument.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('documents.modeleDocument.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('documents.modeleDocument.name')" name="name" required>
-        <UInput v-model="state.name" :placeholder="t('documents.modeleDocument.namePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('documents.modeleDocument.name')"
+        name="name"
+        required
+      >
+        <UInput
+          v-model="state.name"
+          :placeholder="t('documents.modeleDocument.namePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('documents.modeleDocument.code')" name="code" required>
-        <UInput v-model="state.code" :placeholder="t('documents.modeleDocument.codePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('documents.modeleDocument.code')"
+        name="code"
+        required
+      >
+        <UInput
+          v-model="state.code"
+          :placeholder="t('documents.modeleDocument.codePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('documents.modeleDocument.description')" name="description">
-      <UTextarea v-model="state.description" :placeholder="t('documents.modeleDocument.descriptionPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('documents.modeleDocument.description')"
+      name="description"
+    >
+      <UTextarea
+        v-model="state.description"
+        :placeholder="t('documents.modeleDocument.descriptionPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('documents.modeleDocument.contenu')" name="contenu" required>
-      <UTextarea v-model="state.contenu" :placeholder="t('documents.modeleDocument.contenuPlaceholder')" :rows="8" class="w-full" />
+    <UFormField
+      :label="t('documents.modeleDocument.contenu')"
+      name="contenu"
+      required
+    >
+      <UTextarea
+        v-model="state.contenu"
+        :placeholder="t('documents.modeleDocument.contenuPlaceholder')"
+        :rows="8"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('documents.modeleDocument.logoUrl')" name="logoUrl">
-        <UInput v-model="state.logoUrl" :placeholder="t('documents.modeleDocument.logoUrlPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('documents.modeleDocument.logoUrl')"
+        name="logoUrl"
+      >
+        <UInput
+          v-model="state.logoUrl"
+          :placeholder="t('documents.modeleDocument.logoUrlPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('documents.modeleDocument.couleurPrimaire')" name="couleurPrimaire">
-        <UInput v-model="state.couleurPrimaire" type="color" class="w-full" />
+      <UFormField
+        :label="t('documents.modeleDocument.couleurPrimaire')"
+        name="couleurPrimaire"
+      >
+        <UInput
+          v-model="state.couleurPrimaire"
+          type="color"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('documents.modeleDocument.textePiedPage')" name="textePiedPage">
-      <UInput v-model="state.textePiedPage" :placeholder="t('documents.modeleDocument.textePiedPagePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('documents.modeleDocument.textePiedPage')"
+      name="textePiedPage"
+    >
+      <UInput
+        v-model="state.textePiedPage"
+        :placeholder="t('documents.modeleDocument.textePiedPagePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('documents.modeleDocument.estActif')" name="estActif">
+    <UFormField
+      :label="t('documents.modeleDocument.estActif')"
+      name="estActif"
+    >
       <UToggle v-model="state.estActif" />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

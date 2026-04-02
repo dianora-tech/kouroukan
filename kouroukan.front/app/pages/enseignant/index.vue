@@ -50,8 +50,14 @@ onMounted(async () => {
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-gray-400" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
     </div>
 
     <template v-else>
@@ -63,10 +69,17 @@ onMounted(async () => {
           class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800"
         >
           <div class="flex items-center gap-3">
-            <UIcon :name="stat.icon" :class="['h-8 w-8', stat.color]" />
+            <UIcon
+              :name="stat.icon"
+              :class="['h-8 w-8', stat.color]"
+            />
             <div>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ stat.label }}</p>
+              <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                {{ stat.value }}
+              </p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ stat.label }}
+              </p>
             </div>
           </div>
         </div>
@@ -84,8 +97,12 @@ onMounted(async () => {
             class="flex items-center justify-between rounded-lg border border-gray-100 p-4 dark:border-gray-700"
           >
             <div>
-              <p class="font-medium text-gray-900 dark:text-white">{{ etab.nom }}</p>
-              <p class="text-sm text-gray-500">{{ etab.heures }}h {{ $t('enseignant.dashboard.ceMois') }}</p>
+              <p class="font-medium text-gray-900 dark:text-white">
+                {{ etab.nom }}
+              </p>
+              <p class="text-sm text-gray-500">
+                {{ etab.heures }}h {{ $t('enseignant.dashboard.ceMois') }}
+              </p>
             </div>
             <UBadge
               :color="etab.statut === 'accepted' ? 'success' : 'warning'"

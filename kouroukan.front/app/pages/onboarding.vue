@@ -235,8 +235,14 @@ async function handleFinish() {
       </template>
 
       <!-- Loading overlay -->
-      <div v-if="saving || submitting" class="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
-        <UIcon name="i-heroicons-arrow-path" class="h-4 w-4 animate-spin" />
+      <div
+        v-if="saving || submitting"
+        class="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500"
+      >
+        <UIcon
+          name="i-heroicons-arrow-path"
+          class="h-4 w-4 animate-spin"
+        />
         {{ $t('onboarding.saving') }}
       </div>
     </div>

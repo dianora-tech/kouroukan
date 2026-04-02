@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Appel,
   AppelFilters,
   CreateAppelPayload,
   UpdateAppelPayload,
 } from '../types/appel.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/presences/appels'
 
@@ -47,7 +47,7 @@ export const useAppelStore = defineStore('presences-appel', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<AppelFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AppelFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Appel>(API_PATH, {

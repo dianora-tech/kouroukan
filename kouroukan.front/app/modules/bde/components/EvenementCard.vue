@@ -40,26 +40,44 @@ function formatMontant(montant: number): string {
           {{ evenement.typeName }} - {{ evenement.associationNom }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(evenement.statutEvenement)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(evenement.statutEvenement)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`bde.evenement.statut.${evenement.statutEvenement}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatDate(evenement.dateEvenement) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-map-pin" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-map-pin"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ evenement.lieu }}
       </p>
       <p>
-        <UIcon name="i-heroicons-users" class="mr-1 inline h-4 w-4" />
-        {{ evenement.nombreInscrits }}<template v-if="evenement.capacite"> / {{ evenement.capacite }}</template>
+        <UIcon
+          name="i-heroicons-users"
+          class="mr-1 inline h-4 w-4"
+        />
+        {{ evenement.nombreInscrits }}<template v-if="evenement.capacite">
+          / {{ evenement.capacite }}
+        </template>
       </p>
       <p v-if="evenement.tarifEntree">
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(evenement.tarifEntree) }}
       </p>
     </div>

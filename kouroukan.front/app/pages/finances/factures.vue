@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Facture, CreateFacturePayload, UpdateFacturePayload } from '~/modules/finances/types/facture.types'
+import type { Facture, CreateFacturePayload, UpdateFacturePayload, FactureFilters } from '~/modules/finances/types/facture.types'
 import { useFacture } from '~/modules/finances/composables/useFacture'
-import type { FactureFilters } from '~/modules/finances/types/facture.types'
 import FactureForm from '~/modules/finances/components/FactureForm.vue'
 import FactureCard from '~/modules/finances/components/FactureCard.vue'
 import FactureFiltersComponent from '~/modules/finances/components/FactureFilters.vue'
@@ -147,9 +146,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <FactureStats :items="items" :total-count="pagination.totalCount" />
+    <FactureStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <FactureFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <FactureFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -169,7 +174,11 @@ function getStatutColor(statut: string): string {
           </span>
         </template>
         <template #cell-statutFacture="{ row }">
-          <UBadge :color="getStatutColor((row as Facture).statutFacture)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Facture).statutFacture)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.facture.statut.${(row as Facture).statutFacture}`) }}
           </UBadge>
         </template>
@@ -204,7 +213,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <FactureCard
           v-for="facture in items"
           :key="facture.id"

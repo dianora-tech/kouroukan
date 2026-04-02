@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { DemandeConge, CreateDemandeCongePayload, UpdateDemandeCongePayload } from '~/modules/personnel/types/demandeConge.types'
+import type { DemandeConge, CreateDemandeCongePayload, UpdateDemandeCongePayload, DemandeCongeFilters } from '~/modules/personnel/types/demandeConge.types'
 import { useDemandeConge } from '~/modules/personnel/composables/useDemandeConge'
-import type { DemandeCongeFilters } from '~/modules/personnel/types/demandeConge.types'
 import DemandeCongeForm from '~/modules/personnel/components/DemandeCongeForm.vue'
 import DemandeCongeCard from '~/modules/personnel/components/DemandeCongeCard.vue'
 import DemandeCongeFiltersComponent from '~/modules/personnel/components/DemandeCongeFilters.vue'
@@ -142,9 +141,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <DemandeCongeStats :items="items" :total-count="pagination.totalCount" />
+    <DemandeCongeStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <DemandeCongeFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <DemandeCongeFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -156,7 +161,11 @@ function getStatutColor(statut: string): string {
         @sort="handleSort"
       >
         <template #cell-statutDemande="{ row }">
-          <UBadge :color="getStatutColor((row as DemandeConge).statutDemande)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as DemandeConge).statutDemande)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`personnel.demandeConge.statut.${(row as DemandeConge).statutDemande}`) }}
           </UBadge>
         </template>
@@ -198,7 +207,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <DemandeCongeCard
           v-for="demandeConge in items"
           :key="demandeConge.id"

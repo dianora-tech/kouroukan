@@ -64,44 +64,109 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('servicesPremium.serviceParent.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('servicesPremium.serviceParent.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('servicesPremium.serviceParent.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('servicesPremium.serviceParent.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('servicesPremium.serviceParent.code')" name="code" required>
-      <UInput v-model="state.code" :placeholder="t('servicesPremium.serviceParent.codePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('servicesPremium.serviceParent.code')"
+      name="code"
+      required
+    >
+      <UInput
+        v-model="state.code"
+        :placeholder="t('servicesPremium.serviceParent.codePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('servicesPremium.serviceParent.tarif')" name="tarif" required>
-        <UInput v-model.number="state.tarif" type="number" min="0" step="1" class="w-full" />
+      <UFormField
+        :label="t('servicesPremium.serviceParent.tarif')"
+        name="tarif"
+        required
+      >
+        <UInput
+          v-model.number="state.tarif"
+          type="number"
+          min="0"
+          step="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('servicesPremium.serviceParent.periodiciteLabel')" name="periodicite" required>
-        <USelect v-model="state.periodicite" :items="periodiciteOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('servicesPremium.serviceParent.periodiciteLabel')"
+        name="periodicite"
+        required
+      >
+        <USelect
+          v-model="state.periodicite"
+          :items="periodiciteOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('servicesPremium.serviceParent.periodeEssaiJours')" name="periodeEssaiJours">
-      <UInput v-model.number="state.periodeEssaiJours" type="number" min="0" step="1" :placeholder="t('servicesPremium.serviceParent.periodeEssaiPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('servicesPremium.serviceParent.periodeEssaiJours')"
+      name="periodeEssaiJours"
+    >
+      <UInput
+        v-model.number="state.periodeEssaiJours"
+        type="number"
+        min="0"
+        step="1"
+        :placeholder="t('servicesPremium.serviceParent.periodeEssaiPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('servicesPremium.serviceParent.estActif')" name="estActif">
+      <UFormField
+        :label="t('servicesPremium.serviceParent.estActif')"
+        name="estActif"
+      >
         <UToggle v-model="state.estActif" />
       </UFormField>
 
-      <UFormField :label="t('servicesPremium.serviceParent.tarifDegressif')" name="tarifDegressif">
+      <UFormField
+        :label="t('servicesPremium.serviceParent.tarifDegressif')"
+        name="tarifDegressif"
+      >
         <UToggle v-model="state.tarifDegressif" />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

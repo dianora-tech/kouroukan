@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Absence, CreateAbsencePayload, UpdateAbsencePayload } from '~/modules/presences/types/absence.types'
-import type { AbsenceFilters } from '~/modules/presences/types/absence.types'
+import type { Absence, CreateAbsencePayload, UpdateAbsencePayload, AbsenceFilters } from '~/modules/presences/types/absence.types'
 import { useAbsence } from '~/modules/presences/composables/useAbsence'
 import AbsenceForm from '~/modules/presences/components/AbsenceForm.vue'
 import AbsenceCard from '~/modules/presences/components/AbsenceCard.vue'
@@ -131,9 +130,15 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <AbsenceStats :items="items" :total-count="pagination.totalCount" />
+    <AbsenceStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <AbsenceFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <AbsenceFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -148,7 +153,11 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
           {{ (row as Absence).eleveNom ?? `#${(row as Absence).eleveId}` }}
         </template>
         <template #cell-estJustifiee="{ row }">
-          <UBadge :color="(row as Absence).estJustifiee ? 'success' : 'error'" variant="subtle" size="sm">
+          <UBadge
+            :color="(row as Absence).estJustifiee ? 'success' : 'error'"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Absence).estJustifiee ? $t('presences.absence.justifiee') : $t('presences.absence.nonJustifiee') }}
           </UBadge>
         </template>
@@ -183,7 +192,10 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <AbsenceCard
           v-for="absence in items"
           :key="absence.id"

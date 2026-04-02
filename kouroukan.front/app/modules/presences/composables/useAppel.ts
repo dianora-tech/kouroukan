@@ -37,7 +37,7 @@ export function useAppel() {
     store.items.filter(a => !a.estCloture).length,
   )
 
-  async function fetchAll(params?: Partial<AppelFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<AppelFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

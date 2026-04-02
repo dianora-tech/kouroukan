@@ -90,7 +90,9 @@ onMounted(() => {
 })
 
 // Auto-save draft
-watch(classes, (val) => { saveDraft({ classes: val.map(c => ({ ...c })) }) }, { deep: true })
+watch(classes, (val) => {
+  saveDraft({ classes: val.map(c => ({ ...c })) })
+}, { deep: true })
 
 function addClass(niveauCode: string) {
   const allClasses = [
@@ -123,7 +125,9 @@ function onSubmit() {
 function getCurrentData() {
   return { classes: classes.value.map(c => ({ nom: c.nom, niveauCode: c.niveauCode, capacite: c.capacite })) }
 }
-function isValid() { return classes.value.length > 0 }
+function isValid() {
+  return classes.value.length > 0
+}
 defineExpose({ getCurrentData, isValid })
 </script>
 
@@ -137,14 +141,23 @@ defineExpose({ getCurrentData, isValid })
     </p>
 
     <!-- Loading -->
-    <div v-if="loadingData" class="mb-6 flex items-center justify-center gap-2 py-8 text-sm text-gray-500">
-      <UIcon name="i-heroicons-arrow-path" class="h-4 w-4 animate-spin" />
+    <div
+      v-if="loadingData"
+      class="mb-6 flex items-center justify-center gap-2 py-8 text-sm text-gray-500"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-4 w-4 animate-spin"
+      />
       {{ $t('onboarding.saving') }}
     </div>
 
     <template v-else>
       <!-- Classes deja enregistrees -->
-      <div v-if="existingClasses.length > 0" class="mb-6">
+      <div
+        v-if="existingClasses.length > 0"
+        class="mb-6"
+      >
         <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
           {{ $t('onboarding.classes.existing') }} ({{ existingClasses.length }})
         </h3>
@@ -154,15 +167,24 @@ defineExpose({ getCurrentData, isValid })
             :key="cls.id"
             class="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400"
           >
-            <UIcon name="i-heroicons-check-circle" class="h-3.5 w-3.5" />
+            <UIcon
+              name="i-heroicons-check-circle"
+              class="h-3.5 w-3.5"
+            />
             {{ cls.name }} <span class="text-green-500">({{ cls.niveauClasseCode }})</span>
           </span>
         </div>
       </div>
 
       <!-- Niveaux avec boutons d'ajout rapide (API) -->
-      <div v-if="useApiNiveaux" class="mb-6 space-y-4">
-        <div v-for="(niveaux, cycle) in niveauxByCycle" :key="cycle">
+      <div
+        v-if="useApiNiveaux"
+        class="mb-6 space-y-4"
+      >
+        <div
+          v-for="(niveaux, cycle) in niveauxByCycle"
+          :key="cycle"
+        >
           <h3 class="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
             {{ cycle }}
           </h3>
@@ -182,8 +204,14 @@ defineExpose({ getCurrentData, isValid })
       </div>
 
       <!-- Niveaux avec boutons d'ajout rapide (fallback statique adapte au type) -->
-      <div v-else class="mb-6 space-y-4">
-        <div v-for="groupe in staticNiveaux" :key="groupe.label">
+      <div
+        v-else
+        class="mb-6 space-y-4"
+      >
+        <div
+          v-for="groupe in staticNiveaux"
+          :key="groupe.label"
+        >
           <h3 class="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
             {{ groupe.label }}
           </h3>
@@ -203,7 +231,10 @@ defineExpose({ getCurrentData, isValid })
       </div>
 
       <!-- Nouvelles classes a ajouter -->
-      <div v-if="classes.length > 0" class="mb-6">
+      <div
+        v-if="classes.length > 0"
+        class="mb-6"
+      >
         <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
           {{ $t('onboarding.classes.addedClasses') }} ({{ classes.length }})
         </h3>
@@ -213,8 +244,18 @@ defineExpose({ getCurrentData, isValid })
             :key="cls.id"
             class="flex items-center gap-3 rounded-lg border border-gray-200 p-3 dark:border-gray-700"
           >
-            <UInput v-model="cls.nom" class="w-32" size="sm" />
-            <UInput v-model.number="cls.capacite" type="number" class="w-20" size="sm" :min="1" />
+            <UInput
+              v-model="cls.nom"
+              class="w-32"
+              size="sm"
+            />
+            <UInput
+              v-model.number="cls.capacite"
+              type="number"
+              class="w-20"
+              size="sm"
+              :min="1"
+            />
             <span class="text-xs text-gray-500">{{ $t('onboarding.classes.capacity') }}</span>
             <UButton
               size="xs"
@@ -227,17 +268,32 @@ defineExpose({ getCurrentData, isValid })
         </div>
       </div>
 
-      <div v-else-if="existingClasses.length === 0" class="mb-6 rounded-lg border-2 border-dashed border-gray-300 p-8 text-center dark:border-gray-600">
-        <UIcon name="i-heroicons-rectangle-group" class="mx-auto h-8 w-8 text-gray-400" />
-        <p class="mt-2 text-sm text-gray-500">{{ $t('onboarding.classes.empty') }}</p>
+      <div
+        v-else-if="existingClasses.length === 0"
+        class="mb-6 rounded-lg border-2 border-dashed border-gray-300 p-8 text-center dark:border-gray-600"
+      >
+        <UIcon
+          name="i-heroicons-rectangle-group"
+          class="mx-auto h-8 w-8 text-gray-400"
+        />
+        <p class="mt-2 text-sm text-gray-500">
+          {{ $t('onboarding.classes.empty') }}
+        </p>
       </div>
     </template>
 
     <div class="flex justify-between pt-4">
-      <UButton variant="ghost" color="neutral" @click="emit('prev')">
+      <UButton
+        variant="ghost"
+        color="neutral"
+        @click="emit('prev')"
+      >
         {{ $t('onboarding.previous') }}
       </UButton>
-      <UButton color="primary" @click="onSubmit">
+      <UButton
+        color="primary"
+        @click="onSubmit"
+      >
         {{ $t('onboarding.next') }}
       </UButton>
     </div>

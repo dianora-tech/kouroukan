@@ -35,22 +35,35 @@ function getStatutColor(statut: string): string {
           {{ demandeConge.enseignantNom ?? `#${demandeConge.enseignantId}` }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(demandeConge.statutDemande)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(demandeConge.statutDemande)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`personnel.demandeConge.statut.${demandeConge.statutDemande}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatDate(demandeConge.dateDebut) }} — {{ formatDate(demandeConge.dateFin) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-document-text" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-document-text"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ demandeConge.motif }}
       </p>
       <p v-if="demandeConge.impactPaie">
-        <UIcon name="i-heroicons-exclamation-triangle" class="mr-1 inline h-4 w-4 text-amber-500" />
+        <UIcon
+          name="i-heroicons-exclamation-triangle"
+          class="mr-1 inline h-4 w-4 text-amber-500"
+        />
         {{ $t('personnel.demandeConge.impactPaieOui') }}
       </p>
     </div>

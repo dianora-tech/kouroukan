@@ -61,26 +61,63 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.matiere.name')" name="name" required>
-        <UInput v-model="state.name" :placeholder="t('pedagogie.matiere.namePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.matiere.name')"
+        name="name"
+        required
+      >
+        <UInput
+          v-model="state.name"
+          :placeholder="t('pedagogie.matiere.namePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.matiere.code')" name="code" required>
-        <UInput v-model="state.code" :placeholder="t('pedagogie.matiere.codePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.matiere.code')"
+        name="code"
+        required
+      >
+        <UInput
+          v-model="state.code"
+          :placeholder="t('pedagogie.matiere.codePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('pedagogie.matiere.type')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('pedagogie.matiere.type')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

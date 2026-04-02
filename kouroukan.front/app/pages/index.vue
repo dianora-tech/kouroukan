@@ -50,7 +50,10 @@ const visibleWidgets = computed(() =>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-4">
           <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-            <UIcon name="i-heroicons-rocket-launch" class="h-6 w-6 text-green-600 dark:text-green-400" />
+            <UIcon
+              name="i-heroicons-rocket-launch"
+              class="h-6 w-6 text-green-600 dark:text-green-400"
+            />
           </div>
           <div>
             <h3 class="font-semibold text-green-900 dark:text-green-100">
@@ -62,7 +65,10 @@ const visibleWidgets = computed(() =>
           </div>
         </div>
         <NuxtLink :to="localePath('/onboarding')">
-          <UButton color="primary" size="sm">
+          <UButton
+            color="primary"
+            size="sm"
+          >
             {{ auth.onboardingStep > 0 ? $t('onboarding.banner.resume') : $t('onboarding.banner.start') }}
           </UButton>
         </NuxtLink>
@@ -81,7 +87,10 @@ const visibleWidgets = computed(() =>
 
     <!-- Module widgets -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      <template v-for="widget in visibleWidgets" :key="widget.slug">
+      <template
+        v-for="widget in visibleWidgets"
+        :key="widget.slug"
+      >
         <!-- Module actif -->
         <NuxtLink
           v-if="auth.hasModule(widget.slug)"
@@ -93,7 +102,10 @@ const visibleWidgets = computed(() =>
               class="flex h-10 w-10 items-center justify-center rounded-lg"
               :style="{ backgroundColor: widget.color + '15', color: widget.color }"
             >
-              <UIcon :name="widget.icon" class="h-5 w-5" />
+              <UIcon
+                :name="widget.icon"
+                class="h-5 w-5"
+              />
             </div>
             <span class="text-2xl font-bold text-gray-900 dark:text-white">
               {{ widget.stat }}
@@ -112,11 +124,17 @@ const visibleWidgets = computed(() =>
           class="relative cursor-not-allowed rounded-xl border border-gray-200 bg-white p-5 opacity-50 dark:border-gray-700 dark:bg-gray-800"
         >
           <div class="absolute right-3 top-3">
-            <UIcon name="i-heroicons-lock-closed" class="h-4 w-4 text-gray-400" />
+            <UIcon
+              name="i-heroicons-lock-closed"
+              class="h-4 w-4 text-gray-400"
+            />
           </div>
           <div class="flex items-start justify-between">
             <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-400 dark:bg-gray-700">
-              <UIcon :name="widget.icon" class="h-5 w-5" />
+              <UIcon
+                :name="widget.icon"
+                class="h-5 w-5"
+              />
             </div>
           </div>
           <h3 class="mt-3 text-sm font-semibold text-gray-500 dark:text-gray-400">

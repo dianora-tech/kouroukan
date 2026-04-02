@@ -80,52 +80,130 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.niveauClasse.name')" name="name" required>
-        <UInput v-model="state.name" :placeholder="t('pedagogie.niveauClasse.namePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.niveauClasse.name')"
+        name="name"
+        required
+      >
+        <UInput
+          v-model="state.name"
+          :placeholder="t('pedagogie.niveauClasse.namePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.niveauClasse.code')" name="code" required>
-        <UInput v-model="state.code" :placeholder="t('pedagogie.niveauClasse.codePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.niveauClasse.code')"
+        name="code"
+        required
+      >
+        <UInput
+          v-model="state.code"
+          :placeholder="t('pedagogie.niveauClasse.codePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.niveauClasse.ordre')" name="ordre" required>
-        <UInput v-model.number="state.ordre" type="number" :placeholder="t('pedagogie.niveauClasse.ordrePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.niveauClasse.ordre')"
+        name="ordre"
+        required
+      >
+        <UInput
+          v-model.number="state.ordre"
+          type="number"
+          :placeholder="t('pedagogie.niveauClasse.ordrePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.niveauClasse.cycleEtude')" name="cycleEtude" required>
-        <USelect v-model="state.cycleEtude" :items="cycleOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.niveauClasse.cycleEtude')"
+        name="cycleEtude"
+        required
+      >
+        <USelect
+          v-model="state.cycleEtude"
+          :items="cycleOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.niveauClasse.ageOfficielEntree')" name="ageOfficielEntree">
-        <UInput v-model.number="state.ageOfficielEntree" type="number" :placeholder="t('pedagogie.niveauClasse.agePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.niveauClasse.ageOfficielEntree')"
+        name="ageOfficielEntree"
+      >
+        <UInput
+          v-model.number="state.ageOfficielEntree"
+          type="number"
+          :placeholder="t('pedagogie.niveauClasse.agePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.niveauClasse.ministereTutelle')" name="ministereTutelle">
-        <USelect v-model="state.ministereTutelle" :items="ministereOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.niveauClasse.ministereTutelle')"
+        name="ministereTutelle"
+      >
+        <USelect
+          v-model="state.ministereTutelle"
+          :items="ministereOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.niveauClasse.examenSortie')" name="examenSortie">
-        <USelect v-model="state.examenSortie" :items="examenOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.niveauClasse.examenSortie')"
+        name="examenSortie"
+      >
+        <USelect
+          v-model="state.examenSortie"
+          :items="examenOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.niveauClasse.tauxHoraireEnseignant')" name="tauxHoraireEnseignant">
-        <UInput v-model.number="state.tauxHoraireEnseignant" type="number" :placeholder="t('pedagogie.niveauClasse.tauxPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.niveauClasse.tauxHoraireEnseignant')"
+        name="tauxHoraireEnseignant"
+      >
+        <UInput
+          v-model.number="state.tauxHoraireEnseignant"
+          type="number"
+          :placeholder="t('pedagogie.niveauClasse.tauxPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

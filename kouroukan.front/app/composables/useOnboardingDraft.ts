@@ -54,8 +54,8 @@ export function useOnboardingDraft(stepKey: string) {
 
   function clearDraft() {
     const drafts = getDrafts()
-    delete drafts[stepKey]
-    setDrafts(drafts)
+    const { [stepKey]: _, ...rest } = drafts
+    setDrafts(rest)
   }
 
   return { saveDraft, loadDraft, clearDraft }

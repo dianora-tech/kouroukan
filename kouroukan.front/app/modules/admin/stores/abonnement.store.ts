@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Abonnement,
   CreateAbonnementPayload,
   UpdateAbonnementPayload,
   AdminFilters,
 } from '../types/admin.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/admin/abonnements'
 
@@ -43,7 +43,7 @@ export const useAbonnementStore = defineStore('admin-abonnement', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<AdminFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AdminFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Abonnement>(API_PATH, {

@@ -46,7 +46,7 @@ export function useDepenseBDE() {
     store.items.filter(d => d.statutValidation === 'Demandee').length,
   )
 
-  async function fetchAll(params?: Partial<DepenseBDEFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<DepenseBDEFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Souscription,
   SouscriptionFilters,
   CreateSouscriptionPayload,
   UpdateSouscriptionPayload,
 } from '../types/souscription.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/services-premium/souscriptions'
 
@@ -46,7 +46,7 @@ export const useSouscriptionStore = defineStore('services-premium-souscription',
   },
 
   actions: {
-    async fetchAll(params?: Partial<SouscriptionFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<SouscriptionFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Souscription>(API_PATH, {

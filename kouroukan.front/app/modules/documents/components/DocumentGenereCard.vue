@@ -36,22 +36,35 @@ function getStatutColor(statut: string): string {
           {{ documentGenere.typeName }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(documentGenere.statutSignature)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(documentGenere.statutSignature)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`documents.documentGenere.statut.${documentGenere.statutSignature}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p v-if="documentGenere.modeleDocumentNom">
-        <UIcon name="i-heroicons-document-duplicate" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-document-duplicate"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ documentGenere.modeleDocumentNom }}
       </p>
       <p v-if="documentGenere.eleveNom">
-        <UIcon name="i-heroicons-academic-cap" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-academic-cap"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ documentGenere.eleveNom }}
       </p>
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatDate(documentGenere.dateGeneration) }}
       </p>
     </div>

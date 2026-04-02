@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { DocumentGenere, CreateDocumentGenerePayload, UpdateDocumentGenerePayload } from '~/modules/documents/types/document-genere.types'
+import type { DocumentGenere, CreateDocumentGenerePayload, UpdateDocumentGenerePayload, DocumentGenereFilters } from '~/modules/documents/types/document-genere.types'
 import { useDocumentGenere } from '~/modules/documents/composables/useDocumentGenere'
-import type { DocumentGenereFilters } from '~/modules/documents/types/document-genere.types'
 import DocumentGenereForm from '~/modules/documents/components/DocumentGenereForm.vue'
 import DocumentGenereCard from '~/modules/documents/components/DocumentGenereCard.vue'
 import DocumentGenereFiltersComponent from '~/modules/documents/components/DocumentGenereFilters.vue'
@@ -141,9 +140,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <DocumentGenereStats :items="items" :total-count="pagination.totalCount" />
+    <DocumentGenereStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <DocumentGenereFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <DocumentGenereFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -158,7 +163,11 @@ function getStatutColor(statut: string): string {
           {{ formatDate((row as DocumentGenere).dateGeneration) }}
         </template>
         <template #cell-statutSignature="{ row }">
-          <UBadge :color="getStatutColor((row as DocumentGenere).statutSignature)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as DocumentGenere).statutSignature)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`documents.documentGenere.statut.${(row as DocumentGenere).statutSignature}`) }}
           </UBadge>
         </template>
@@ -193,7 +202,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <DocumentGenereCard
           v-for="doc in items"
           :key="doc.id"

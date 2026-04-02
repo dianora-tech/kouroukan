@@ -46,7 +46,7 @@ export function useEvenement() {
     store.items.filter(e => e.statutEvenement === 'Planifie' || e.statutEvenement === 'Valide').length,
   )
 
-  async function fetchAll(params?: Partial<EvenementFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<EvenementFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

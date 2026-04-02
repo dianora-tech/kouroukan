@@ -23,8 +23,14 @@ const totalMois = computed(() => heures.value.reduce((sum, h) => sum + h.duree, 
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="enseignant" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="enseignant"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div>
       <UBreadcrumb
         :items="[
@@ -40,10 +46,17 @@ const totalMois = computed(() => heures.value.reduce((sum, h) => sum + h.duree, 
     <!-- Total -->
     <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
       <div class="flex items-center gap-3">
-        <UIcon name="i-heroicons-clock" class="h-8 w-8 text-green-600" />
+        <UIcon
+          name="i-heroicons-clock"
+          class="h-8 w-8 text-green-600"
+        />
         <div>
-          <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalMois }}h</p>
-          <p class="text-sm text-gray-500">{{ $t('enseignant.heures.totalMois') }}</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ totalMois }}h
+          </p>
+          <p class="text-sm text-gray-500">
+            {{ $t('enseignant.heures.totalMois') }}
+          </p>
         </div>
       </div>
     </div>
@@ -53,20 +66,43 @@ const totalMois = computed(() => heures.value.reduce((sum, h) => sum + h.duree, 
       <table class="w-full text-left text-sm">
         <thead class="border-b border-gray-200 dark:border-gray-700">
           <tr>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.heures.date') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.heures.etablissement') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.heures.classe') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.heures.matiere') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.heures.duree') }}</th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('enseignant.heures.date') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('enseignant.heures.etablissement') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('enseignant.heures.classe') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('enseignant.heures.matiere') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('enseignant.heures.duree') }}
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-          <tr v-for="h in heures" :key="h.id">
-            <td class="px-4 py-3 text-gray-900 dark:text-white">{{ formatDate(h.date) }}</td>
-            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ h.etablissement }}</td>
-            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ h.classe }}</td>
-            <td class="px-4 py-3 text-gray-900 dark:text-white">{{ h.matiere }}</td>
-            <td class="px-4 py-3 text-gray-900 dark:text-white">{{ h.duree }}h</td>
+          <tr
+            v-for="h in heures"
+            :key="h.id"
+          >
+            <td class="px-4 py-3 text-gray-900 dark:text-white">
+              {{ formatDate(h.date) }}
+            </td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+              {{ h.etablissement }}
+            </td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+              {{ h.classe }}
+            </td>
+            <td class="px-4 py-3 text-gray-900 dark:text-white">
+              {{ h.matiere }}
+            </td>
+            <td class="px-4 py-3 text-gray-900 dark:text-white">
+              {{ h.duree }}h
+            </td>
           </tr>
         </tbody>
       </table>

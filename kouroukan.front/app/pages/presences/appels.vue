@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Appel, CreateAppelPayload, UpdateAppelPayload } from '~/modules/presences/types/appel.types'
-import type { AppelFilters } from '~/modules/presences/types/appel.types'
+import type { Appel, CreateAppelPayload, UpdateAppelPayload, AppelFilters } from '~/modules/presences/types/appel.types'
 import { useAppel } from '~/modules/presences/composables/useAppel'
 import AppelForm from '~/modules/presences/components/AppelForm.vue'
 import AppelCard from '~/modules/presences/components/AppelCard.vue'
@@ -129,9 +128,15 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <AppelStats :items="items" :total-count="pagination.totalCount" />
+    <AppelStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <AppelFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <AppelFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -149,7 +154,11 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
           {{ (row as Appel).enseignantNom ?? `#${(row as Appel).enseignantId}` }}
         </template>
         <template #cell-estCloture="{ row }">
-          <UBadge :color="(row as Appel).estCloture ? 'success' : 'warning'" variant="subtle" size="sm">
+          <UBadge
+            :color="(row as Appel).estCloture ? 'success' : 'warning'"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Appel).estCloture ? $t('presences.appel.cloture') : $t('presences.appel.enCours') }}
           </UBadge>
         </template>
@@ -184,7 +193,10 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <AppelCard
           v-for="appel in items"
           :key="appel.id"

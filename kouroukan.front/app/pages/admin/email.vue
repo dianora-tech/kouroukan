@@ -81,46 +81,92 @@ async function sendTestEmail(): Promise<void> {
 
     <!-- SMTP Config -->
     <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
-      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ $t('admin.email.smtpConfig') }}</h2>
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+        {{ $t('admin.email.smtpConfig') }}
+      </h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <UFormField :label="$t('admin.email.host')">
-          <UInput v-model="smtpConfig.host" placeholder="smtp.gmail.com" />
+          <UInput
+            v-model="smtpConfig.host"
+            placeholder="smtp.gmail.com"
+          />
         </UFormField>
         <UFormField :label="$t('admin.email.port')">
-          <UInput v-model.number="smtpConfig.port" type="number" placeholder="587" />
+          <UInput
+            v-model.number="smtpConfig.port"
+            type="number"
+            placeholder="587"
+          />
         </UFormField>
         <UFormField :label="$t('admin.email.username')">
-          <UInput v-model="smtpConfig.username" placeholder="user@domain.com" />
+          <UInput
+            v-model="smtpConfig.username"
+            placeholder="user@domain.com"
+          />
         </UFormField>
         <UFormField :label="$t('admin.email.password')">
-          <UInput v-model="smtpConfig.password" type="password" :placeholder="$t('admin.email.passwordPlaceholder')" />
+          <UInput
+            v-model="smtpConfig.password"
+            type="password"
+            :placeholder="$t('admin.email.passwordPlaceholder')"
+          />
         </UFormField>
         <UFormField :label="$t('admin.email.expediteurNom')">
-          <UInput v-model="smtpConfig.expediteurNom" placeholder="Kouroukan" />
+          <UInput
+            v-model="smtpConfig.expediteurNom"
+            placeholder="Kouroukan"
+          />
         </UFormField>
         <UFormField :label="$t('admin.email.expediteurEmail')">
-          <UInput v-model="smtpConfig.expediteurEmail" type="email" placeholder="noreply@kouroukan.app" />
+          <UInput
+            v-model="smtpConfig.expediteurEmail"
+            type="email"
+            placeholder="noreply@kouroukan.app"
+          />
         </UFormField>
       </div>
       <div class="mt-4 flex items-center gap-4">
         <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-          <input v-model="smtpConfig.tls" type="checkbox" class="rounded border-gray-300">
+          <input
+            v-model="smtpConfig.tls"
+            type="checkbox"
+            class="rounded border-gray-300"
+          >
           {{ $t('admin.email.enableTls') }}
         </label>
       </div>
       <div class="mt-6">
-        <UButton color="primary" :loading="saving" @click="saveConfig">{{ $t('admin.email.save') }}</UButton>
+        <UButton
+          color="primary"
+          :loading="saving"
+          @click="saveConfig"
+        >
+          {{ $t('admin.email.save') }}
+        </UButton>
       </div>
     </div>
 
     <!-- Test Email -->
     <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
-      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ $t('admin.email.testTitle') }}</h2>
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+        {{ $t('admin.email.testTitle') }}
+      </h2>
       <div class="flex items-end gap-4">
-        <UFormField :label="$t('admin.email.testRecipient')" class="flex-1">
-          <UInput v-model="testEmail" type="email" placeholder="test@example.com" />
+        <UFormField
+          :label="$t('admin.email.testRecipient')"
+          class="flex-1"
+        >
+          <UInput
+            v-model="testEmail"
+            type="email"
+            placeholder="test@example.com"
+          />
         </UFormField>
-        <UButton color="primary" :loading="testSending" @click="sendTestEmail">
+        <UButton
+          color="primary"
+          :loading="testSending"
+          @click="sendTestEmail"
+        >
           {{ $t('admin.email.sendTest') }}
         </UButton>
       </div>

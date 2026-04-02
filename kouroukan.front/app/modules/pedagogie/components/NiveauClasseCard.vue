@@ -44,26 +44,42 @@ function getCycleColor(cycle: string): string {
           </p>
         </div>
       </div>
-      <UBadge :color="getCycleColor(niveauClasse.cycleEtude)" variant="subtle" size="sm">
+      <UBadge
+        :color="getCycleColor(niveauClasse.cycleEtude)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`pedagogie.niveauClasse.cycle.${niveauClasse.cycleEtude}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p v-if="niveauClasse.ministereTutelle">
-        <UIcon name="i-heroicons-building-library" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-building-library"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ niveauClasse.ministereTutelle }}
       </p>
       <p v-if="niveauClasse.ageOfficielEntree">
-        <UIcon name="i-heroicons-user" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-user"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('pedagogie.niveauClasse.ageEntree', { age: niveauClasse.ageOfficielEntree }) }}
       </p>
       <p v-if="niveauClasse.examenSortie">
-        <UIcon name="i-heroicons-document-check" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-document-check"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ niveauClasse.examenSortie }}
       </p>
       <p v-if="niveauClasse.tauxHoraireEnseignant">
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ niveauClasse.tauxHoraireEnseignant.toLocaleString() }} GNF/h
       </p>
     </div>

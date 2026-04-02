@@ -39,23 +39,36 @@ function formatMontant(montant: number): string {
           {{ souscription.parentNom ?? `Parent #${souscription.parentId}` }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(souscription.statutSouscription)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(souscription.statutSouscription)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`servicesPremium.souscription.statut.${souscription.statutSouscription}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(souscription.montantPaye) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatDate(souscription.dateDebut) }}
         <span v-if="souscription.dateFin"> — {{ formatDate(souscription.dateFin) }}</span>
       </p>
       <p v-if="souscription.renouvellementAuto">
-        <UIcon name="i-heroicons-arrow-path" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-arrow-path"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('servicesPremium.souscription.autoRenew') }}
       </p>
     </div>

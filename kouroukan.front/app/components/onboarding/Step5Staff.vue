@@ -56,7 +56,9 @@ onMounted(() => {
   }
 })
 
-watch(staff, (val) => { saveDraft({ staff: val.map(s => ({ ...s })) }) }, { deep: true })
+watch(staff, (val) => {
+  saveDraft({ staff: val.map(s => ({ ...s })) })
+}, { deep: true })
 
 function addStaff() {
   staff.value.push({
@@ -88,7 +90,9 @@ function onSubmit() {
 function getCurrentData() {
   return { enseignants: staff.value.filter(s => s.prenom && s.nom).map(s => ({ prenom: s.prenom, nom: s.nom, telephone: s.telephone, specialite: s.specialite })) }
 }
-function isValid() { return staff.value.some(s => s.prenom && s.nom) }
+function isValid() {
+  return staff.value.some(s => s.prenom && s.nom)
+}
 defineExpose({ getCurrentData, isValid })
 </script>
 
@@ -101,64 +105,100 @@ defineExpose({ getCurrentData, isValid })
       {{ $t('onboarding.staff.description') }}
     </p>
 
-      <!-- Liste enseignants -->
-      <div v-if="staff.length > 0" class="mb-4 space-y-3">
-        <div
-          v-for="person in staff"
-          :key="person.id"
-          class="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
-        >
-          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <UFormField :label="$t('onboarding.staff.firstName')">
-              <UInput v-model="person.prenom" :placeholder="$t('onboarding.staff.firstNamePlaceholder')" size="sm" class="w-full" />
-            </UFormField>
-            <UFormField :label="$t('onboarding.staff.lastName')">
-              <UInput v-model="person.nom" :placeholder="$t('onboarding.staff.lastNamePlaceholder')" size="sm" class="w-full" />
-            </UFormField>
-            <UFormField :label="$t('onboarding.staff.phone')">
-              <PhoneInput v-model="person.telephone" />
-            </UFormField>
-            <UFormField :label="$t('onboarding.staff.speciality')">
-              <USelect
-                v-if="specialiteOptions.length > 0"
-                v-model="person.specialite"
-                :items="specialiteOptions"
-                value-key="value"
-                :placeholder="$t('onboarding.staff.specialityPlaceholder')"
-                class="w-full"
-                size="sm"
-              />
-              <UInput
-                v-else
-                v-model="person.specialite"
-                :placeholder="$t('onboarding.staff.specialityPlaceholder')"
-                size="sm"
-                class="w-full"
-              />
-            </UFormField>
-          </div>
-          <div class="mt-2 flex justify-end">
-            <UButton size="xs" variant="ghost" color="error" icon="i-heroicons-trash" @click="removeStaff(person.id)">
-              {{ $t('onboarding.staff.remove') }}
-            </UButton>
-          </div>
+    <!-- Liste enseignants -->
+    <div
+      v-if="staff.length > 0"
+      class="mb-4 space-y-3"
+    >
+      <div
+        v-for="person in staff"
+        :key="person.id"
+        class="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+      >
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <UFormField :label="$t('onboarding.staff.firstName')">
+            <UInput
+              v-model="person.prenom"
+              :placeholder="$t('onboarding.staff.firstNamePlaceholder')"
+              size="sm"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField :label="$t('onboarding.staff.lastName')">
+            <UInput
+              v-model="person.nom"
+              :placeholder="$t('onboarding.staff.lastNamePlaceholder')"
+              size="sm"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField :label="$t('onboarding.staff.phone')">
+            <PhoneInput v-model="person.telephone" />
+          </UFormField>
+          <UFormField :label="$t('onboarding.staff.speciality')">
+            <USelect
+              v-if="specialiteOptions.length > 0"
+              v-model="person.specialite"
+              :items="specialiteOptions"
+              value-key="value"
+              :placeholder="$t('onboarding.staff.specialityPlaceholder')"
+              class="w-full"
+              size="sm"
+            />
+            <UInput
+              v-else
+              v-model="person.specialite"
+              :placeholder="$t('onboarding.staff.specialityPlaceholder')"
+              size="sm"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
+        <div class="mt-2 flex justify-end">
+          <UButton
+            size="xs"
+            variant="ghost"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="removeStaff(person.id)"
+          >
+            {{ $t('onboarding.staff.remove') }}
+          </UButton>
         </div>
       </div>
+    </div>
 
-      <UButton variant="outline" color="primary" icon="i-heroicons-plus" class="mb-6" @click="addStaff">
-        {{ $t('onboarding.staff.add') }}
-      </UButton>
+    <UButton
+      variant="outline"
+      color="primary"
+      icon="i-heroicons-plus"
+      class="mb-6"
+      @click="addStaff"
+    >
+      {{ $t('onboarding.staff.add') }}
+    </UButton>
 
     <div class="flex justify-between pt-4">
       <div class="flex gap-2">
-        <UButton variant="ghost" color="neutral" @click="emit('prev')">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          @click="emit('prev')"
+        >
           {{ $t('onboarding.previous') }}
         </UButton>
-        <UButton variant="ghost" color="neutral" @click="emit('skip')">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          @click="emit('skip')"
+        >
           {{ $t('onboarding.skip') }}
         </UButton>
       </div>
-      <UButton color="primary" @click="onSubmit">
+      <UButton
+        color="primary"
+        @click="onSubmit"
+      >
         {{ $t('onboarding.next') }}
       </UButton>
     </div>

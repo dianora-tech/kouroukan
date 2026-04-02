@@ -35,22 +35,35 @@ function getStatutColor(statut: string): string {
           {{ enseignant.specialite }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(enseignant.statutEnseignant)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(enseignant.statutEnseignant)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`personnel.enseignant.statut.${enseignant.statutEnseignant}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-phone" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-phone"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ enseignant.telephone }}
       </p>
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('personnel.enseignant.dateEmbauche') }}: {{ formatDate(enseignant.dateEmbauche) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t(`personnel.enseignant.modeRemuneration.${enseignant.modeRemuneration}`) }}
         <template v-if="enseignant.montantForfait">
           — {{ enseignant.montantForfait.toLocaleString() }} GNF

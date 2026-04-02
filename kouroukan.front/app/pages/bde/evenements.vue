@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Evenement, CreateEvenementPayload, UpdateEvenementPayload } from '~/modules/bde/types/evenement.types'
-import type { EvenementFilters } from '~/modules/bde/types/evenement.types'
+import type { Evenement, CreateEvenementPayload, UpdateEvenementPayload, EvenementFilters } from '~/modules/bde/types/evenement.types'
 import { useEvenement } from '~/modules/bde/composables/useEvenement'
 import { useAssociation } from '~/modules/bde/composables/useAssociation'
 import EvenementForm from '~/modules/bde/components/EvenementForm.vue'
@@ -150,9 +149,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <EvenementStats :items="items" :total-count="pagination.totalCount" />
+    <EvenementStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <EvenementFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <EvenementFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -164,12 +169,18 @@ function getStatutColor(statut: string): string {
         @sort="handleSort"
       >
         <template #cell-statutEvenement="{ row }">
-          <UBadge :color="getStatutColor((row as Evenement).statutEvenement)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Evenement).statutEvenement)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`bde.evenement.statut.${(row as Evenement).statutEvenement}`) }}
           </UBadge>
         </template>
         <template #cell-nombreInscrits="{ row }">
-          {{ (row as Evenement).nombreInscrits }}<template v-if="(row as Evenement).capacite"> / {{ (row as Evenement).capacite }}</template>
+          {{ (row as Evenement).nombreInscrits }}<template v-if="(row as Evenement).capacite">
+            / {{ (row as Evenement).capacite }}
+          </template>
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">
@@ -202,7 +213,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <EvenementCard
           v-for="evenement in items"
           :key="evenement.id"

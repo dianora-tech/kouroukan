@@ -68,50 +68,132 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('personnel.demandeConge.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('personnel.demandeConge.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('personnel.demandeConge.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('personnel.demandeConge.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('personnel.demandeConge.enseignantId')" name="enseignantId" required>
-      <UInput v-model.number="state.enseignantId" type="number" :placeholder="t('personnel.demandeConge.enseignantPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('personnel.demandeConge.enseignantId')"
+      name="enseignantId"
+      required
+    >
+      <UInput
+        v-model.number="state.enseignantId"
+        type="number"
+        :placeholder="t('personnel.demandeConge.enseignantPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('personnel.demandeConge.dateDebut')" name="dateDebut" required>
-        <UInput v-model="state.dateDebut" type="date" class="w-full" />
+      <UFormField
+        :label="t('personnel.demandeConge.dateDebut')"
+        name="dateDebut"
+        required
+      >
+        <UInput
+          v-model="state.dateDebut"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('personnel.demandeConge.dateFin')" name="dateFin" required>
-        <UInput v-model="state.dateFin" type="date" class="w-full" />
+      <UFormField
+        :label="t('personnel.demandeConge.dateFin')"
+        name="dateFin"
+        required
+      >
+        <UInput
+          v-model="state.dateFin"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('personnel.demandeConge.motif')" name="motif" required>
-      <UTextarea v-model="state.motif" :placeholder="t('personnel.demandeConge.motifPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('personnel.demandeConge.motif')"
+      name="motif"
+      required
+    >
+      <UTextarea
+        v-model="state.motif"
+        :placeholder="t('personnel.demandeConge.motifPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('personnel.demandeConge.statutDemandeLabel')" name="statutDemande" required>
-      <USelect v-model="state.statutDemande" :items="statutOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('personnel.demandeConge.statutDemandeLabel')"
+      name="statutDemande"
+      required
+    >
+      <USelect
+        v-model="state.statutDemande"
+        :items="statutOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('personnel.demandeConge.pieceJointeUrl')" name="pieceJointeUrl">
-      <UInput v-model="state.pieceJointeUrl" :placeholder="t('personnel.demandeConge.pieceJointePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('personnel.demandeConge.pieceJointeUrl')"
+      name="pieceJointeUrl"
+    >
+      <UInput
+        v-model="state.pieceJointeUrl"
+        :placeholder="t('personnel.demandeConge.pieceJointePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField v-if="isEdit" :label="t('personnel.demandeConge.commentaireValidateur')" name="commentaireValidateur">
-      <UTextarea v-model="state.commentaireValidateur" :placeholder="t('personnel.demandeConge.commentairePlaceholder')" class="w-full" />
+    <UFormField
+      v-if="isEdit"
+      :label="t('personnel.demandeConge.commentaireValidateur')"
+      name="commentaireValidateur"
+    >
+      <UTextarea
+        v-model="state.commentaireValidateur"
+        :placeholder="t('personnel.demandeConge.commentairePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('personnel.demandeConge.impactPaie')" name="impactPaie">
+    <UFormField
+      :label="t('personnel.demandeConge.impactPaie')"
+      name="impactPaie"
+    >
       <UToggle v-model="state.impactPaie" />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

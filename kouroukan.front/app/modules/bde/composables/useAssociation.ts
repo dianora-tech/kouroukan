@@ -42,7 +42,7 @@ export function useAssociation() {
     store.items.filter(a => a.statut === 'Active').length,
   )
 
-  async function fetchAll(params?: Partial<AssociationFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<AssociationFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

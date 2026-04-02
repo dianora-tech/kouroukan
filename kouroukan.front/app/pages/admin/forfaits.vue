@@ -161,15 +161,29 @@ function formatMontant(montant: number): string {
         {{ formatMontant((row as Forfait).montantAnnuel) }}
       </template>
       <template #cell-type="{ row }">
-        <UBadge variant="subtle" size="sm">{{ (row as Forfait).type }}</UBadge>
+        <UBadge
+          variant="subtle"
+          size="sm"
+        >
+          {{ (row as Forfait).type }}
+        </UBadge>
       </template>
       <template #cell-statut="{ row }">
-        <UBadge :color="(row as Forfait).statut === 'Actif' ? 'success' : 'neutral'" variant="subtle" size="sm">
+        <UBadge
+          :color="(row as Forfait).statut === 'Actif' ? 'success' : 'neutral'"
+          variant="subtle"
+          size="sm"
+        >
           {{ (row as Forfait).statut }}
         </UBadge>
       </template>
       <template #cell-actions="{ row }">
-        <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as Forfait)" />
+        <UButton
+          variant="ghost"
+          size="xs"
+          icon="i-heroicons-pencil-square"
+          @click="openEdit(row as Forfait)"
+        />
       </template>
     </DataTable>
 
@@ -188,24 +202,62 @@ function formatMontant(montant: number): string {
 
     <USlideover v-model:open="showForm">
       <template #header>
-        <h3 class="text-lg font-semibold">{{ $t('admin.forfait.edit') }}</h3>
+        <h3 class="text-lg font-semibold">
+          {{ $t('admin.forfait.edit') }}
+        </h3>
       </template>
       <template #body>
-        <UForm :schema="tarifSchema" :state="tarifState" class="space-y-4 p-4" @submit="handleTarifSubmit">
-          <UFormField :label="$t('admin.forfait.montantMensuel')" name="montantMensuel" required>
-            <UInput v-model.number="tarifState.montantMensuel" type="number" class="w-full" />
+        <UForm
+          :schema="tarifSchema"
+          :state="tarifState"
+          class="space-y-4 p-4"
+          @submit="handleTarifSubmit"
+        >
+          <UFormField
+            :label="$t('admin.forfait.montantMensuel')"
+            name="montantMensuel"
+            required
+          >
+            <UInput
+              v-model.number="tarifState.montantMensuel"
+              type="number"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.forfait.montantAnnuel')" name="montantAnnuel" required>
-            <UInput v-model.number="tarifState.montantAnnuel" type="number" class="w-full" />
+          <UFormField
+            :label="$t('admin.forfait.montantAnnuel')"
+            name="montantAnnuel"
+            required
+          >
+            <UInput
+              v-model.number="tarifState.montantAnnuel"
+              type="number"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.forfait.dateEffet')" name="dateEffet" required>
-            <UInput v-model="tarifState.dateEffet" type="date" class="w-full" />
+          <UFormField
+            :label="$t('admin.forfait.dateEffet')"
+            name="dateEffet"
+            required
+          >
+            <UInput
+              v-model="tarifState.dateEffet"
+              type="date"
+              class="w-full"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ $t('actions.save') }}
             </UButton>
           </div>

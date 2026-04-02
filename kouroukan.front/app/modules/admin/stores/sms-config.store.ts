@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   SmsConfig,
   UpdateSmsConfigPayload,
   SmsEnvoi,
 } from '../types/admin.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/admin/sms-config'
 
@@ -49,7 +49,7 @@ export const useSmsConfigStore = defineStore('admin-sms-config', {
       }
     },
 
-    async fetchHistorique(params?: { page?: number; pageSize?: number }): Promise<void> {
+    async fetchHistorique(params?: { page?: number, pageSize?: number }): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<SmsEnvoi>(`${API_PATH}/historique`, {

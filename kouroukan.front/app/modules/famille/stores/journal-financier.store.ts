@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   JournalFinancier,
   CreateJournalFinancierPayload,
 } from '../types/famille.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/finances/journal'
 
@@ -37,7 +37,7 @@ export const useJournalFinancierStore = defineStore('famille-journal-financier',
   },
 
   actions: {
-    async fetchAll(params?: { page?: number; pageSize?: number; enfantId?: number }): Promise<void> {
+    async fetchAll(params?: { page?: number, pageSize?: number, enfantId?: number }): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<JournalFinancier>(API_PATH, {

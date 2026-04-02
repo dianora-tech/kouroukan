@@ -18,7 +18,7 @@ const cguVersion = ref('')
 // Fetch CGU content
 const { data } = await useFetch<{
   success: boolean
-  data: { contenu: string; version: string }
+  data: { contenu: string, version: string }
 }>('/api/auth/cgu/active')
 
 if (data.value?.success && data.value.data) {

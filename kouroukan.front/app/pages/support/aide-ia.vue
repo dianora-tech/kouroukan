@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
-const messages = ref<{ role: 'user' | 'assistant'; content: string }[]>([])
+const messages = ref<{ role: 'user' | 'assistant', content: string }[]>([])
 const inputText = ref('')
 const thinking = ref(false)
 
@@ -40,13 +40,22 @@ async function sendMessage(): Promise<void> {
     <!-- Chat area -->
     <div class="flex min-h-64 flex-1 flex-col rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
       <div class="flex-1 overflow-y-auto p-4">
-        <div v-if="messages.length === 0" class="flex h-full items-center justify-center">
+        <div
+          v-if="messages.length === 0"
+          class="flex h-full items-center justify-center"
+        >
           <div class="text-center text-gray-400 dark:text-gray-500">
-            <UIcon name="i-heroicons-cpu-chip" class="mx-auto mb-2 h-12 w-12" />
+            <UIcon
+              name="i-heroicons-cpu-chip"
+              class="mx-auto mb-2 h-12 w-12"
+            />
             <p>{{ $t('supportPages.aideIA.emptyState') }}</p>
           </div>
         </div>
-        <div v-else class="space-y-4">
+        <div
+          v-else
+          class="space-y-4"
+        >
           <div
             v-for="(msg, i) in messages"
             :key="i"
@@ -63,7 +72,10 @@ async function sendMessage(): Promise<void> {
               {{ msg.content }}
             </div>
           </div>
-          <div v-if="thinking" class="flex justify-start">
+          <div
+            v-if="thinking"
+            class="flex justify-start"
+          >
             <div class="rounded-lg bg-gray-100 px-4 py-2 text-sm text-gray-500 dark:bg-gray-800 dark:text-gray-400">
               {{ $t('supportPages.aideIA.thinking') }}
             </div>

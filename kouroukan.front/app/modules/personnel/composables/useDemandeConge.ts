@@ -46,7 +46,7 @@ export function useDemandeConge() {
     store.items.filter(d => d.impactPaie).length,
   )
 
-  async function fetchAll(params?: Partial<DemandeCongeFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<DemandeCongeFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

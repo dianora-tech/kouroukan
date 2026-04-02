@@ -64,33 +64,61 @@ const columns: Column[] = [
     <!-- Solde & Stats -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
       <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('admin.sms.solde') }}</p>
-        <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ solde.toLocaleString() }} GNF</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ $t('admin.sms.solde') }}
+        </p>
+        <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
+          {{ solde.toLocaleString() }} GNF
+        </p>
       </div>
       <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('admin.sms.smsRestants') }}</p>
-        <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ smsRestants.toLocaleString() }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ $t('admin.sms.smsRestants') }}
+        </p>
+        <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
+          {{ smsRestants.toLocaleString() }}
+        </p>
       </div>
       <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('admin.sms.coutUnitaire') }}</p>
-        <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ coutUnitaire }} GNF</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          {{ $t('admin.sms.coutUnitaire') }}
+        </p>
+        <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
+          {{ coutUnitaire }} GNF
+        </p>
       </div>
     </div>
 
     <!-- API Config -->
     <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
-      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ $t('admin.sms.configApi') }}</h2>
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+        {{ $t('admin.sms.configApi') }}
+      </h2>
       <div class="flex items-end gap-4">
-        <UFormField :label="$t('admin.sms.apiKey')" class="flex-1">
-          <UInput v-model="apiKey" type="password" />
+        <UFormField
+          :label="$t('admin.sms.apiKey')"
+          class="flex-1"
+        >
+          <UInput
+            v-model="apiKey"
+            type="password"
+          />
         </UFormField>
-        <UButton color="primary" :loading="saving" @click="saveConfig">{{ $t('admin.sms.save') }}</UButton>
+        <UButton
+          color="primary"
+          :loading="saving"
+          @click="saveConfig"
+        >
+          {{ $t('admin.sms.save') }}
+        </UButton>
       </div>
     </div>
 
     <!-- Historique -->
     <div>
-      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ $t('admin.sms.historique') }}</h2>
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+        {{ $t('admin.sms.historique') }}
+      </h2>
       <DataTable
         :columns="columns"
         :data="{ items: historique, totalCount: historique.length, page: 1, pageSize: 20 }"

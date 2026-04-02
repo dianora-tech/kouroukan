@@ -70,52 +70,143 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('documents.documentGenere.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('documents.documentGenere.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('documents.documentGenere.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('documents.documentGenere.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('documents.documentGenere.name')" name="name" required>
-      <UInput v-model="state.name" :placeholder="t('documents.documentGenere.namePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('documents.documentGenere.name')"
+      name="name"
+      required
+    >
+      <UInput
+        v-model="state.name"
+        :placeholder="t('documents.documentGenere.namePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('documents.documentGenere.description')" name="description">
-      <UTextarea v-model="state.description" :placeholder="t('documents.documentGenere.descriptionPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('documents.documentGenere.description')"
+      name="description"
+    >
+      <UTextarea
+        v-model="state.description"
+        :placeholder="t('documents.documentGenere.descriptionPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('documents.documentGenere.modeleDocumentId')" name="modeleDocumentId" required>
-        <UInput v-model.number="state.modeleDocumentId" type="number" min="1" :placeholder="t('documents.documentGenere.modeleDocumentIdPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('documents.documentGenere.modeleDocumentId')"
+        name="modeleDocumentId"
+        required
+      >
+        <UInput
+          v-model.number="state.modeleDocumentId"
+          type="number"
+          min="1"
+          :placeholder="t('documents.documentGenere.modeleDocumentIdPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('documents.documentGenere.dateGeneration')" name="dateGeneration" required>
-        <UInput v-model="state.dateGeneration" type="date" class="w-full" />
+      <UFormField
+        :label="t('documents.documentGenere.dateGeneration')"
+        name="dateGeneration"
+        required
+      >
+        <UInput
+          v-model="state.dateGeneration"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('documents.documentGenere.eleveId')" name="eleveId">
-        <UInput v-model.number="state.eleveId" type="number" min="1" :placeholder="t('documents.documentGenere.eleveIdPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('documents.documentGenere.eleveId')"
+        name="eleveId"
+      >
+        <UInput
+          v-model.number="state.eleveId"
+          type="number"
+          min="1"
+          :placeholder="t('documents.documentGenere.eleveIdPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('documents.documentGenere.enseignantId')" name="enseignantId">
-        <UInput v-model.number="state.enseignantId" type="number" min="1" :placeholder="t('documents.documentGenere.enseignantIdPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('documents.documentGenere.enseignantId')"
+        name="enseignantId"
+      >
+        <UInput
+          v-model.number="state.enseignantId"
+          type="number"
+          min="1"
+          :placeholder="t('documents.documentGenere.enseignantIdPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('documents.documentGenere.donneesJson')" name="donneesJson" required>
-      <UTextarea v-model="state.donneesJson" :placeholder="t('documents.documentGenere.donneesJsonPlaceholder')" :rows="6" class="w-full" />
+    <UFormField
+      :label="t('documents.documentGenere.donneesJson')"
+      name="donneesJson"
+      required
+    >
+      <UTextarea
+        v-model="state.donneesJson"
+        :placeholder="t('documents.documentGenere.donneesJsonPlaceholder')"
+        :rows="6"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('documents.documentGenere.statutSignature')" name="statutSignature" required>
-      <USelect v-model="state.statutSignature" :items="statutOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('documents.documentGenere.statutSignature')"
+      name="statutSignature"
+      required
+    >
+      <USelect
+        v-model="state.statutSignature"
+        :items="statutOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

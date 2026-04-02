@@ -50,7 +50,9 @@ onMounted(() => {
   }
 })
 
-watch(students, (val) => { saveDraft({ students: val.map(s => ({ ...s })) }) }, { deep: true })
+watch(students, (val) => {
+  saveDraft({ students: val.map(s => ({ ...s })) })
+}, { deep: true })
 
 function addStudent() {
   students.value.push({
@@ -84,7 +86,9 @@ function onSubmit() {
 function getCurrentData() {
   return { eleves: students.value.filter(s => s.prenom && s.nom).map(s => ({ prenom: s.prenom, nom: s.nom, dateNaissance: s.dateNaissance, tuteur: s.tuteur, ...(s.classeNom ? { classeNom: s.classeNom } : {}) })) }
 }
-function isValid() { return students.value.some(s => s.prenom && s.nom) }
+function isValid() {
+  return students.value.some(s => s.prenom && s.nom)
+}
 defineExpose({ getCurrentData, isValid })
 </script>
 
@@ -98,7 +102,10 @@ defineExpose({ getCurrentData, isValid })
     </p>
 
     <!-- Liste eleves -->
-    <div v-if="students.length > 0" class="mb-4 space-y-3">
+    <div
+      v-if="students.length > 0"
+      class="mb-4 space-y-3"
+    >
       <div
         v-for="student in students"
         :key="student.id"
@@ -106,18 +113,42 @@ defineExpose({ getCurrentData, isValid })
       >
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <UFormField :label="$t('onboarding.students.firstName')">
-            <UInput v-model="student.prenom" :placeholder="$t('onboarding.students.firstNamePlaceholder')" size="sm" class="w-full" />
+            <UInput
+              v-model="student.prenom"
+              :placeholder="$t('onboarding.students.firstNamePlaceholder')"
+              size="sm"
+              class="w-full"
+            />
           </UFormField>
           <UFormField :label="$t('onboarding.students.lastName')">
-            <UInput v-model="student.nom" :placeholder="$t('onboarding.students.lastNamePlaceholder')" size="sm" class="w-full" />
+            <UInput
+              v-model="student.nom"
+              :placeholder="$t('onboarding.students.lastNamePlaceholder')"
+              size="sm"
+              class="w-full"
+            />
           </UFormField>
           <UFormField :label="$t('onboarding.students.birthDate')">
-            <UInput v-model="student.dateNaissance" type="date" size="sm" class="w-full" />
+            <UInput
+              v-model="student.dateNaissance"
+              type="date"
+              size="sm"
+              class="w-full"
+            />
           </UFormField>
           <UFormField :label="$t('onboarding.students.guardian')">
-            <UInput v-model="student.tuteur" :placeholder="$t('onboarding.students.guardianPlaceholder')" size="sm" class="w-full" />
+            <UInput
+              v-model="student.tuteur"
+              :placeholder="$t('onboarding.students.guardianPlaceholder')"
+              size="sm"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField v-if="classeOptions.length > 0" :label="$t('onboarding.students.class')" class="sm:col-span-2">
+          <UFormField
+            v-if="classeOptions.length > 0"
+            :label="$t('onboarding.students.class')"
+            class="sm:col-span-2"
+          >
             <USelect
               v-model="student.classeNom"
               :items="classeOptions"
@@ -129,14 +160,26 @@ defineExpose({ getCurrentData, isValid })
           </UFormField>
         </div>
         <div class="mt-2 flex justify-end">
-          <UButton size="xs" variant="ghost" color="error" icon="i-heroicons-trash" @click="removeStudent(student.id)">
+          <UButton
+            size="xs"
+            variant="ghost"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="removeStudent(student.id)"
+          >
             {{ $t('onboarding.students.remove') }}
           </UButton>
         </div>
       </div>
     </div>
 
-    <UButton variant="outline" color="primary" icon="i-heroicons-plus" class="mb-6" @click="addStudent">
+    <UButton
+      variant="outline"
+      color="primary"
+      icon="i-heroicons-plus"
+      class="mb-6"
+      @click="addStudent"
+    >
       {{ $t('onboarding.students.add') }}
     </UButton>
 
@@ -146,14 +189,25 @@ defineExpose({ getCurrentData, isValid })
 
     <div class="flex justify-between pt-4">
       <div class="flex gap-2">
-        <UButton variant="ghost" color="neutral" @click="emit('prev')">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          @click="emit('prev')"
+        >
           {{ $t('onboarding.previous') }}
         </UButton>
-        <UButton variant="ghost" color="neutral" @click="emit('skip')">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          @click="emit('skip')"
+        >
           {{ $t('onboarding.skip') }}
         </UButton>
       </div>
-      <UButton color="primary" @click="onSubmit">
+      <UButton
+        color="primary"
+        @click="onSubmit"
+      >
         {{ $t('onboarding.finish') }}
       </UButton>
     </div>

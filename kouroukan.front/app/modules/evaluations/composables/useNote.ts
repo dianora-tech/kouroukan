@@ -44,7 +44,7 @@ export function useNote() {
     return Math.min(...store.items.map(n => n.valeur))
   })
 
-  async function fetchAll(params?: Partial<NoteFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<NoteFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

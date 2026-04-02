@@ -34,8 +34,14 @@ const typeColor: Record<string, string> = {
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="famille" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="famille"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div>
       <UBreadcrumb
         :items="[
@@ -48,7 +54,11 @@ const typeColor: Record<string, string> = {
       </h1>
     </div>
 
-    <USelect v-model="selectedEnfant" :items="enfants" class="w-72" />
+    <USelect
+      v-model="selectedEnfant"
+      :items="enfants"
+      class="w-72"
+    />
 
     <div class="space-y-3">
       <div
@@ -57,13 +67,24 @@ const typeColor: Record<string, string> = {
         class="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800"
       >
         <div class="flex items-center gap-3">
-          <UIcon :name="typeIcon[doc.type]" :class="['h-8 w-8', typeColor[doc.type]]" />
+          <UIcon
+            :name="typeIcon[doc.type]"
+            :class="['h-8 w-8', typeColor[doc.type]]"
+          />
           <div>
-            <p class="font-medium text-gray-900 dark:text-white">{{ doc.nom }}</p>
-            <p class="text-xs text-gray-500">{{ formatDate(doc.date) }} - {{ doc.taille }}</p>
+            <p class="font-medium text-gray-900 dark:text-white">
+              {{ doc.nom }}
+            </p>
+            <p class="text-xs text-gray-500">
+              {{ formatDate(doc.date) }} - {{ doc.taille }}
+            </p>
           </div>
         </div>
-        <UButton variant="ghost" size="sm" icon="i-heroicons-arrow-down-tray">
+        <UButton
+          variant="ghost"
+          size="sm"
+          icon="i-heroicons-arrow-down-tray"
+        >
           {{ $t('famille.documents.telecharger') }}
         </UButton>
       </div>

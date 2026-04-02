@@ -40,26 +40,42 @@ function formatMontant(montant: number): string {
           {{ facture.typeName }} - {{ facture.eleveNom ?? `#${facture.eleveId}` }}
         </p>
       </div>
-      <UBadge :color="getStatutColor(facture.statutFacture)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(facture.statutFacture)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`finances.facture.statut.${facture.statutFacture}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-banknotes" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-banknotes"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatMontant(facture.montantTotal) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-check-circle" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-check-circle"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('finances.facture.paye') }}: {{ formatMontant(facture.montantPaye) }}
       </p>
       <p v-if="facture.solde > 0">
-        <UIcon name="i-heroicons-exclamation-triangle" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-exclamation-triangle"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('finances.facture.resteAPayer') }}: {{ formatMontant(facture.solde) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('finances.facture.echeance') }}: {{ formatDate(facture.dateEcheance) }}
       </p>
     </div>

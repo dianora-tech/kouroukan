@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Facture,
   FactureFilters,
@@ -7,6 +6,7 @@ import type {
   CreateFacturePayload,
   UpdateFacturePayload,
 } from '../types/facture.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/finances/factures'
 
@@ -49,7 +49,7 @@ export const useFactureStore = defineStore('finances-facture', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<FactureFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<FactureFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Facture>(API_PATH, {

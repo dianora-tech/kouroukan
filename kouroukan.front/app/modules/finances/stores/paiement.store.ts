@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Paiement,
   PaiementFilters,
@@ -7,6 +6,7 @@ import type {
   CreatePaiementPayload,
   UpdatePaiementPayload,
 } from '../types/paiement.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/finances/paiements'
 
@@ -49,7 +49,7 @@ export const usePaiementStore = defineStore('finances-paiement', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<PaiementFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<PaiementFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Paiement>(API_PATH, {

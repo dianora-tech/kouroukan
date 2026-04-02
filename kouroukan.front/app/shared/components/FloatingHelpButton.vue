@@ -53,7 +53,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div v-if="isVisible" ref="panelRef" class="fixed bottom-4 right-4 z-50">
+  <div
+    v-if="isVisible"
+    ref="panelRef"
+    class="fixed bottom-4 right-4 z-50"
+  >
     <!-- Panel -->
     <Transition
       enter-active-class="transition duration-200 ease-out"
@@ -74,7 +78,10 @@ onUnmounted(() => {
           class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
           @click="close"
         >
-          <UIcon :name="item.icon" class="h-5 w-5 text-indigo-500" />
+          <UIcon
+            :name="item.icon"
+            class="h-5 w-5 text-indigo-500"
+          />
           {{ item.label }}
         </NuxtLink>
       </div>

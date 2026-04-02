@@ -75,56 +75,151 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('documents.signature.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('documents.signature.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('documents.signature.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('documents.signature.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('documents.signature.name')" name="name" required>
-      <UInput v-model="state.name" :placeholder="t('documents.signature.namePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('documents.signature.name')"
+      name="name"
+      required
+    >
+      <UInput
+        v-model="state.name"
+        :placeholder="t('documents.signature.namePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('documents.signature.description')" name="description">
-      <UTextarea v-model="state.description" :placeholder="t('documents.signature.descriptionPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('documents.signature.description')"
+      name="description"
+    >
+      <UTextarea
+        v-model="state.description"
+        :placeholder="t('documents.signature.descriptionPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('documents.signature.documentGenereId')" name="documentGenereId" required>
-        <UInput v-model.number="state.documentGenereId" type="number" min="1" :placeholder="t('documents.signature.documentGenereIdPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('documents.signature.documentGenereId')"
+        name="documentGenereId"
+        required
+      >
+        <UInput
+          v-model.number="state.documentGenereId"
+          type="number"
+          min="1"
+          :placeholder="t('documents.signature.documentGenereIdPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('documents.signature.signataireId')" name="signataireId" required>
-        <UInput v-model.number="state.signataireId" type="number" min="1" :placeholder="t('documents.signature.signataireIdPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('documents.signature.signataireId')"
+        name="signataireId"
+        required
+      >
+        <UInput
+          v-model.number="state.signataireId"
+          type="number"
+          min="1"
+          :placeholder="t('documents.signature.signataireIdPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('documents.signature.ordreSignature')" name="ordreSignature" required>
-        <UInput v-model.number="state.ordreSignature" type="number" min="1" class="w-full" />
+      <UFormField
+        :label="t('documents.signature.ordreSignature')"
+        name="ordreSignature"
+        required
+      >
+        <UInput
+          v-model.number="state.ordreSignature"
+          type="number"
+          min="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('documents.signature.niveauSignature')" name="niveauSignature" required>
-        <USelect v-model="state.niveauSignature" :items="niveauOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('documents.signature.niveauSignature')"
+        name="niveauSignature"
+        required
+      >
+        <USelect
+          v-model="state.niveauSignature"
+          :items="niveauOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('documents.signature.statutSignature')" name="statutSignature" required>
-      <USelect v-model="state.statutSignature" :items="statutOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('documents.signature.statutSignature')"
+      name="statutSignature"
+      required
+    >
+      <USelect
+        v-model="state.statutSignature"
+        :items="statutOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField v-if="state.statutSignature === 'Refuse'" :label="t('documents.signature.motifRefus')" name="motifRefus">
-      <UTextarea v-model="state.motifRefus" :placeholder="t('documents.signature.motifRefusPlaceholder')" class="w-full" />
+    <UFormField
+      v-if="state.statutSignature === 'Refuse'"
+      :label="t('documents.signature.motifRefus')"
+      name="motifRefus"
+    >
+      <UTextarea
+        v-model="state.motifRefus"
+        :placeholder="t('documents.signature.motifRefusPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('documents.signature.estValidee')" name="estValidee">
+    <UFormField
+      :label="t('documents.signature.estValidee')"
+      name="estValidee"
+    >
       <UToggle v-model="state.estValidee" />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

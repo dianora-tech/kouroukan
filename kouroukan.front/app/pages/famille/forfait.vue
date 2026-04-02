@@ -88,7 +88,10 @@ onMounted(async () => {
         v-if="!forfaitStatus || !forfaitStatus.statut || forfaitStatus.statut === 'expire' || forfaitStatus.statut === 'annule'"
         class="flex flex-col items-center gap-4 py-8 text-center"
       >
-        <UIcon name="i-heroicons-credit-card" class="h-12 w-12 text-gray-400" />
+        <UIcon
+          name="i-heroicons-credit-card"
+          class="h-12 w-12 text-gray-400"
+        />
         <div>
           <p class="text-lg font-medium text-gray-900 dark:text-white">
             {{ $t('forfait.noPlan') }}
@@ -97,7 +100,10 @@ onMounted(async () => {
             {{ $t('forfait.noPlanDescription') }}
           </p>
         </div>
-        <UButton color="primary" @click="$el?.querySelector('#plans')?.scrollIntoView({ behavior: 'smooth' })">
+        <UButton
+          color="primary"
+          @click="$el?.querySelector('#plans')?.scrollIntoView({ behavior: 'smooth' })"
+        >
           {{ $t('forfait.subscribe') }}
         </UButton>
       </div>
@@ -106,11 +112,17 @@ onMounted(async () => {
       <div v-else>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p class="text-sm text-gray-500">{{ $t('famille.forfait.forfaitNom') }}</p>
-            <p class="font-semibold text-gray-900 dark:text-white">{{ forfaitStatus.forfaitNom }}</p>
+            <p class="text-sm text-gray-500">
+              {{ $t('famille.forfait.forfaitNom') }}
+            </p>
+            <p class="font-semibold text-gray-900 dark:text-white">
+              {{ forfaitStatus.forfaitNom }}
+            </p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">{{ $t('forfait.columns.statut') }}</p>
+            <p class="text-sm text-gray-500">
+              {{ $t('forfait.columns.statut') }}
+            </p>
             <UBadge
               :color="statusColorMap[forfaitStatus.statut ?? ''] ?? 'neutral'"
               variant="subtle"
@@ -120,22 +132,31 @@ onMounted(async () => {
             </UBadge>
           </div>
           <div>
-            <p class="text-sm text-gray-500">{{ $t('forfait.columns.dateDebut') }}</p>
+            <p class="text-sm text-gray-500">
+              {{ $t('forfait.columns.dateDebut') }}
+            </p>
             <p class="font-semibold text-gray-900 dark:text-white">
               {{ forfaitStatus.dateDebut ? formatDate(forfaitStatus.dateDebut) : '-' }}
             </p>
           </div>
           <div>
-            <p class="text-sm text-gray-500">{{ $t('forfait.columns.dateFin') }}</p>
+            <p class="text-sm text-gray-500">
+              {{ $t('forfait.columns.dateFin') }}
+            </p>
             <p class="font-semibold text-gray-900 dark:text-white">
               <template v-if="forfaitStatus.dateFin">
                 {{ $t('forfait.activeUntil', { date: formatDate(forfaitStatus.dateFin) }) }}
               </template>
-              <template v-else>-</template>
+              <template v-else>
+                -
+              </template>
             </p>
           </div>
         </div>
-        <div v-if="forfaitStatus.type !== 'gratuit'" class="mt-4">
+        <div
+          v-if="forfaitStatus.type !== 'gratuit'"
+          class="mt-4"
+        >
           <UButton
             color="error"
             variant="outline"
@@ -152,10 +173,19 @@ onMounted(async () => {
       <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
         {{ $t('forfait.availablePlans') }}
       </h2>
-      <div v-if="loading" class="flex items-center justify-center py-12">
-        <UIcon name="i-heroicons-arrow-path" class="h-6 w-6 animate-spin text-gray-400" />
+      <div
+        v-if="loading"
+        class="flex items-center justify-center py-12"
+      >
+        <UIcon
+          name="i-heroicons-arrow-path"
+          class="h-6 w-6 animate-spin text-gray-400"
+        />
       </div>
-      <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-else
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <UCard
           v-for="plan in availablePlans"
           :key="plan.id"
@@ -163,14 +193,24 @@ onMounted(async () => {
         >
           <template #header>
             <div class="flex items-center justify-between">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ plan.nom }}</h3>
-              <UBadge v-if="plan.estGratuit" color="info" variant="subtle" size="sm">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                {{ plan.nom }}
+              </h3>
+              <UBadge
+                v-if="plan.estGratuit"
+                color="info"
+                variant="subtle"
+                size="sm"
+              >
                 {{ $t('forfait.status.essai') }}
               </UBadge>
             </div>
           </template>
           <div class="space-y-3">
-            <p v-if="plan.description" class="text-sm text-gray-500 dark:text-gray-400">
+            <p
+              v-if="plan.description"
+              class="text-sm text-gray-500 dark:text-gray-400"
+            >
               {{ plan.description }}
             </p>
             <div class="flex items-baseline gap-1">
@@ -179,12 +219,24 @@ onMounted(async () => {
               </span>
               <span class="text-sm text-gray-500">/ {{ $t('forfait.perMonth') }}</span>
             </div>
-            <p v-if="plan.limiteEleves" class="text-sm text-gray-500">
-              <UIcon name="i-heroicons-users" class="mr-1 inline h-4 w-4" />
+            <p
+              v-if="plan.limiteEleves"
+              class="text-sm text-gray-500"
+            >
+              <UIcon
+                name="i-heroicons-users"
+                class="mr-1 inline h-4 w-4"
+              />
               {{ plan.limiteEleves }} {{ $t('forfait.perChild') }}
             </p>
-            <p v-if="plan.periodeEssaiJours > 0" class="text-sm text-primary-600 dark:text-primary-400">
-              <UIcon name="i-heroicons-gift" class="mr-1 inline h-4 w-4" />
+            <p
+              v-if="plan.periodeEssaiJours > 0"
+              class="text-sm text-primary-600 dark:text-primary-400"
+            >
+              <UIcon
+                name="i-heroicons-gift"
+                class="mr-1 inline h-4 w-4"
+              />
               {{ $t('forfait.trialDays', { days: plan.periodeEssaiJours }) }}
             </p>
           </div>
@@ -232,7 +284,10 @@ onMounted(async () => {
           </UBadge>
         </template>
       </UTable>
-      <div v-if="!loading && subscriptionHistory.length === 0" class="py-8 text-center text-sm text-gray-500">
+      <div
+        v-if="!loading && subscriptionHistory.length === 0"
+        class="py-8 text-center text-sm text-gray-500"
+      >
         {{ $t('forfait.noHistory') }}
       </div>
     </div>

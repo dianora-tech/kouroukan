@@ -49,18 +49,28 @@ function getStatutColor(statut: string): string {
           </p>
         </div>
       </div>
-      <UBadge :color="getStatutColor(eleve.statutInscription)" variant="subtle" size="sm">
+      <UBadge
+        :color="getStatutColor(eleve.statutInscription)"
+        variant="subtle"
+        size="sm"
+      >
         {{ $t(`inscriptions.eleve.statut.${eleve.statutInscription}`) }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-cake" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-cake"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatDate(eleve.dateNaissance) }} - {{ eleve.lieuNaissance }}
       </p>
       <p v-if="eleve.niveauClasseName">
-        <UIcon name="i-heroicons-academic-cap" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-academic-cap"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ eleve.niveauClasseName }}
         <span v-if="eleve.classeName"> - {{ eleve.classeName }}</span>
       </p>

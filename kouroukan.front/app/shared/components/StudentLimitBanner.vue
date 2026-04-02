@@ -42,7 +42,10 @@ const progressColor = computed(() => {
           {{ isAtLimit ? $t('forfaitGating.studentLimit.title') : $t('forfaitGating.studentLimit.progress', { current, limit }) }}
         </h3>
 
-        <p v-if="isAtLimit" class="mt-1 text-sm text-red-700 dark:text-red-400">
+        <p
+          v-if="isAtLimit"
+          class="mt-1 text-sm text-red-700 dark:text-red-400"
+        >
           {{ $t('forfaitGating.studentLimit.description', { limit }) }}
         </p>
 
@@ -52,7 +55,11 @@ const progressColor = computed(() => {
             <span>{{ $t('forfaitGating.studentLimit.progress', { current, limit }) }}</span>
             <span>{{ percentage }}%</span>
           </div>
-          <UProgress :value="percentage" :color="progressColor" size="sm" />
+          <UProgress
+            :value="percentage"
+            :color="progressColor"
+            size="sm"
+          />
         </div>
 
         <UButton

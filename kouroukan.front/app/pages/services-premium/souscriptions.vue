@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Souscription, CreateSouscriptionPayload, UpdateSouscriptionPayload } from '~/modules/services-premium/types/souscription.types'
+import type { Souscription, CreateSouscriptionPayload, UpdateSouscriptionPayload, SouscriptionFilters } from '~/modules/services-premium/types/souscription.types'
 import { useSouscription } from '~/modules/services-premium/composables/useSouscription'
-import type { SouscriptionFilters } from '~/modules/services-premium/types/souscription.types'
 import SouscriptionForm from '~/modules/services-premium/components/SouscriptionForm.vue'
 import SouscriptionCard from '~/modules/services-premium/components/SouscriptionCard.vue'
 import SouscriptionFiltersComponent from '~/modules/services-premium/components/SouscriptionFilters.vue'
@@ -144,9 +143,15 @@ function getStatutColor(statut: string): string {
       </div>
     </div>
 
-    <SouscriptionStats :items="items" :total-count="pagination.totalCount" />
+    <SouscriptionStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <SouscriptionFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <SouscriptionFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -165,13 +170,20 @@ function getStatutColor(statut: string): string {
         </template>
         <template #cell-dateFin="{ row }">
           <span v-if="(row as Souscription).dateFin">{{ formatDate((row as Souscription).dateFin) }}</span>
-          <span v-else class="text-gray-400">—</span>
+          <span
+            v-else
+            class="text-gray-400"
+          >—</span>
         </template>
         <template #cell-montantPaye="{ row }">
           {{ formatMontant((row as Souscription).montantPaye) }}
         </template>
         <template #cell-statutSouscription="{ row }">
-          <UBadge :color="getStatutColor((row as Souscription).statutSouscription)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Souscription).statutSouscription)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`servicesPremium.souscription.statut.${(row as Souscription).statutSouscription}`) }}
           </UBadge>
         </template>
@@ -206,7 +218,10 @@ function getStatutColor(statut: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <SouscriptionCard
           v-for="souscription in items"
           :key="souscription.id"

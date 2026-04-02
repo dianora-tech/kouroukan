@@ -43,8 +43,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="enseignant" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="enseignant"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <UBreadcrumb
@@ -57,35 +63,66 @@ onMounted(() => {
           {{ $t('enseignant.emploiDuTemps.title') }}
         </h1>
       </div>
-      <USelect v-model="selectedEtablissement" :items="etablissements" class="w-64" />
+      <USelect
+        v-model="selectedEtablissement"
+        :items="etablissements"
+        class="w-64"
+      />
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-gray-400" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
     </div>
 
     <!-- Calendar grid -->
-    <div v-else class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+    <div
+      v-else
+      class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+    >
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-gray-200 dark:border-gray-700">
             <th class="px-4 py-3 text-left font-medium text-gray-500" />
-            <th v-for="jour in jours" :key="jour" class="px-4 py-3 text-center font-medium text-gray-500">
+            <th
+              v-for="jour in jours"
+              :key="jour"
+              class="px-4 py-3 text-center font-medium text-gray-500"
+            >
               {{ jour }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="heure in creneaux" :key="heure" class="border-b border-gray-100 dark:border-gray-700">
-            <td class="px-4 py-3 text-sm font-medium text-gray-500">{{ heure }}</td>
-            <td v-for="jour in jours" :key="jour" class="px-2 py-2">
+          <tr
+            v-for="heure in creneaux"
+            :key="heure"
+            class="border-b border-gray-100 dark:border-gray-700"
+          >
+            <td class="px-4 py-3 text-sm font-medium text-gray-500">
+              {{ heure }}
+            </td>
+            <td
+              v-for="jour in jours"
+              :key="jour"
+              class="px-2 py-2"
+            >
               <div
                 v-if="getCours(jour, heure)"
                 class="rounded-lg bg-blue-50 p-2 text-center dark:bg-blue-900/20"
               >
-                <p class="text-xs font-semibold text-blue-700 dark:text-blue-300">{{ getCours(jour, heure)!.matiere }}</p>
-                <p class="text-xs text-blue-600 dark:text-blue-400">{{ getCours(jour, heure)!.classe }}</p>
+                <p class="text-xs font-semibold text-blue-700 dark:text-blue-300">
+                  {{ getCours(jour, heure)!.matiere }}
+                </p>
+                <p class="text-xs text-blue-600 dark:text-blue-400">
+                  {{ getCours(jour, heure)!.classe }}
+                </p>
               </div>
             </td>
           </tr>

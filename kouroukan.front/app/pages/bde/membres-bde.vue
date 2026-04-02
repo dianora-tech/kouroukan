@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { MembreBDE, CreateMembreBDEPayload, UpdateMembreBDEPayload } from '~/modules/bde/types/membre-bde.types'
-import type { MembreBDEFilters } from '~/modules/bde/types/membre-bde.types'
+import type { MembreBDE, CreateMembreBDEPayload, UpdateMembreBDEPayload, MembreBDEFilters } from '~/modules/bde/types/membre-bde.types'
 import { useMembreBDE } from '~/modules/bde/composables/useMembreBDE'
 import { useAssociation } from '~/modules/bde/composables/useAssociation'
 import MembreBDEForm from '~/modules/bde/components/MembreBDEForm.vue'
@@ -138,9 +137,15 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <MembreBDEStats :items="items" :total-count="pagination.totalCount" />
+    <MembreBDEStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <MembreBDEFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <MembreBDEFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -152,7 +157,11 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         @sort="handleSort"
       >
         <template #cell-roleBDE="{ row }">
-          <UBadge color="neutral" variant="subtle" size="sm">
+          <UBadge
+            color="neutral"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`bde.membreBde.role.${(row as MembreBDE).roleBDE}`) }}
           </UBadge>
         </template>
@@ -160,7 +169,11 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
           {{ (row as MembreBDE).montantCotisation ? formatMontant((row as MembreBDE).montantCotisation!) : '-' }}
         </template>
         <template #cell-estActif="{ row }">
-          <UBadge :color="(row as MembreBDE).estActif ? 'success' : 'neutral'" variant="subtle" size="sm">
+          <UBadge
+            :color="(row as MembreBDE).estActif ? 'success' : 'neutral'"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as MembreBDE).estActif ? $t('bde.membreBde.actif') : $t('bde.membreBde.inactif') }}
           </UBadge>
         </template>
@@ -195,7 +208,10 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <MembreBDECard
           v-for="membre in items"
           :key="membre.id"

@@ -46,7 +46,7 @@ export function usePaiement() {
     store.items.filter(p => ['OrangeMoney', 'SoutraMoney', 'MTNMoMo'].includes(p.moyenPaiement)).length,
   )
 
-  async function fetchAll(params?: Partial<PaiementFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<PaiementFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

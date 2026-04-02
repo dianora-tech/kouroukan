@@ -42,7 +42,7 @@ export function useDocumentGenere() {
     store.items.filter(d => d.statutSignature === 'EnAttente').length,
   )
 
-  async function fetchAll(params?: Partial<DocumentGenereFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<DocumentGenereFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

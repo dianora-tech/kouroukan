@@ -46,7 +46,7 @@ export function useInscription() {
     store.items.filter(i => i.estRedoublant).length,
   )
 
-  async function fetchAll(params?: Partial<InscriptionFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<InscriptionFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

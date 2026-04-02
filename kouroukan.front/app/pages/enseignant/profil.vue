@@ -72,20 +72,47 @@ onMounted(async () => {
       <!-- QR Code & Identifiant -->
       <div class="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
         <div class="flex h-48 w-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800">
-          <div v-if="qrLoading" class="text-center">
-            <UIcon name="i-heroicons-arrow-path" class="mx-auto h-8 w-8 animate-spin text-gray-400" />
+          <div
+            v-if="qrLoading"
+            class="text-center"
+          >
+            <UIcon
+              name="i-heroicons-arrow-path"
+              class="mx-auto h-8 w-8 animate-spin text-gray-400"
+            />
           </div>
-          <img v-else-if="profil.codeQR" :src="profil.codeQR" alt="QR Code" class="h-full w-full object-contain" />
-          <div v-else class="text-center">
-            <UIcon name="i-heroicons-qr-code" class="mx-auto h-16 w-16 text-gray-400" />
-            <p class="mt-2 text-xs text-gray-500">{{ $t('enseignant.profil.qrCode') }}</p>
+          <img
+            v-else-if="profil.codeQR"
+            :src="profil.codeQR"
+            alt="QR Code"
+            class="h-full w-full object-contain"
+          >
+          <div
+            v-else
+            class="text-center"
+          >
+            <UIcon
+              name="i-heroicons-qr-code"
+              class="mx-auto h-16 w-16 text-gray-400"
+            />
+            <p class="mt-2 text-xs text-gray-500">
+              {{ $t('enseignant.profil.qrCode') }}
+            </p>
           </div>
         </div>
         <div class="text-center">
-          <p class="text-sm text-gray-500">{{ $t('enseignant.profil.identifiant') }}</p>
-          <p class="mt-1 font-mono text-lg font-bold text-gray-900 dark:text-white">{{ profil.identifiant }}</p>
+          <p class="text-sm text-gray-500">
+            {{ $t('enseignant.profil.identifiant') }}
+          </p>
+          <p class="mt-1 font-mono text-lg font-bold text-gray-900 dark:text-white">
+            {{ profil.identifiant }}
+          </p>
         </div>
-        <UButton variant="outline" size="sm" icon="i-heroicons-share">
+        <UButton
+          variant="outline"
+          size="sm"
+          icon="i-heroicons-share"
+        >
           {{ $t('enseignant.profil.partagerQR') }}
         </UButton>
       </div>
@@ -98,20 +125,38 @@ onMounted(async () => {
           </h2>
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <UFormField :label="$t('enseignant.profil.nom')">
-              <UInput v-model="profil.nom" class="w-full" />
+              <UInput
+                v-model="profil.nom"
+                class="w-full"
+              />
             </UFormField>
             <UFormField :label="$t('enseignant.profil.prenom')">
-              <UInput v-model="profil.prenom" class="w-full" />
+              <UInput
+                v-model="profil.prenom"
+                class="w-full"
+              />
             </UFormField>
             <UFormField :label="$t('enseignant.profil.telephone')">
-              <UInput v-model="profil.telephone" class="w-full" />
+              <UInput
+                v-model="profil.telephone"
+                class="w-full"
+              />
             </UFormField>
             <UFormField :label="$t('enseignant.profil.email')">
-              <UInput v-model="profil.email" type="email" class="w-full" />
+              <UInput
+                v-model="profil.email"
+                type="email"
+                class="w-full"
+              />
             </UFormField>
           </div>
           <div class="mt-4 flex justify-end">
-            <UButton color="primary" icon="i-heroicons-check" :loading="saving" @click="saveProfile">
+            <UButton
+              color="primary"
+              icon="i-heroicons-check"
+              :loading="saving"
+              @click="saveProfile"
+            >
               {{ $t('enseignant.profil.enregistrer') }}
             </UButton>
           </div>

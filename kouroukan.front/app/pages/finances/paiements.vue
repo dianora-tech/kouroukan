@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Paiement, CreatePaiementPayload, UpdatePaiementPayload } from '~/modules/finances/types/paiement.types'
+import type { Paiement, CreatePaiementPayload, UpdatePaiementPayload, PaiementFilters } from '~/modules/finances/types/paiement.types'
 import { usePaiement } from '~/modules/finances/composables/usePaiement'
-import type { PaiementFilters } from '~/modules/finances/types/paiement.types'
 import PaiementForm from '~/modules/finances/components/PaiementForm.vue'
 import PaiementCard from '~/modules/finances/components/PaiementCard.vue'
 import PaiementFiltersComponent from '~/modules/finances/components/PaiementFilters.vue'
@@ -156,9 +155,15 @@ function getMoyenColor(moyen: string): string {
       </div>
     </div>
 
-    <PaiementStats :items="items" :total-count="pagination.totalCount" />
+    <PaiementStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <PaiementFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <PaiementFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -173,7 +178,11 @@ function getMoyenColor(moyen: string): string {
           {{ formatMontant((row as Paiement).montantPaye) }}
         </template>
         <template #cell-moyenPaiement="{ row }">
-          <UBadge :color="getMoyenColor((row as Paiement).moyenPaiement)" variant="subtle" size="sm">
+          <UBadge
+            :color="getMoyenColor((row as Paiement).moyenPaiement)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.paiement.moyen.${(row as Paiement).moyenPaiement}`) }}
           </UBadge>
         </template>
@@ -181,7 +190,11 @@ function getMoyenColor(moyen: string): string {
           {{ formatDate((row as Paiement).datePaiement) }}
         </template>
         <template #cell-statutPaiement="{ row }">
-          <UBadge :color="getStatutColor((row as Paiement).statutPaiement)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Paiement).statutPaiement)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`finances.paiement.statut.${(row as Paiement).statutPaiement}`) }}
           </UBadge>
         </template>
@@ -216,7 +229,10 @@ function getMoyenColor(moyen: string): string {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <PaiementCard
           v-for="paiement in items"
           :key="paiement.id"

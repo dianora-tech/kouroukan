@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { AnneeScolaire, CreateAnneeScolairePayload, UpdateAnneeScolairePayload } from '~/modules/inscriptions/types/annee-scolaire.types'
+import type { AnneeScolaire, CreateAnneeScolairePayload, UpdateAnneeScolairePayload, AnneeScolaireFilters } from '~/modules/inscriptions/types/annee-scolaire.types'
 import { useAnneeScolaire } from '~/modules/inscriptions/composables/useAnneeScolaire'
-import type { AnneeScolaireFilters } from '~/modules/inscriptions/types/annee-scolaire.types'
 import AnneeScolaireForm from '~/modules/inscriptions/components/AnneeScolaireForm.vue'
 import AnneeScolaireCard from '~/modules/inscriptions/components/AnneeScolaireCard.vue'
 import AnneeScolaireFiltersComponent from '~/modules/inscriptions/components/AnneeScolaireFilters.vue'
@@ -117,15 +116,25 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
           icon="i-heroicons-squares-2x2"
           @click="viewMode = 'grid'"
         />
-        <UButton color="primary" icon="i-heroicons-plus" @click="openCreate">
+        <UButton
+          color="primary"
+          icon="i-heroicons-plus"
+          @click="openCreate"
+        >
           {{ $t('inscriptions.anneeScolaire.add') }}
         </UButton>
       </div>
     </div>
 
-    <AnneeScolaireStats :items="items" :total-count="pagination.totalCount" />
+    <AnneeScolaireStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <AnneeScolaireFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <AnneeScolaireFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -147,8 +156,19 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">
-            <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as AnneeScolaire)" />
-            <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as AnneeScolaire)" />
+            <UButton
+              variant="ghost"
+              size="xs"
+              icon="i-heroicons-pencil-square"
+              @click="openEdit(row as AnneeScolaire)"
+            />
+            <UButton
+              variant="ghost"
+              size="xs"
+              color="error"
+              icon="i-heroicons-trash"
+              @click="openDelete(row as AnneeScolaire)"
+            />
           </div>
         </template>
       </DataTable>
@@ -163,7 +183,10 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <AnneeScolaireCard
           v-for="annee in items"
           :key="annee.id"

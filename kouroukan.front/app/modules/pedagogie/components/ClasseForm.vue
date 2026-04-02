@@ -69,40 +69,104 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('pedagogie.classe.name')" name="name" required>
-      <UInput v-model="state.name" :placeholder="t('pedagogie.classe.namePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('pedagogie.classe.name')"
+      name="name"
+      required
+    >
+      <UInput
+        v-model="state.name"
+        :placeholder="t('pedagogie.classe.namePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.classe.niveauClasse')" name="niveauClasseId" required>
-        <USelect v-model="state.niveauClasseId" :items="niveauClasseOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.classe.niveauClasse')"
+        name="niveauClasseId"
+        required
+      >
+        <USelect
+          v-model="state.niveauClasseId"
+          :items="niveauClasseOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.classe.anneeScolaire')" name="anneeScolaireId" required>
-        <UInput v-model.number="state.anneeScolaireId" type="number" :placeholder="t('pedagogie.classe.anneeScolairePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.classe.anneeScolaire')"
+        name="anneeScolaireId"
+        required
+      >
+        <UInput
+          v-model.number="state.anneeScolaireId"
+          type="number"
+          :placeholder="t('pedagogie.classe.anneeScolairePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.classe.capacite')" name="capacite" required>
-        <UInput v-model.number="state.capacite" type="number" :placeholder="t('pedagogie.classe.capacitePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.classe.capacite')"
+        name="capacite"
+        required
+      >
+        <UInput
+          v-model.number="state.capacite"
+          type="number"
+          :placeholder="t('pedagogie.classe.capacitePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.classe.effectif')" name="effectif" required>
-        <UInput v-model.number="state.effectif" type="number" :placeholder="t('pedagogie.classe.effectifPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.classe.effectif')"
+        name="effectif"
+        required
+      >
+        <UInput
+          v-model.number="state.effectif"
+          type="number"
+          :placeholder="t('pedagogie.classe.effectifPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('pedagogie.classe.enseignantPrincipal')" name="enseignantPrincipalId">
-      <UInput v-model.number="state.enseignantPrincipalId" type="number" :placeholder="t('pedagogie.classe.enseignantPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('pedagogie.classe.enseignantPrincipal')"
+      name="enseignantPrincipalId"
+    >
+      <UInput
+        v-model.number="state.enseignantPrincipalId"
+        type="number"
+        :placeholder="t('pedagogie.classe.enseignantPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

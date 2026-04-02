@@ -24,7 +24,12 @@ const emit = defineEmits<{
           </h3>
         </div>
       </div>
-      <UBadge v-if="matiere.typeName" color="primary" variant="subtle" size="sm">
+      <UBadge
+        v-if="matiere.typeName"
+        color="primary"
+        variant="subtle"
+        size="sm"
+      >
         {{ matiere.typeName }}
       </UBadge>
     </div>

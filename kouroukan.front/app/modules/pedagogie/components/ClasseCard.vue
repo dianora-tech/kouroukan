@@ -25,33 +25,52 @@ function getOccupancyColor(effectif: number, capacite: number): string {
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-          <UIcon name="i-heroicons-user-group" class="h-5 w-5" />
+          <UIcon
+            name="i-heroicons-user-group"
+            class="h-5 w-5"
+          />
         </div>
         <div>
           <h3 class="font-semibold text-gray-900 dark:text-white">
             {{ classe.name }}
           </h3>
-          <p v-if="classe.niveauClasseName" class="text-sm text-gray-500 dark:text-gray-400">
+          <p
+            v-if="classe.niveauClasseName"
+            class="text-sm text-gray-500 dark:text-gray-400"
+          >
             {{ classe.niveauClasseName }}
           </p>
         </div>
       </div>
-      <UBadge :color="getOccupancyColor(classe.effectif, classe.capacite)" variant="subtle" size="sm">
+      <UBadge
+        :color="getOccupancyColor(classe.effectif, classe.capacite)"
+        variant="subtle"
+        size="sm"
+      >
         {{ classe.effectif }}/{{ classe.capacite }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p v-if="classe.anneeScolaireLibelle">
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ classe.anneeScolaireLibelle }}
       </p>
       <p v-if="classe.enseignantPrincipalNom">
-        <UIcon name="i-heroicons-user" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-user"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ classe.enseignantPrincipalNom }}
       </p>
       <p>
-        <UIcon name="i-heroicons-users" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-users"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ $t('pedagogie.classe.effectifLabel', { effectif: classe.effectif, capacite: classe.capacite }) }}
       </p>
     </div>

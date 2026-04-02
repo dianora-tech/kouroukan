@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   PalierFamilial,
   CreatePalierFamilialPayload,
 } from '../types/finances.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/finances/paliers-familiaux'
 
@@ -37,7 +37,7 @@ export const usePalierFamilialStore = defineStore('finances-palier-familial', {
   },
 
   actions: {
-    async fetchAll(params?: { page?: number; pageSize?: number }): Promise<void> {
+    async fetchAll(params?: { page?: number, pageSize?: number }): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<PalierFamilial>(API_PATH, {

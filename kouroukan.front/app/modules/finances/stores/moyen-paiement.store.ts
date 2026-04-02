@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   MoyenPaiement,
   CreateMoyenPaiementPayload,
   UpdateMoyenPaiementPayload,
   FinancesFilters,
 } from '../types/finances.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/finances/moyens-paiement'
 
@@ -43,7 +43,7 @@ export const useMoyenPaiementStore = defineStore('finances-moyen-paiement', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<FinancesFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<FinancesFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<MoyenPaiement>(API_PATH, {

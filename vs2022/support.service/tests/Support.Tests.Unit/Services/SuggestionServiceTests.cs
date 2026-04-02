@@ -15,7 +15,6 @@ namespace Support.Tests.Unit.Services;
 public sealed class SuggestionServiceTests
 {
     private readonly Mock<ISuggestionRepository> _repoMock;
-    private readonly Mock<IVoteSuggestionRepository> _voteRepoMock;
     private readonly Mock<IMessagePublisher> _publisherMock;
     private readonly Mock<ILogger<SuggestionService>> _loggerMock;
     private readonly SuggestionService _sut;
@@ -23,13 +22,11 @@ public sealed class SuggestionServiceTests
     public SuggestionServiceTests()
     {
         _repoMock = new Mock<ISuggestionRepository>();
-        _voteRepoMock = new Mock<IVoteSuggestionRepository>();
         _publisherMock = new Mock<IMessagePublisher>();
         _loggerMock = new Mock<ILogger<SuggestionService>>();
 
         _sut = new SuggestionService(
             _repoMock.Object,
-            _voteRepoMock.Object,
             _publisherMock.Object,
             _loggerMock.Object);
     }
@@ -58,35 +55,35 @@ public sealed class SuggestionServiceTests
     }
 
     [Fact]
-    public async Task VoteAsync_IncrementeCompteur()
+    public async Task VoterAsync_IncrementeCompteur()
     {
-        var suggestion = new Suggestion { Id = 1, NombreVotes = 5 };
-
-        _repoMock.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(suggestion);
-        _voteRepoMock.Setup(r => r.HasVotedAsync(1, 42, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
-        _voteRepoMock.Setup(r => r.AddAsync(It.IsAny<VoteSuggestion>(), It.IsAny<CancellationToken>()))
+        _repoMock.Setup(r => r.ExistsAsync(1, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+        _repoMock.Setup(r => r.GetVoteAsync(1, 42, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((VoteSuggestion?)null);
+        _repoMock.Setup(r => r.AddVoteAsync(It.IsAny<VoteSuggestion>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new VoteSuggestion { Id = 1, SuggestionId = 1, VotantId = 42 });
-        _repoMock.Setup(r => r.UpdateAsync(It.IsAny<Suggestion>(), It.IsAny<CancellationToken>()))
+        _repoMock.Setup(r => r.IncrementVotesAsync(1, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        await _sut.VoteAsync(1, 42);
+        var result = await _sut.VoterAsync(1, 42, 1);
 
-        _repoMock.Verify(r => r.UpdateAsync(
-            It.Is<Suggestion>(s => s.NombreVotes == 6),
+        result.Should().BeTrue();
+        _repoMock.Verify(r => r.AddVoteAsync(
+            It.Is<VoteSuggestion>(v => v.SuggestionId == 1 && v.VotantId == 42),
             It.IsAny<CancellationToken>()), Times.Once);
+        _repoMock.Verify(r => r.IncrementVotesAsync(1, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public async Task VoteAsync_DeuxFois_LanceException()
+    public async Task VoterAsync_DeuxFois_LanceException()
     {
-        _repoMock.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Suggestion { Id = 1, NombreVotes = 5 });
-        _voteRepoMock.Setup(r => r.HasVotedAsync(1, 42, It.IsAny<CancellationToken>()))
+        _repoMock.Setup(r => r.ExistsAsync(1, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
+        _repoMock.Setup(r => r.GetVoteAsync(1, 42, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new VoteSuggestion { Id = 1, SuggestionId = 1, VotantId = 42 });
 
-        var act = async () => await _sut.VoteAsync(1, 42);
+        var act = async () => await _sut.VoterAsync(1, 42, 1);
 
         await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("*deja vote*");

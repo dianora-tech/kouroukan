@@ -11,7 +11,7 @@ const ESTABLISHMENT_ROLES = [
 const SHARED_ROUTES = ['/', '/profil', '/changer-mot-de-passe', '/onboarding']
 
 function isSharedRoute(path: string): boolean {
-  return SHARED_ROUTES.some(r => path === r)
+  return SHARED_ROUTES.includes(path)
 }
 
 /**

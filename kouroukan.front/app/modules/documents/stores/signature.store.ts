@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Signature,
   SignatureFilters,
@@ -7,6 +6,7 @@ import type {
   CreateSignaturePayload,
   UpdateSignaturePayload,
 } from '../types/signature.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/documents/signatures'
 
@@ -49,7 +49,7 @@ export const useSignatureStore = defineStore('documents-signature', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<SignatureFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<SignatureFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Signature>(API_PATH, {

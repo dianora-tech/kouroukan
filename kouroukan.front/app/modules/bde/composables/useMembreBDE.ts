@@ -37,7 +37,7 @@ export function useMembreBDE() {
     store.items.reduce((sum, m) => sum + (m.montantCotisation ?? 0), 0),
   )
 
-  async function fetchAll(params?: Partial<MembreBDEFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<MembreBDEFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

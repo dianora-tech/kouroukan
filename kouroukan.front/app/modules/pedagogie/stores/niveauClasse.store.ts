@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type { NiveauClasse, NiveauClasseFilters, CreateNiveauClassePayload, UpdateNiveauClassePayload } from '../types/niveauClasse.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/pedagogie/niveaux-classes'
 
@@ -40,7 +40,7 @@ export const useNiveauClasseStore = defineStore('pedagogie-niveauClasse', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<NiveauClasseFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<NiveauClasseFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<NiveauClasse>(API_PATH, {

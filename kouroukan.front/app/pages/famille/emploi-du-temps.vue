@@ -37,8 +37,14 @@ function getCours(jour: string, heure: string) {
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="famille" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="famille"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div>
       <UBreadcrumb
         :items="[
@@ -51,28 +57,50 @@ function getCours(jour: string, heure: string) {
       </h1>
     </div>
 
-    <USelect v-model="selectedEnfant" :items="enfants" class="w-72" />
+    <USelect
+      v-model="selectedEnfant"
+      :items="enfants"
+      class="w-72"
+    />
 
     <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-gray-200 dark:border-gray-700">
             <th class="px-4 py-3 text-left font-medium text-gray-500" />
-            <th v-for="jour in jours" :key="jour" class="px-4 py-3 text-center font-medium text-gray-500">
+            <th
+              v-for="jour in jours"
+              :key="jour"
+              class="px-4 py-3 text-center font-medium text-gray-500"
+            >
               {{ jour }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="heure in creneaux" :key="heure" class="border-b border-gray-100 dark:border-gray-700">
-            <td class="px-4 py-3 text-sm font-medium text-gray-500">{{ heure }}</td>
-            <td v-for="jour in jours" :key="jour" class="px-2 py-2">
+          <tr
+            v-for="heure in creneaux"
+            :key="heure"
+            class="border-b border-gray-100 dark:border-gray-700"
+          >
+            <td class="px-4 py-3 text-sm font-medium text-gray-500">
+              {{ heure }}
+            </td>
+            <td
+              v-for="jour in jours"
+              :key="jour"
+              class="px-2 py-2"
+            >
               <div
                 v-if="getCours(jour, heure)"
                 class="rounded-lg bg-purple-50 p-2 text-center dark:bg-purple-900/20"
               >
-                <p class="text-xs font-semibold text-purple-700 dark:text-purple-300">{{ getCours(jour, heure)!.matiere }}</p>
-                <p class="text-xs text-purple-600 dark:text-purple-400">{{ getCours(jour, heure)!.salle }}</p>
+                <p class="text-xs font-semibold text-purple-700 dark:text-purple-300">
+                  {{ getCours(jour, heure)!.matiere }}
+                </p>
+                <p class="text-xs text-purple-600 dark:text-purple-400">
+                  {{ getCours(jour, heure)!.salle }}
+                </p>
               </div>
             </td>
           </tr>

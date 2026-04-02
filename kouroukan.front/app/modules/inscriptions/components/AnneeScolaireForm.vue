@@ -93,52 +93,136 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('inscriptions.anneeScolaire.libelle')" name="libelle" required>
-      <UInput v-model="state.libelle" :placeholder="t('inscriptions.anneeScolaire.libellePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('inscriptions.anneeScolaire.libelle')"
+      name="libelle"
+      required
+    >
+      <UInput
+        v-model="state.libelle"
+        :placeholder="t('inscriptions.anneeScolaire.libellePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('inscriptions.anneeScolaire.dateDebut')" name="dateDebut" required>
-        <UInput v-model="state.dateDebut" type="date" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.anneeScolaire.dateDebut')"
+        name="dateDebut"
+        required
+      >
+        <UInput
+          v-model="state.dateDebut"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('inscriptions.anneeScolaire.dateFin')" name="dateFin" required>
-        <UInput v-model="state.dateFin" type="date" class="w-full" />
+      <UFormField
+        :label="t('inscriptions.anneeScolaire.dateFin')"
+        name="dateFin"
+        required
+      >
+        <UInput
+          v-model="state.dateFin"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField label="Code" name="code" required>
-      <UInput v-model="state.code" placeholder="Ex: 2024-2025" maxlength="20" class="w-full" />
+    <UFormField
+      label="Code"
+      name="code"
+      required
+    >
+      <UInput
+        v-model="state.code"
+        placeholder="Ex: 2024-2025"
+        maxlength="20"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField label="Description" name="description">
-      <UTextarea v-model="state.description" maxlength="500" class="w-full" />
+    <UFormField
+      label="Description"
+      name="description"
+    >
+      <UTextarea
+        v-model="state.description"
+        maxlength="500"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField label="Statut" name="statut" required>
-      <USelect v-model="state.statut" :items="statutOptions" class="w-full" />
+    <UFormField
+      label="Statut"
+      name="statut"
+      required
+    >
+      <USelect
+        v-model="state.statut"
+        :items="statutOptions"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField label="Date de rentrée" name="dateRentree">
-      <UInput v-model="state.dateRentree" type="date" class="w-full" />
+    <UFormField
+      label="Date de rentrée"
+      name="dateRentree"
+    >
+      <UInput
+        v-model="state.dateRentree"
+        type="date"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField label="Nombre de périodes" name="nombrePeriodes" required>
-        <UInput v-model.number="state.nombrePeriodes" type="number" min="1" class="w-full" />
+      <UFormField
+        label="Nombre de périodes"
+        name="nombrePeriodes"
+        required
+      >
+        <UInput
+          v-model.number="state.nombrePeriodes"
+          type="number"
+          min="1"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField label="Type de période" name="typePeriode" required>
-        <USelect v-model="state.typePeriode" :items="typePeriodeOptions" class="w-full" />
+      <UFormField
+        label="Type de période"
+        name="typePeriode"
+        required
+      >
+        <USelect
+          v-model="state.typePeriode"
+          :items="typePeriodeOptions"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

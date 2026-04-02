@@ -31,8 +31,14 @@ const moyenne = computed(() => {
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="famille" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="famille"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div>
       <UBreadcrumb
         :items="[
@@ -46,17 +52,33 @@ const moyenne = computed(() => {
     </div>
 
     <!-- Selection enfant -->
-    <USelect v-model="selectedEnfant" :items="enfants" class="w-72" />
+    <USelect
+      v-model="selectedEnfant"
+      :items="enfants"
+      class="w-72"
+    />
 
     <!-- Moyenne -->
     <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
       <div class="flex items-center gap-3">
-        <UIcon name="i-heroicons-academic-cap" class="h-8 w-8 text-indigo-600" />
+        <UIcon
+          name="i-heroicons-academic-cap"
+          class="h-8 w-8 text-indigo-600"
+        />
         <div>
-          <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ moyenne }}/20</p>
-          <p class="text-sm text-gray-500">{{ $t('famille.notes.moyenneGenerale') }}</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            {{ moyenne }}/20
+          </p>
+          <p class="text-sm text-gray-500">
+            {{ $t('famille.notes.moyenneGenerale') }}
+          </p>
         </div>
-        <UBadge color="success" variant="subtle" size="sm" class="ml-auto">
+        <UBadge
+          color="success"
+          variant="subtle"
+          size="sm"
+          class="ml-auto"
+        >
           {{ $t('famille.notes.paye') }}
         </UBadge>
       </div>
@@ -67,24 +89,48 @@ const moyenne = computed(() => {
       <table class="w-full text-left text-sm">
         <thead class="border-b border-gray-200 dark:border-gray-700">
           <tr>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.notes.matiere') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.notes.note') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.notes.coefficient') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.notes.appreciation') }}</th>
-            <th class="px-4 py-3 font-medium text-gray-500">{{ $t('famille.notes.enseignant') }}</th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.notes.matiere') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.notes.note') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.notes.coefficient') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.notes.appreciation') }}
+            </th>
+            <th class="px-4 py-3 font-medium text-gray-500">
+              {{ $t('famille.notes.enseignant') }}
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-          <tr v-for="n in notes" :key="n.id">
-            <td class="px-4 py-3 text-gray-900 dark:text-white">{{ n.matiere }}</td>
+          <tr
+            v-for="n in notes"
+            :key="n.id"
+          >
+            <td class="px-4 py-3 text-gray-900 dark:text-white">
+              {{ n.matiere }}
+            </td>
             <td class="px-4 py-3">
-              <span :class="n.note >= 14 ? 'text-green-600' : n.note >= 10 ? 'text-yellow-600' : 'text-red-600'" class="font-semibold">
+              <span
+                :class="n.note >= 14 ? 'text-green-600' : n.note >= 10 ? 'text-yellow-600' : 'text-red-600'"
+                class="font-semibold"
+              >
                 {{ n.note }}/20
               </span>
             </td>
-            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ n.coefficient }}</td>
-            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ n.appreciation }}</td>
-            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ n.enseignant }}</td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+              {{ n.coefficient }}
+            </td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+              {{ n.appreciation }}
+            </td>
+            <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+              {{ n.enseignant }}
+            </td>
           </tr>
         </tbody>
       </table>

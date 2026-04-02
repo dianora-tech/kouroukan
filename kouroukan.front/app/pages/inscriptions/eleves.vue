@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Eleve, CreateElevePayload, UpdateElevePayload } from '~/modules/inscriptions/types/eleve.types'
+import type { Eleve, CreateElevePayload, UpdateElevePayload, EleveFilters } from '~/modules/inscriptions/types/eleve.types'
 import { useEleve } from '~/modules/inscriptions/composables/useEleve'
-import type { EleveFilters } from '~/modules/inscriptions/types/eleve.types'
 import EleveForm from '~/modules/inscriptions/components/EleveForm.vue'
 import EleveCard from '~/modules/inscriptions/components/EleveCard.vue'
 import EleveFiltersComponent from '~/modules/inscriptions/components/EleveFilters.vue'
@@ -142,10 +141,16 @@ function getStatutColor(statut: string): string {
     </div>
 
     <!-- Stats -->
-    <EleveStats :items="items" :total-count="pagination.totalCount" />
+    <EleveStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
     <!-- Filters -->
-    <EleveFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <EleveFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <!-- Table view -->
     <template v-if="viewMode === 'table'">
@@ -158,7 +163,11 @@ function getStatutColor(statut: string): string {
         @sort="handleSort"
       >
         <template #cell-statutInscription="{ row }">
-          <UBadge :color="getStatutColor((row as Eleve).statutInscription)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Eleve).statutInscription)"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`inscriptions.eleve.statut.${(row as Eleve).statutInscription}`) }}
           </UBadge>
         </template>
@@ -194,7 +203,10 @@ function getStatutColor(statut: string): string {
 
     <!-- Grid view -->
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <EleveCard
           v-for="eleve in items"
           :key="eleve.id"

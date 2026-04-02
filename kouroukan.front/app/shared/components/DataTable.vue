@@ -42,7 +42,7 @@ const filteredItems = computed(() => {
   })
 })
 
-const currentSort = ref<{ key: string; direction: 'asc' | 'desc' } | null>(null)
+const currentSort = ref<{ key: string, direction: 'asc' | 'desc' } | null>(null)
 
 function handleSort(key: string): void {
   if (!props.columns.find(c => c.key === key)?.sortable) return
@@ -63,7 +63,10 @@ function getCellValue(row: T, key: string): unknown {
 <template>
   <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
     <!-- Search input -->
-    <div v-if="searchable" class="border-b border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800">
+    <div
+      v-if="searchable"
+      class="border-b border-gray-200 bg-white px-4 py-3 dark:border-gray-700 dark:bg-gray-800"
+    >
       <UInput
         v-model="searchQuery"
         :placeholder="$t('table.search')"
@@ -98,14 +101,23 @@ function getCellValue(row: T, key: string): unknown {
         <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
           <!-- Loading -->
           <tr v-if="loading">
-            <td :colspan="columns.length" class="px-4 py-8 text-center">
-              <UIcon name="i-heroicons-arrow-path" class="mx-auto h-6 w-6 animate-spin text-gray-400" />
+            <td
+              :colspan="columns.length"
+              class="px-4 py-8 text-center"
+            >
+              <UIcon
+                name="i-heroicons-arrow-path"
+                class="mx-auto h-6 w-6 animate-spin text-gray-400"
+              />
             </td>
           </tr>
 
           <!-- Empty -->
           <tr v-else-if="!filteredItems.length">
-            <td :colspan="columns.length" class="px-4 py-8 text-center text-sm text-gray-500">
+            <td
+              :colspan="columns.length"
+              class="px-4 py-8 text-center text-sm text-gray-500"
+            >
               {{ $t('table.empty') }}
             </td>
           </tr>
@@ -123,7 +135,11 @@ function getCellValue(row: T, key: string): unknown {
               class="whitespace-nowrap px-4 py-3 text-sm text-gray-900 dark:text-gray-100"
               :class="col.class"
             >
-              <slot :name="`cell-${col.key}`" :row="row" :value="getCellValue(row, col.key)">
+              <slot
+                :name="`cell-${col.key}`"
+                :row="row"
+                :value="getCellValue(row, col.key)"
+              >
                 {{ col.render ? col.render(row) : getCellValue(row, col.key) }}
               </slot>
             </td>

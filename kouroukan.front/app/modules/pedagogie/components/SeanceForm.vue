@@ -97,50 +97,132 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.seance.matiere')" name="matiereId" required>
-        <USelect v-model="state.matiereId" :items="matiereOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.seance.matiere')"
+        name="matiereId"
+        required
+      >
+        <USelect
+          v-model="state.matiereId"
+          :items="matiereOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.seance.classe')" name="classeId" required>
-        <USelect v-model="state.classeId" :items="classeOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.seance.classe')"
+        name="classeId"
+        required
+      >
+        <USelect
+          v-model="state.classeId"
+          :items="classeOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.seance.enseignant')" name="enseignantId" required>
-        <UInput v-model.number="state.enseignantId" type="number" :placeholder="t('pedagogie.seance.enseignantPlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.seance.enseignant')"
+        name="enseignantId"
+        required
+      >
+        <UInput
+          v-model.number="state.enseignantId"
+          type="number"
+          :placeholder="t('pedagogie.seance.enseignantPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.seance.salle')" name="salleId" required>
-        <USelect v-model="state.salleId" :items="salleOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.seance.salle')"
+        name="salleId"
+        required
+      >
+        <USelect
+          v-model="state.salleId"
+          :items="salleOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('pedagogie.seance.jourSemaine')" name="jourSemaine" required>
-      <USelect v-model="state.jourSemaine" :items="jourOptions" value-key="value" class="w-full" />
+    <UFormField
+      :label="t('pedagogie.seance.jourSemaine')"
+      name="jourSemaine"
+      required
+    >
+      <USelect
+        v-model="state.jourSemaine"
+        :items="jourOptions"
+        value-key="value"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('pedagogie.seance.heureDebut')" name="heureDebut" required>
-        <UInput v-model="state.heureDebut" type="time" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.seance.heureDebut')"
+        name="heureDebut"
+        required
+      >
+        <UInput
+          v-model="state.heureDebut"
+          type="time"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('pedagogie.seance.heureFin')" name="heureFin" required>
-        <UInput v-model="state.heureFin" type="time" class="w-full" />
+      <UFormField
+        :label="t('pedagogie.seance.heureFin')"
+        name="heureFin"
+        required
+      >
+        <UInput
+          v-model="state.heureFin"
+          type="time"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('pedagogie.seance.anneeScolaire')" name="anneeScolaireId" required>
-      <UInput v-model.number="state.anneeScolaireId" type="number" :placeholder="t('pedagogie.seance.anneeScolairePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('pedagogie.seance.anneeScolaire')"
+      name="anneeScolaireId"
+      required
+    >
+      <UInput
+        v-model.number="state.anneeScolaireId"
+        type="number"
+        :placeholder="t('pedagogie.seance.anneeScolairePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

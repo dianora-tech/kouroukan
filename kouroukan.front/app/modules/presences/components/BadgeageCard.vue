@@ -25,22 +25,35 @@ const { formatDate } = useFormatDate()
           {{ badgeage.typeName }}
         </p>
       </div>
-      <UBadge color="primary" variant="subtle" size="sm">
+      <UBadge
+        color="primary"
+        variant="subtle"
+        size="sm"
+      >
         {{ badgeage.methodeBadgeage }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatDate(badgeage.dateBadgeage) }}
       </p>
       <p>
-        <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-clock"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ badgeage.heureBadgeage }}
       </p>
       <p>
-        <UIcon name="i-heroicons-map-pin" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-map-pin"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ t(`presences.badgeage.pointAcces.${badgeage.pointAcces}`) }}
       </p>
     </div>

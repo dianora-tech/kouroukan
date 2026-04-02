@@ -124,22 +124,46 @@ async function handleDelete(): Promise<void> {
           {{ $t('admin.parent.title') }}
         </h1>
       </div>
-      <UButton color="primary" icon="i-heroicons-plus" @click="openCreate">
+      <UButton
+        color="primary"
+        icon="i-heroicons-plus"
+        @click="openCreate"
+      >
         {{ $t('admin.parent.add') }}
       </UButton>
     </div>
 
-    <DataTable :columns="columns" :data="{ items: fakeData, totalCount: fakeData.length, page: 1, pageSize: 10 }" :loading="false">
+    <DataTable
+      :columns="columns"
+      :data="{ items: fakeData, totalCount: fakeData.length, page: 1, pageSize: 10 }"
+      :loading="false"
+    >
       <template #cell-nom="{ row }">
         {{ (row as Parent).nom }} {{ (row as Parent).prenom }}
       </template>
       <template #cell-forfait="{ row }">
-        <UBadge variant="subtle" size="sm">{{ (row as Parent).forfait }}</UBadge>
+        <UBadge
+          variant="subtle"
+          size="sm"
+        >
+          {{ (row as Parent).forfait }}
+        </UBadge>
       </template>
       <template #cell-actions="{ row }">
         <div class="flex gap-1">
-          <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as Parent)" />
-          <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as Parent)" />
+          <UButton
+            variant="ghost"
+            size="xs"
+            icon="i-heroicons-pencil-square"
+            @click="openEdit(row as Parent)"
+          />
+          <UButton
+            variant="ghost"
+            size="xs"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="openDelete(row as Parent)"
+          />
         </div>
       </template>
     </DataTable>
@@ -151,26 +175,66 @@ async function handleDelete(): Promise<void> {
         </h3>
       </template>
       <template #body>
-        <UForm :schema="formSchema" :state="formState" class="space-y-4 p-4" @submit="handleFormSubmit">
+        <UForm
+          :schema="formSchema"
+          :state="formState"
+          class="space-y-4 p-4"
+          @submit="handleFormSubmit"
+        >
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <UFormField :label="$t('admin.parent.prenom')" name="prenom" required>
-              <UInput v-model="formState.prenom" class="w-full" />
+            <UFormField
+              :label="$t('admin.parent.prenom')"
+              name="prenom"
+              required
+            >
+              <UInput
+                v-model="formState.prenom"
+                class="w-full"
+              />
             </UFormField>
-            <UFormField :label="$t('admin.parent.nom')" name="nom" required>
-              <UInput v-model="formState.nom" class="w-full" />
+            <UFormField
+              :label="$t('admin.parent.nom')"
+              name="nom"
+              required
+            >
+              <UInput
+                v-model="formState.nom"
+                class="w-full"
+              />
             </UFormField>
           </div>
-          <UFormField :label="$t('admin.parent.telephone')" name="telephone" required>
-            <UInput v-model="formState.telephone" class="w-full" />
+          <UFormField
+            :label="$t('admin.parent.telephone')"
+            name="telephone"
+            required
+          >
+            <UInput
+              v-model="formState.telephone"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField label="Email" name="email">
-            <UInput v-model="formState.email" type="email" class="w-full" />
+          <UFormField
+            label="Email"
+            name="email"
+          >
+            <UInput
+              v-model="formState.email"
+              type="email"
+              class="w-full"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ editingEntity ? $t('actions.save') : $t('actions.create') }}
             </UButton>
           </div>

@@ -8,7 +8,7 @@ const auth = useAuthStore()
 const colorMode = useColorMode()
 
 const dropdownItems = computed(() =>
-  (locales.value as Array<{ code: string; name: string }>).map(l => ({
+  (locales.value as Array<{ code: string, name: string }>).map(l => ({
     label: l.name,
     disabled: l.code === locale.value,
     onSelect: () => switchLocale(l.code),
@@ -34,6 +34,10 @@ async function switchLocale(code: string): Promise<void> {
 
 <template>
   <UDropdownMenu :items="dropdownItems">
-    <UButton variant="ghost" size="sm" icon="i-heroicons-language" />
+    <UButton
+      variant="ghost"
+      size="sm"
+      icon="i-heroicons-language"
+    />
   </UDropdownMenu>
 </template>

@@ -2,6 +2,7 @@ using FluentAssertions;
 using GnDapper.Models;
 using GnMessaging.Abstractions;
 using GnMessaging.Events;
+using GnMessaging.Models;
 using Inscriptions.Domain.Entities;
 using Inscriptions.Domain.Ports.Output;
 using Inscriptions.Domain.Services;
@@ -121,7 +122,7 @@ public sealed class InscriptionServiceTests
             It.IsAny<EntityCreatedEvent<Inscription>>(),
             "kouroukan.events",
             "entity.created.inscription",
-            It.IsAny<string>(),
+            It.IsAny<PublishOptions?>(),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -239,7 +240,7 @@ public sealed class InscriptionServiceTests
             It.IsAny<EntityUpdatedEvent<Inscription>>(),
             "kouroukan.events",
             "entity.updated.inscription",
-            It.IsAny<string>(),
+            It.IsAny<PublishOptions?>(),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -257,7 +258,7 @@ public sealed class InscriptionServiceTests
             It.IsAny<EntityUpdatedEvent<Inscription>>(),
             It.IsAny<string>(),
             It.IsAny<string>(),
-            It.IsAny<string>(),
+            It.IsAny<PublishOptions?>(),
             It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -286,7 +287,7 @@ public sealed class InscriptionServiceTests
             It.IsAny<EntityDeletedEvent<Inscription>>(),
             "kouroukan.events",
             "entity.deleted.inscription",
-            It.IsAny<string>(),
+            It.IsAny<PublishOptions?>(),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 

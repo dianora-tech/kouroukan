@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Note, CreateNotePayload, UpdateNotePayload } from '~/modules/evaluations/types/note.types'
+import type { Note, CreateNotePayload, UpdateNotePayload, NoteFilters } from '~/modules/evaluations/types/note.types'
 import { useNote } from '~/modules/evaluations/composables/useNote'
-import type { NoteFilters } from '~/modules/evaluations/types/note.types'
 import NoteForm from '~/modules/evaluations/components/NoteForm.vue'
 import NoteCard from '~/modules/evaluations/components/NoteCard.vue'
 import NoteFiltersComponent from '~/modules/evaluations/components/NoteFilters.vue'
@@ -138,9 +137,15 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <NoteStats :items="items" :total-count="pagination.totalCount" />
+    <NoteStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <NoteFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <NoteFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -152,7 +157,11 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
         @sort="handleSort"
       >
         <template #cell-valeur="{ row }">
-          <UBadge :color="getNoteColor((row as Note).valeur, (row as Note).noteMaximale)" variant="subtle" size="sm">
+          <UBadge
+            :color="getNoteColor((row as Note).valeur, (row as Note).noteMaximale)"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Note).valeur }} / {{ (row as Note).noteMaximale ?? 20 }}
           </UBadge>
         </template>
@@ -193,7 +202,10 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <NoteCard
           v-for="note in items"
           :key="note.id"

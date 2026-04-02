@@ -164,3 +164,8 @@ finally
 {
     Log.CloseAndFlush();
 }
+
+/// <summary>
+/// Partial class marker to make Program accessible from integration tests.
+/// </summary>
+public partial class Program { }

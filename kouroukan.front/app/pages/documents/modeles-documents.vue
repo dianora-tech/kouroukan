@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { ModeleDocument, CreateModeleDocumentPayload, UpdateModeleDocumentPayload } from '~/modules/documents/types/modele-document.types'
+import type { ModeleDocument, CreateModeleDocumentPayload, UpdateModeleDocumentPayload, ModeleDocumentFilters } from '~/modules/documents/types/modele-document.types'
 import { useModeleDocument } from '~/modules/documents/composables/useModeleDocument'
-import type { ModeleDocumentFilters } from '~/modules/documents/types/modele-document.types'
 import ModeleDocumentForm from '~/modules/documents/components/ModeleDocumentForm.vue'
 import ModeleDocumentCard from '~/modules/documents/components/ModeleDocumentCard.vue'
 import ModeleDocumentFiltersComponent from '~/modules/documents/components/ModeleDocumentFilters.vue'
@@ -130,9 +129,15 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
       </div>
     </div>
 
-    <ModeleDocumentStats :items="items" :total-count="pagination.totalCount" />
+    <ModeleDocumentStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
-    <ModeleDocumentFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <ModeleDocumentFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <template v-if="viewMode === 'table'">
       <DataTable
@@ -144,7 +149,11 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
         @sort="handleSort"
       >
         <template #cell-estActif="{ row }">
-          <UBadge :color="(row as ModeleDocument).estActif ? 'success' : 'neutral'" variant="subtle" size="sm">
+          <UBadge
+            :color="(row as ModeleDocument).estActif ? 'success' : 'neutral'"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as ModeleDocument).estActif ? $t('documents.modeleDocument.actif') : $t('documents.modeleDocument.inactif') }}
           </UBadge>
         </template>
@@ -182,7 +191,10 @@ function handleSort(key: string, direction: 'asc' | 'desc'): void {
     </template>
 
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <ModeleDocumentCard
           v-for="modele in items"
           :key="modele.id"

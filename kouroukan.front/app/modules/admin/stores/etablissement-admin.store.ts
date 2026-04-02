@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   EtablissementAdmin,
   UpdateEtablissementAdminPayload,
   AdminFilters,
 } from '../types/admin.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/admin/etablissements'
 
@@ -42,7 +42,7 @@ export const useEtablissementAdminStore = defineStore('admin-etablissement', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<AdminFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AdminFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<EtablissementAdmin>(API_PATH, {

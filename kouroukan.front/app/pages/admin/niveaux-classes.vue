@@ -184,7 +184,7 @@ async function handleDelete(): Promise<void> {
 }
 
 function getCycleColor(cycle: string): string {
-  const colors: Record<string, string> = { Primaire: 'info', 'Collège': 'warning', 'Lycée': 'success', College: 'warning', Lycee: 'success' }
+  const colors: Record<string, string> = { Primaire: 'info', Collège: 'warning', Lycée: 'success', College: 'warning', Lycee: 'success' }
   return colors[cycle] ?? 'neutral'
 }
 </script>
@@ -203,21 +203,44 @@ function getCycleColor(cycle: string): string {
           {{ $t('admin.niveauClasse.title') }}
         </h1>
       </div>
-      <UButton color="primary" icon="i-heroicons-plus" @click="openCreate">
+      <UButton
+        color="primary"
+        icon="i-heroicons-plus"
+        @click="openCreate"
+      >
         {{ $t('admin.niveauClasse.add') }}
       </UButton>
     </div>
 
-    <DataTable :columns="columns" :data="{ items, totalCount, page: currentPage, pageSize }" :loading="loading">
+    <DataTable
+      :columns="columns"
+      :data="{ items, totalCount, page: currentPage, pageSize }"
+      :loading="loading"
+    >
       <template #cell-cycleEtude="{ row }">
-        <UBadge :color="getCycleColor((row as NiveauClasse).cycleEtude)" variant="subtle" size="sm">
+        <UBadge
+          :color="getCycleColor((row as NiveauClasse).cycleEtude)"
+          variant="subtle"
+          size="sm"
+        >
           {{ (row as NiveauClasse).cycleEtude }}
         </UBadge>
       </template>
       <template #cell-actions="{ row }">
         <div class="flex gap-1">
-          <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as NiveauClasse)" />
-          <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as NiveauClasse)" />
+          <UButton
+            variant="ghost"
+            size="xs"
+            icon="i-heroicons-pencil-square"
+            @click="openEdit(row as NiveauClasse)"
+          />
+          <UButton
+            variant="ghost"
+            size="xs"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="openDelete(row as NiveauClasse)"
+          />
         </div>
       </template>
     </DataTable>
@@ -229,31 +252,73 @@ function getCycleColor(cycle: string): string {
         </h3>
       </template>
       <template #body>
-        <UForm :schema="formSchema" :state="formState" class="space-y-4 p-4" @submit="handleFormSubmit">
-          <UFormField :label="$t('admin.niveauClasse.code')" name="code" required>
-            <UInput v-model="formState.code" class="w-full" />
+        <UForm
+          :schema="formSchema"
+          :state="formState"
+          class="space-y-4 p-4"
+          @submit="handleFormSubmit"
+        >
+          <UFormField
+            :label="$t('admin.niveauClasse.code')"
+            name="code"
+            required
+          >
+            <UInput
+              v-model="formState.code"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.niveauClasse.libelle')" name="name" required>
-            <UInput v-model="formState.name" class="w-full" />
+          <UFormField
+            :label="$t('admin.niveauClasse.libelle')"
+            name="name"
+            required
+          >
+            <UInput
+              v-model="formState.name"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.niveauClasse.cycle')" name="cycleEtude" required>
-            <USelect v-model="formState.cycleEtude" class="w-full" :items="[
-              { label: 'Prescolaire', value: 'Prescolaire' },
-              { label: 'Primaire', value: 'Primaire' },
-              { label: 'College', value: 'College' },
-              { label: 'Lycee', value: 'Lycee' },
-              { label: 'ETFP PostPrimaire', value: 'ETFP_PostPrimaire' },
-              { label: 'Universite', value: 'Universite' },
-            ]" />
+          <UFormField
+            :label="$t('admin.niveauClasse.cycle')"
+            name="cycleEtude"
+            required
+          >
+            <USelect
+              v-model="formState.cycleEtude"
+              class="w-full"
+              :items="[
+                { label: 'Prescolaire', value: 'Prescolaire' },
+                { label: 'Primaire', value: 'Primaire' },
+                { label: 'College', value: 'College' },
+                { label: 'Lycee', value: 'Lycee' },
+                { label: 'ETFP PostPrimaire', value: 'ETFP_PostPrimaire' },
+                { label: 'Universite', value: 'Universite' },
+              ]"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.niveauClasse.ordre')" name="ordre" required>
-            <UInput v-model.number="formState.ordre" type="number" class="w-full" />
+          <UFormField
+            :label="$t('admin.niveauClasse.ordre')"
+            name="ordre"
+            required
+          >
+            <UInput
+              v-model.number="formState.ordre"
+              type="number"
+              class="w-full"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ editingEntity ? $t('actions.save') : $t('actions.create') }}
             </UButton>
           </div>

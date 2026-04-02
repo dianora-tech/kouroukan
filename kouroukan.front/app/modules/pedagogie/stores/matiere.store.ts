@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type { Matiere, MatiereType, MatiereFilters, CreateMatierePayload, UpdateMatierePayload } from '../types/matiere.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/pedagogie/matieres'
 
@@ -42,7 +42,7 @@ export const useMatiereStore = defineStore('pedagogie-matiere', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<MatiereFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<MatiereFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Matiere>(API_PATH, {

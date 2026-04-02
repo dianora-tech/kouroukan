@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type { Seance, SeanceFilters, CreateSeancePayload, UpdateSeancePayload } from '../types/seance.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/pedagogie/seances'
 
@@ -41,7 +41,7 @@ export const useSeanceStore = defineStore('pedagogie-seance', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<SeanceFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<SeanceFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Seance>(API_PATH, {

@@ -25,22 +25,35 @@ const { formatDate } = useFormatDate()
           {{ absence.typeName }}
         </p>
       </div>
-      <UBadge :color="absence.estJustifiee ? 'success' : 'error'" variant="subtle" size="sm">
+      <UBadge
+        :color="absence.estJustifiee ? 'success' : 'error'"
+        variant="subtle"
+        size="sm"
+      >
         {{ absence.estJustifiee ? t('presences.absence.justifiee') : t('presences.absence.nonJustifiee') }}
       </UBadge>
     </div>
 
     <div class="mt-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
       <p>
-        <UIcon name="i-heroicons-calendar" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-calendar"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ formatDate(absence.dateAbsence) }}
       </p>
       <p v-if="absence.heureDebut || absence.heureFin">
-        <UIcon name="i-heroicons-clock" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-clock"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ absence.heureDebut ?? '--:--' }} - {{ absence.heureFin ?? '--:--' }}
       </p>
       <p v-if="absence.motifJustification">
-        <UIcon name="i-heroicons-document-text" class="mr-1 inline h-4 w-4" />
+        <UIcon
+          name="i-heroicons-document-text"
+          class="mr-1 inline h-4 w-4"
+        />
         {{ absence.motifJustification }}
       </p>
     </div>

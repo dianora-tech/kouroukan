@@ -54,38 +54,95 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('presences.appel.classeId')" name="classeId" required>
-      <UInput v-model.number="state.classeId" type="number" :placeholder="t('presences.appel.classePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('presences.appel.classeId')"
+      name="classeId"
+      required
+    >
+      <UInput
+        v-model.number="state.classeId"
+        type="number"
+        :placeholder="t('presences.appel.classePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('presences.appel.enseignantId')" name="enseignantId" required>
-      <UInput v-model.number="state.enseignantId" type="number" :placeholder="t('presences.appel.enseignantPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('presences.appel.enseignantId')"
+      name="enseignantId"
+      required
+    >
+      <UInput
+        v-model.number="state.enseignantId"
+        type="number"
+        :placeholder="t('presences.appel.enseignantPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('presences.appel.seanceId')" name="seanceId">
-      <UInput v-model.number="state.seanceId" type="number" :placeholder="t('presences.appel.seancePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('presences.appel.seanceId')"
+      name="seanceId"
+    >
+      <UInput
+        v-model.number="state.seanceId"
+        type="number"
+        :placeholder="t('presences.appel.seancePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('presences.appel.dateAppel')" name="dateAppel" required>
-        <UInput v-model="state.dateAppel" type="date" class="w-full" />
+      <UFormField
+        :label="t('presences.appel.dateAppel')"
+        name="dateAppel"
+        required
+      >
+        <UInput
+          v-model="state.dateAppel"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('presences.appel.heureAppel')" name="heureAppel" required>
-        <UInput v-model="state.heureAppel" type="time" class="w-full" />
+      <UFormField
+        :label="t('presences.appel.heureAppel')"
+        name="heureAppel"
+        required
+      >
+        <UInput
+          v-model="state.heureAppel"
+          type="time"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('presences.appel.estCloture')" name="estCloture">
+    <UFormField
+      :label="t('presences.appel.estCloture')"
+      name="estCloture"
+    >
       <UToggle v-model="state.estCloture" />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

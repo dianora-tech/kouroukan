@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Note,
   NoteFilters,
   CreateNotePayload,
   UpdateNotePayload,
 } from '../types/note.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/evaluations/notes'
 
@@ -48,7 +48,7 @@ export const useNoteStore = defineStore('evaluations-note', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<NoteFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<NoteFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Note>(API_PATH, {

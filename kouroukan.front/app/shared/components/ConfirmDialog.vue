@@ -71,13 +71,19 @@ function handleCancel(): void {
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                   {{ title }}
                 </h3>
-                <p v-if="description" class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <p
+                  v-if="description"
+                  class="mt-2 text-sm text-gray-500 dark:text-gray-400"
+                >
                   {{ description }}
                 </p>
               </div>
             </div>
             <div class="mt-6 flex justify-end gap-3">
-              <UButton variant="outline" @click="handleCancel">
+              <UButton
+                variant="outline"
+                @click="handleCancel"
+              >
                 {{ cancelLabel || $t('actions.cancel') }}
               </UButton>
               <UButton

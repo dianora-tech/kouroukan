@@ -92,17 +92,30 @@ async function toggleAbonnement(option: ServiceOption) {
       >
         <!-- Badge statut -->
         <div class="absolute right-4 top-4">
-          <UBadge v-if="!option.estDisponible" color="neutral" variant="subtle" size="sm">
+          <UBadge
+            v-if="!option.estDisponible"
+            color="neutral"
+            variant="subtle"
+            size="sm"
+          >
             Bientôt disponible
           </UBadge>
-          <UBadge v-else-if="option.abonne" color="success" variant="subtle" size="sm">
+          <UBadge
+            v-else-if="option.abonne"
+            color="success"
+            variant="subtle"
+            size="sm"
+          >
             Abonné
           </UBadge>
         </div>
 
         <!-- Icône -->
         <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 dark:bg-green-900/20">
-          <UIcon :name="option.icone" class="h-6 w-6 text-green-600" />
+          <UIcon
+            :name="option.icone"
+            class="h-6 w-6 text-green-600"
+          />
         </div>
 
         <!-- Contenu -->
@@ -114,9 +127,19 @@ async function toggleAbonnement(option: ServiceOption) {
         </p>
 
         <!-- Établissement -->
-        <div v-if="option.etablissement" class="mt-3">
-          <UBadge color="info" variant="subtle" size="sm">
-            <UIcon name="i-heroicons-building-office-2" class="mr-1 h-3 w-3" />
+        <div
+          v-if="option.etablissement"
+          class="mt-3"
+        >
+          <UBadge
+            color="info"
+            variant="subtle"
+            size="sm"
+          >
+            <UIcon
+              name="i-heroicons-building-office-2"
+              class="mr-1 h-3 w-3"
+            />
             {{ option.etablissement }}
           </UBadge>
         </div>

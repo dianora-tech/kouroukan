@@ -79,58 +79,154 @@ async function onSubmit(): Promise<void> {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormField :label="t('personnel.enseignant.typeId')" name="typeId" required>
-      <USelect v-model="state.typeId" :items="typeOptions" value-key="value" :placeholder="t('personnel.enseignant.typePlaceholder')" class="w-full" />
+  <UForm
+    :schema="schema"
+    :state="state"
+    class="space-y-4"
+    @submit="onSubmit"
+  >
+    <UFormField
+      :label="t('personnel.enseignant.typeId')"
+      name="typeId"
+      required
+    >
+      <USelect
+        v-model="state.typeId"
+        :items="typeOptions"
+        value-key="value"
+        :placeholder="t('personnel.enseignant.typePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('personnel.enseignant.matricule')" name="matricule" required>
-        <UInput v-model="state.matricule" :placeholder="t('personnel.enseignant.matriculePlaceholder')" class="w-full" />
+      <UFormField
+        :label="t('personnel.enseignant.matricule')"
+        name="matricule"
+        required
+      >
+        <UInput
+          v-model="state.matricule"
+          :placeholder="t('personnel.enseignant.matriculePlaceholder')"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('personnel.enseignant.telephone')" name="telephone" required>
+      <UFormField
+        :label="t('personnel.enseignant.telephone')"
+        name="telephone"
+        required
+      >
         <PhoneInput v-model="state.telephone" />
       </UFormField>
     </div>
 
-    <UFormField :label="t('personnel.enseignant.specialite')" name="specialite" required>
-      <UInput v-model="state.specialite" :placeholder="t('personnel.enseignant.specialitePlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('personnel.enseignant.specialite')"
+      name="specialite"
+      required
+    >
+      <UInput
+        v-model="state.specialite"
+        :placeholder="t('personnel.enseignant.specialitePlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
-    <UFormField :label="t('personnel.enseignant.email')" name="email">
-      <UInput v-model="state.email" type="email" :placeholder="t('personnel.enseignant.emailPlaceholder')" class="w-full" />
+    <UFormField
+      :label="t('personnel.enseignant.email')"
+      name="email"
+    >
+      <UInput
+        v-model="state.email"
+        type="email"
+        :placeholder="t('personnel.enseignant.emailPlaceholder')"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('personnel.enseignant.dateEmbauche')" name="dateEmbauche" required>
-        <UInput v-model="state.dateEmbauche" type="date" class="w-full" />
+      <UFormField
+        :label="t('personnel.enseignant.dateEmbauche')"
+        name="dateEmbauche"
+        required
+      >
+        <UInput
+          v-model="state.dateEmbauche"
+          type="date"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField :label="t('personnel.enseignant.statutEnseignantLabel')" name="statutEnseignant" required>
-        <USelect v-model="state.statutEnseignant" :items="statutOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('personnel.enseignant.statutEnseignantLabel')"
+        name="statutEnseignant"
+        required
+      >
+        <USelect
+          v-model="state.statutEnseignant"
+          :items="statutOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <UFormField :label="t('personnel.enseignant.modeRemunerationLabel')" name="modeRemuneration" required>
-        <USelect v-model="state.modeRemuneration" :items="modeRemunerationOptions" value-key="value" class="w-full" />
+      <UFormField
+        :label="t('personnel.enseignant.modeRemunerationLabel')"
+        name="modeRemuneration"
+        required
+      >
+        <USelect
+          v-model="state.modeRemuneration"
+          :items="modeRemunerationOptions"
+          value-key="value"
+          class="w-full"
+        />
       </UFormField>
 
-      <UFormField v-if="showMontantForfait" :label="t('personnel.enseignant.montantForfait')" name="montantForfait">
-        <UInput v-model.number="state.montantForfait" type="number" min="0" step="1000" :placeholder="t('personnel.enseignant.montantForfaitPlaceholder')" class="w-full" />
+      <UFormField
+        v-if="showMontantForfait"
+        :label="t('personnel.enseignant.montantForfait')"
+        name="montantForfait"
+      >
+        <UInput
+          v-model.number="state.montantForfait"
+          type="number"
+          min="0"
+          step="1000"
+          :placeholder="t('personnel.enseignant.montantForfaitPlaceholder')"
+          class="w-full"
+        />
       </UFormField>
     </div>
 
-    <UFormField :label="t('personnel.enseignant.soldeCongesAnnuel')" name="soldeCongesAnnuel" required>
-      <UInput v-model.number="state.soldeCongesAnnuel" type="number" min="0" class="w-full" />
+    <UFormField
+      :label="t('personnel.enseignant.soldeCongesAnnuel')"
+      name="soldeCongesAnnuel"
+      required
+    >
+      <UInput
+        v-model.number="state.soldeCongesAnnuel"
+        type="number"
+        min="0"
+        class="w-full"
+      />
     </UFormField>
 
     <div class="flex justify-end gap-3 pt-4">
-      <UButton variant="outline" @click="emit('cancel')">
+      <UButton
+        variant="outline"
+        @click="emit('cancel')"
+      >
         {{ $t('actions.cancel') }}
       </UButton>
-      <UButton type="submit" color="primary" :loading="saving">
+      <UButton
+        type="submit"
+        color="primary"
+        :loading="saving"
+      >
         {{ isEdit ? $t('actions.save') : $t('actions.create') }}
       </UButton>
     </div>

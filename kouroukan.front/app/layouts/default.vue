@@ -53,7 +53,7 @@ async function switchLocale(code: string) {
 }
 
 const otherLocale = computed(() => {
-  const all = locales.value as Array<{ code: string; name: string }>
+  const all = locales.value as Array<{ code: string, name: string }>
   return all.find(l => l.code !== locale.value) || all[0]
 })
 
@@ -110,15 +110,24 @@ async function handleLogout(): Promise<void> {
 
       <!-- Navigation -->
       <nav class="flex-1 space-y-1 overflow-y-auto p-2">
-        <template v-for="item in navItems" :key="item.slug">
+        <template
+          v-for="item in navItems"
+          :key="item.slug"
+        >
           <!-- Locked nav item -->
           <div
             v-if="item.locked"
             class="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium opacity-50 transition-colors text-gray-400 dark:text-gray-500"
             @click="handleLockedClick"
           >
-            <UIcon :name="item.icon" class="h-5 w-5 shrink-0" />
-            <span v-if="!ui.sidebarCollapsed" class="flex-1">{{ item.label }}</span>
+            <UIcon
+              :name="item.icon"
+              class="h-5 w-5 shrink-0"
+            />
+            <span
+              v-if="!ui.sidebarCollapsed"
+              class="flex-1"
+            >{{ item.label }}</span>
             <UIcon
               v-if="!ui.sidebarCollapsed"
               name="i-heroicons-lock-closed"
@@ -135,8 +144,14 @@ async function handleLogout(): Promise<void> {
               ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
               : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
           >
-            <UIcon :name="item.icon" class="h-5 w-5 shrink-0" />
-            <span v-if="!ui.sidebarCollapsed" class="flex-1">{{ item.label }}</span>
+            <UIcon
+              :name="item.icon"
+              class="h-5 w-5 shrink-0"
+            />
+            <span
+              v-if="!ui.sidebarCollapsed"
+              class="flex-1"
+            >{{ item.label }}</span>
             <UIcon
               v-if="!ui.sidebarCollapsed && item.children?.length"
               name="i-heroicons-chevron-down"
@@ -156,7 +171,10 @@ async function handleLogout(): Promise<void> {
                 ? 'text-green-600 dark:text-green-400'
                 : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
             >
-              <UIcon :name="child.icon" class="h-4 w-4 shrink-0" />
+              <UIcon
+                :name="child.icon"
+                class="h-4 w-4 shrink-0"
+              />
               <span>{{ child.label }}</span>
             </NuxtLink>
           </template>
@@ -205,11 +223,25 @@ async function handleLogout(): Promise<void> {
               ],
             ]"
           >
-            <UButton variant="ghost" class="gap-2">
-              <span v-if="auth.user?.avatarUrl" class="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full">
-                <img :src="auth.user.avatarUrl" alt="avatar" class="h-full w-full object-cover">
+            <UButton
+              variant="ghost"
+              class="gap-2"
+            >
+              <span
+                v-if="auth.user?.avatarUrl"
+                class="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full"
+              >
+                <img
+                  :src="auth.user.avatarUrl"
+                  alt="avatar"
+                  class="h-full w-full object-cover"
+                >
               </span>
-              <UAvatar v-else :text="userInitials" size="sm" />
+              <UAvatar
+                v-else
+                :text="userInitials"
+                size="sm"
+              />
               <span class="hidden text-sm font-medium sm:inline">{{ userName }}</span>
             </UButton>
           </UDropdownMenu>

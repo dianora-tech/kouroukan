@@ -82,7 +82,12 @@ const statutLuOptions = [
       @change="onFilterChange"
     />
 
-    <UButton variant="ghost" size="sm" icon="i-heroicons-x-mark" @click="resetFilters">
+    <UButton
+      variant="ghost"
+      size="sm"
+      icon="i-heroicons-x-mark"
+      @click="resetFilters"
+    >
       {{ $t('communication.message.filters.reset') }}
     </UButton>
   </div>

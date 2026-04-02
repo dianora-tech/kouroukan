@@ -193,19 +193,43 @@ async function handleDelete(): Promise<void> {
           {{ $t('admin.matiere.title') }}
         </h1>
       </div>
-      <UButton color="primary" icon="i-heroicons-plus" @click="openCreate">
+      <UButton
+        color="primary"
+        icon="i-heroicons-plus"
+        @click="openCreate"
+      >
         {{ $t('admin.matiere.add') }}
       </UButton>
     </div>
 
-    <DataTable :columns="columns" :data="{ items, totalCount, page: currentPage, pageSize }" :loading="loading">
+    <DataTable
+      :columns="columns"
+      :data="{ items, totalCount, page: currentPage, pageSize }"
+      :loading="loading"
+    >
       <template #cell-typeId="{ row }">
-        <UBadge variant="subtle" size="sm">{{ getTypeName((row as Matiere).typeId) }}</UBadge>
+        <UBadge
+          variant="subtle"
+          size="sm"
+        >
+          {{ getTypeName((row as Matiere).typeId) }}
+        </UBadge>
       </template>
       <template #cell-actions="{ row }">
         <div class="flex gap-1">
-          <UButton variant="ghost" size="xs" icon="i-heroicons-pencil-square" @click="openEdit(row as Matiere)" />
-          <UButton variant="ghost" size="xs" color="error" icon="i-heroicons-trash" @click="openDelete(row as Matiere)" />
+          <UButton
+            variant="ghost"
+            size="xs"
+            icon="i-heroicons-pencil-square"
+            @click="openEdit(row as Matiere)"
+          />
+          <UButton
+            variant="ghost"
+            size="xs"
+            color="error"
+            icon="i-heroicons-trash"
+            @click="openDelete(row as Matiere)"
+          />
         </div>
       </template>
     </DataTable>
@@ -217,21 +241,56 @@ async function handleDelete(): Promise<void> {
         </h3>
       </template>
       <template #body>
-        <UForm :schema="formSchema" :state="formState" class="space-y-4 p-4" @submit="handleFormSubmit">
-          <UFormField :label="$t('admin.matiere.code')" name="code" required>
-            <UInput v-model="formState.code" class="w-full" />
+        <UForm
+          :schema="formSchema"
+          :state="formState"
+          class="space-y-4 p-4"
+          @submit="handleFormSubmit"
+        >
+          <UFormField
+            :label="$t('admin.matiere.code')"
+            name="code"
+            required
+          >
+            <UInput
+              v-model="formState.code"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.matiere.libelle')" name="name" required>
-            <UInput v-model="formState.name" class="w-full" />
+          <UFormField
+            :label="$t('admin.matiere.libelle')"
+            name="name"
+            required
+          >
+            <UInput
+              v-model="formState.name"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="$t('admin.matiere.categorie')" name="typeId" required>
-            <USelect v-model="formState.typeId" class="w-full" :items="typeOptions" :placeholder="$t('admin.matiere.selectCategorie')" />
+          <UFormField
+            :label="$t('admin.matiere.categorie')"
+            name="typeId"
+            required
+          >
+            <USelect
+              v-model="formState.typeId"
+              class="w-full"
+              :items="typeOptions"
+              :placeholder="$t('admin.matiere.selectCategorie')"
+            />
           </UFormField>
           <div class="flex justify-end gap-3 pt-4">
-            <UButton variant="outline" @click="showForm = false">
+            <UButton
+              variant="outline"
+              @click="showForm = false"
+            >
               {{ $t('actions.cancel') }}
             </UButton>
-            <UButton type="submit" color="primary" :loading="formSaving">
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="formSaving"
+            >
               {{ editingEntity ? $t('actions.save') : $t('actions.create') }}
             </UButton>
           </div>

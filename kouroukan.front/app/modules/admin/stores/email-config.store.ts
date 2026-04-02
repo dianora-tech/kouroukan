@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   EmailConfig,
   UpdateEmailConfigPayload,
   SendTestEmailPayload,
 } from '../types/admin.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/admin/email-config'
 

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Annonce, CreateAnnoncePayload, UpdateAnnoncePayload } from '~/modules/communication/types/annonce.types'
+import type { Annonce, CreateAnnoncePayload, UpdateAnnoncePayload, AnnonceFilters } from '~/modules/communication/types/annonce.types'
 import { useAnnonce } from '~/modules/communication/composables/useAnnonce'
-import type { AnnonceFilters } from '~/modules/communication/types/annonce.types'
 import AnnonceForm from '~/modules/communication/components/AnnonceForm.vue'
 import AnnonceCard from '~/modules/communication/components/AnnonceCard.vue'
 import AnnonceFiltersComponent from '~/modules/communication/components/AnnonceFilters.vue'
@@ -142,10 +141,16 @@ function getPrioriteColor(priorite: number): string {
     </div>
 
     <!-- Stats -->
-    <AnnonceStats :items="items" :total-count="pagination.totalCount" />
+    <AnnonceStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
     <!-- Filters -->
-    <AnnonceFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <AnnonceFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <!-- Table view -->
     <template v-if="viewMode === 'table'">
@@ -161,17 +166,29 @@ function getPrioriteColor(priorite: number): string {
           <span class="line-clamp-1">{{ (row as Annonce).contenu }}</span>
         </template>
         <template #cell-cibleAudience="{ row }">
-          <UBadge color="info" variant="subtle" size="sm">
+          <UBadge
+            color="info"
+            variant="subtle"
+            size="sm"
+          >
             {{ $t(`communication.annonce.cible.${(row as Annonce).cibleAudience}`) }}
           </UBadge>
         </template>
         <template #cell-priorite="{ row }">
-          <UBadge :color="getPrioriteColor((row as Annonce).priorite)" variant="subtle" size="sm">
+          <UBadge
+            :color="getPrioriteColor((row as Annonce).priorite)"
+            variant="subtle"
+            size="sm"
+          >
             P{{ (row as Annonce).priorite }}
           </UBadge>
         </template>
         <template #cell-estActive="{ row }">
-          <UBadge :color="getStatutColor((row as Annonce).estActive)" variant="subtle" size="sm">
+          <UBadge
+            :color="getStatutColor((row as Annonce).estActive)"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Annonce).estActive ? $t('communication.annonce.active') : $t('communication.annonce.inactive') }}
           </UBadge>
         </template>
@@ -207,7 +224,10 @@ function getPrioriteColor(priorite: number): string {
 
     <!-- Grid view -->
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <AnnonceCard
           v-for="annonce in items"
           :key="annonce.id"

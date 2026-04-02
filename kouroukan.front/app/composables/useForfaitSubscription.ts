@@ -75,7 +75,7 @@ export function useForfaitSubscription() {
   async function subscribe(forfaitId: number, eleveId?: number): Promise<boolean> {
     saving.value = true
     try {
-      const body: { forfaitId: number; eleveId?: number } = { forfaitId }
+      const body: { forfaitId: number, eleveId?: number } = { forfaitId }
       if (eleveId !== undefined) {
         body.eleveId = eleveId
       }

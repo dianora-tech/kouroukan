@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { CahierTextes, CreateCahierTextesPayload, UpdateCahierTextesPayload } from '~/modules/pedagogie/types/cahierTextes.types'
+import type { CahierTextes, CreateCahierTextesPayload, UpdateCahierTextesPayload, CahierTextesFilters } from '~/modules/pedagogie/types/cahierTextes.types'
 import { useCahierTextes } from '~/modules/pedagogie/composables/useCahierTextes'
-import type { CahierTextesFilters } from '~/modules/pedagogie/types/cahierTextes.types'
 import CahierTextesForm from '~/modules/pedagogie/components/CahierTextesForm.vue'
 import CahierTextesCard from '~/modules/pedagogie/components/CahierTextesCard.vue'
 import CahierTextesFiltersComponent from '~/modules/pedagogie/components/CahierTextesFilters.vue'
@@ -131,10 +130,16 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
     </div>
 
     <!-- Stats -->
-    <CahierTextesStats :items="items" :total-count="pagination.totalCount" />
+    <CahierTextesStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
     <!-- Filters -->
-    <CahierTextesFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <CahierTextesFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <!-- Table view -->
     <template v-if="viewMode === 'table'">
@@ -150,10 +155,16 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
           <span class="line-clamp-2 max-w-xs">{{ (row as CahierTextes).contenu }}</span>
         </template>
         <template #cell-travailAFaire="{ row }">
-          <span v-if="(row as CahierTextes).travailAFaire" class="line-clamp-1 max-w-xs text-amber-600 dark:text-amber-400">
+          <span
+            v-if="(row as CahierTextes).travailAFaire"
+            class="line-clamp-1 max-w-xs text-amber-600 dark:text-amber-400"
+          >
             {{ (row as CahierTextes).travailAFaire }}
           </span>
-          <span v-else class="text-gray-400">-</span>
+          <span
+            v-else
+            class="text-gray-400"
+          >-</span>
         </template>
         <template #cell-actions="{ row }">
           <div class="flex gap-1">
@@ -187,7 +198,10 @@ function handleSort(_key: string, _direction: 'asc' | 'desc'): void {
 
     <!-- Grid view -->
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <CahierTextesCard
           v-for="cahier in items"
           :key="cahier.id"

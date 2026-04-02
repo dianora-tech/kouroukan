@@ -76,7 +76,9 @@ export async function authFetch<T>(
 
     // Mutex : si un refresh est déjà en cours, attendre son résultat
     if (!refreshPromise) {
-      refreshPromise = doRefresh().finally(() => { refreshPromise = null })
+      refreshPromise = doRefresh().finally(() => {
+        refreshPromise = null
+      })
     }
 
     const refreshed = await refreshPromise

@@ -42,7 +42,7 @@ export function useServiceParent() {
     store.items.filter(s => s.periodeEssaiJours && s.periodeEssaiJours > 0).length,
   )
 
-  async function fetchAll(params?: Partial<ServiceParentFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<ServiceParentFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

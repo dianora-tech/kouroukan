@@ -18,8 +18,14 @@ const messages = ref([
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="famille" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="famille"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div>
       <UBreadcrumb
         :items="[
@@ -43,7 +49,10 @@ const messages = ref([
       >
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-2">
-            <div v-if="!msg.lu" class="h-2 w-2 rounded-full bg-indigo-500" />
+            <div
+              v-if="!msg.lu"
+              class="h-2 w-2 rounded-full bg-indigo-500"
+            />
             <p :class="['text-sm', msg.lu ? 'text-gray-600 dark:text-gray-400' : 'font-semibold text-gray-900 dark:text-white']">
               {{ msg.expediteur }}
             </p>
@@ -53,7 +62,9 @@ const messages = ref([
         <p :class="['mt-1 text-sm', msg.lu ? 'text-gray-900 dark:text-white' : 'font-semibold text-gray-900 dark:text-white']">
           {{ msg.objet }}
         </p>
-        <p class="mt-1 text-xs text-gray-500 line-clamp-1">{{ msg.extrait }}</p>
+        <p class="mt-1 text-xs text-gray-500 line-clamp-1">
+          {{ msg.extrait }}
+        </p>
       </div>
     </div>
   </div>

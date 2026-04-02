@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   AnneeScolaire,
   AnneeScolaireFilters,
   CreateAnneeScolairePayload,
   UpdateAnneeScolairePayload,
 } from '../types/annee-scolaire.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/inscriptions/annees-scolaires'
 
@@ -47,7 +47,7 @@ export const useAnneeScolaireStore = defineStore('inscriptions-annee-scolaire', 
   },
 
   actions: {
-    async fetchAll(params?: Partial<AnneeScolaireFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<AnneeScolaireFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<AnneeScolaire>(API_PATH, {

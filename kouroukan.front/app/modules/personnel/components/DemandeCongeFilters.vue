@@ -99,7 +99,12 @@ const statutOptions = [
       @change="onFilterChange"
     />
 
-    <UButton variant="ghost" size="sm" icon="i-heroicons-x-mark" @click="resetFilters">
+    <UButton
+      variant="ghost"
+      size="sm"
+      icon="i-heroicons-x-mark"
+      @click="resetFilters"
+    >
       {{ $t('personnel.demandeConge.filters.reset') }}
     </UButton>
   </div>

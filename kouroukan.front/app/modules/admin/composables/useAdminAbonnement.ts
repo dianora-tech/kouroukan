@@ -27,7 +27,7 @@ export function useAdminAbonnement() {
     hasPreviousPage: store.pagination.page > 1,
   }))
 
-  async function fetchAll(params?: Partial<AdminFilters & { page?: number; pageSize?: number }>): Promise<void> {
+  async function fetchAll(params?: Partial<AdminFilters & { page?: number, pageSize?: number }>): Promise<void> {
     try {
       await store.fetchAll(params)
     }

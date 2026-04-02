@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { apiClient } from '~/core/api/client'
 import type {
   Evaluation,
   EvaluationFilters,
@@ -7,6 +6,7 @@ import type {
   CreateEvaluationPayload,
   UpdateEvaluationPayload,
 } from '../types/evaluation.types'
+import { apiClient } from '~/core/api/client'
 
 const API_PATH = '/api/evaluations/evaluations'
 
@@ -51,7 +51,7 @@ export const useEvaluationStore = defineStore('evaluations-evaluation', {
   },
 
   actions: {
-    async fetchAll(params?: Partial<EvaluationFilters & { page?: number; pageSize?: number }>): Promise<void> {
+    async fetchAll(params?: Partial<EvaluationFilters & { page?: number, pageSize?: number }>): Promise<void> {
       this.loading = true
       try {
         const response = await apiClient.getPaginated<Evaluation>(API_PATH, {

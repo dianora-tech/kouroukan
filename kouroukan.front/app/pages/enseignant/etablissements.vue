@@ -39,8 +39,14 @@ async function refuser(id: number) {
 </script>
 
 <template>
-  <ForfaitRequiredOverlay v-if="isLocked" user-type="enseignant" />
-  <div v-else class="space-y-6">
+  <ForfaitRequiredOverlay
+    v-if="isLocked"
+    user-type="enseignant"
+  />
+  <div
+    v-else
+    class="space-y-6"
+  >
     <div>
       <UBreadcrumb
         :items="[
@@ -54,8 +60,14 @@ async function refuser(id: number) {
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-gray-400" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
     </div>
 
     <template v-else>
@@ -67,27 +79,60 @@ async function refuser(id: number) {
         <table class="w-full text-left text-sm">
           <thead class="border-b border-gray-200 dark:border-gray-700">
             <tr>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.etablissements.nom') }}</th>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.etablissements.statut') }}</th>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.etablissements.date') }}</th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('enseignant.etablissements.nom') }}
+              </th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('enseignant.etablissements.statut') }}
+              </th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('enseignant.etablissements.date') }}
+              </th>
               <th class="px-4 py-3 font-medium text-gray-500 w-32" />
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-            <tr v-for="liaison in liaisons" :key="liaison.id">
-              <td class="px-4 py-3 text-gray-900 dark:text-white">{{ liaison.etablissement }}</td>
+            <tr
+              v-for="liaison in liaisons"
+              :key="liaison.id"
+            >
+              <td class="px-4 py-3 text-gray-900 dark:text-white">
+                {{ liaison.etablissement }}
+              </td>
               <td class="px-4 py-3">
-                <UBadge :color="statutColor[liaison.statut]" variant="subtle" size="sm">
+                <UBadge
+                  :color="statutColor[liaison.statut]"
+                  variant="subtle"
+                  size="sm"
+                >
                   {{ $t(`enseignant.statut.${liaison.statut}`) }}
                 </UBadge>
               </td>
-              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ formatDate(liaison.date) }}</td>
+              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+                {{ formatDate(liaison.date) }}
+              </td>
               <td class="px-4 py-3">
-                <div v-if="liaison.statut === 'pending'" class="flex gap-1">
-                  <UButton size="xs" color="primary" icon="i-heroicons-check" :loading="saving" @click="accepter(liaison.id)">
+                <div
+                  v-if="liaison.statut === 'pending'"
+                  class="flex gap-1"
+                >
+                  <UButton
+                    size="xs"
+                    color="primary"
+                    icon="i-heroicons-check"
+                    :loading="saving"
+                    @click="accepter(liaison.id)"
+                  >
                     {{ $t('enseignant.etablissements.accepter') }}
                   </UButton>
-                  <UButton size="xs" color="error" variant="ghost" icon="i-heroicons-x-mark" :loading="saving" @click="refuser(liaison.id)">
+                  <UButton
+                    size="xs"
+                    color="error"
+                    variant="ghost"
+                    icon="i-heroicons-x-mark"
+                    :loading="saving"
+                    @click="refuser(liaison.id)"
+                  >
                     {{ $t('enseignant.etablissements.refuser') }}
                   </UButton>
                 </div>
@@ -105,20 +150,37 @@ async function refuser(id: number) {
         <table class="w-full text-left text-sm">
           <thead class="border-b border-gray-200 dark:border-gray-700">
             <tr>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.etablissements.nom') }}</th>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.etablissements.statut') }}</th>
-              <th class="px-4 py-3 font-medium text-gray-500">{{ $t('enseignant.etablissements.date') }}</th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('enseignant.etablissements.nom') }}
+              </th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('enseignant.etablissements.statut') }}
+              </th>
+              <th class="px-4 py-3 font-medium text-gray-500">
+                {{ $t('enseignant.etablissements.date') }}
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-            <tr v-for="h in historique" :key="h.id">
-              <td class="px-4 py-3 text-gray-900 dark:text-white">{{ h.etablissement }}</td>
+            <tr
+              v-for="h in historique"
+              :key="h.id"
+            >
+              <td class="px-4 py-3 text-gray-900 dark:text-white">
+                {{ h.etablissement }}
+              </td>
               <td class="px-4 py-3">
-                <UBadge :color="statutColor[h.statut]" variant="subtle" size="sm">
+                <UBadge
+                  :color="statutColor[h.statut]"
+                  variant="subtle"
+                  size="sm"
+                >
                   {{ $t(`enseignant.statut.${h.statut}`) }}
                 </UBadge>
               </td>
-              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ formatDate(h.date) }} - {{ formatDate(h.dateFin) }}</td>
+              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+                {{ formatDate(h.date) }} - {{ formatDate(h.dateFin) }}
+              </td>
             </tr>
           </tbody>
         </table>

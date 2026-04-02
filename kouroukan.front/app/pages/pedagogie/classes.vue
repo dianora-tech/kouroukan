@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Column } from '~/shared/components/DataTable.vue'
-import type { Classe, CreateClassePayload, UpdateClassePayload } from '~/modules/pedagogie/types/classe.types'
+import type { Classe, CreateClassePayload, UpdateClassePayload, ClasseFilters } from '~/modules/pedagogie/types/classe.types'
 import { useClasse } from '~/modules/pedagogie/composables/useClasse'
-import type { ClasseFilters } from '~/modules/pedagogie/types/classe.types'
 import ClasseForm from '~/modules/pedagogie/components/ClasseForm.vue'
 import ClasseCard from '~/modules/pedagogie/components/ClasseCard.vue'
 import ClasseFiltersComponent from '~/modules/pedagogie/components/ClasseFilters.vue'
@@ -138,10 +137,16 @@ function getOccupancyColor(effectif: number, capacite: number): string {
     </div>
 
     <!-- Stats -->
-    <ClasseStats :items="items" :total-count="pagination.totalCount" />
+    <ClasseStats
+      :items="items"
+      :total-count="pagination.totalCount"
+    />
 
     <!-- Filters -->
-    <ClasseFiltersComponent @filter="handleFilter" @reset="resetFilters" />
+    <ClasseFiltersComponent
+      @filter="handleFilter"
+      @reset="resetFilters"
+    />
 
     <!-- Table view -->
     <template v-if="viewMode === 'table'">
@@ -154,7 +159,11 @@ function getOccupancyColor(effectif: number, capacite: number): string {
         @sort="handleSort"
       >
         <template #cell-effectif="{ row }">
-          <UBadge :color="getOccupancyColor((row as Classe).effectif, (row as Classe).capacite)" variant="subtle" size="sm">
+          <UBadge
+            :color="getOccupancyColor((row as Classe).effectif, (row as Classe).capacite)"
+            variant="subtle"
+            size="sm"
+          >
             {{ (row as Classe).effectif }}/{{ (row as Classe).capacite }}
           </UBadge>
         </template>
@@ -190,7 +199,10 @@ function getOccupancyColor(effectif: number, capacite: number): string {
 
     <!-- Grid view -->
     <template v-else>
-      <div v-if="!isEmpty" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-if="!isEmpty"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <ClasseCard
           v-for="classe in items"
           :key="classe.id"

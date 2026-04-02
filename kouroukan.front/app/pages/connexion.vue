@@ -97,7 +97,10 @@ async function handleLogin(): Promise<void> {
       {{ $t('auth.loginTitle') }}
     </h2>
 
-    <form class="space-y-4" @submit.prevent="handleLogin">
+    <form
+      class="space-y-4"
+      @submit.prevent="handleLogin"
+    >
       <UFormField :label="$t('auth.email')">
         <UInput
           v-model="form.email"
@@ -141,7 +144,10 @@ async function handleLogin(): Promise<void> {
     </form>
 
     <div class="mt-4 text-center">
-      <NuxtLink to="/inscription" class="text-sm text-green-600 hover:underline dark:text-green-400">
+      <NuxtLink
+        to="/inscription"
+        class="text-sm text-green-600 hover:underline dark:text-green-400"
+      >
         {{ $t('auth.noAccount') }}
       </NuxtLink>
     </div>
