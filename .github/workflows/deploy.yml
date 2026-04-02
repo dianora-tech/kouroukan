@@ -1,8 +1,8 @@
 # =============================================================================
-# Kouroukan - Deploy Pipeline
+# Kouroukan - Deploy Pipeline (via Coolify)
 # =============================================================================
-# Declenchement : push sur main apres CI reussi
-# Deploiement : SSH vers VPS, pull, build, up, health check
+# Declenchement : apres CI reussie sur develop (env test) ou main (production)
+# Action : appel API Coolify pour declencher le deploiement
 # =============================================================================
 
 name: Deploy
@@ -11,75 +11,93 @@ on:
   workflow_run:
     workflows: ["CI"]
     types: [completed]
-    branches: [main]
+    branches: [develop, main]
 
 concurrency:
-  group: deploy-production
+  group: deploy-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Deploy to Production
+  # ===========================================================================
+  # Deploy Test (develop → Coolify env test)
+  # ===========================================================================
+  deploy-test:
+    name: Deploy to Test (Coolify)
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    environment: production
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'develop'
+    environment: test
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_PORT || 22 }}
-          script_stop: true
-          script: |
-            set -e
+      - name: Trigger Coolify deployment
+        run: |
+          echo "Triggering Coolify deployment for develop branch..."
+          RESPONSE=$(curl -sf --max-time 30 \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}" \
+            -H "Accept: application/json" \
+            "${{ secrets.COOLIFY_URL }}/api/v1/deploy?uuid=${{ secrets.COOLIFY_APP_UUID }}&force=false")
 
-            echo "=== Deploiement Kouroukan ==="
-            cd /opt/kouroukan
+          echo "Response: $RESPONSE"
+          DEPLOYMENT_UUID=$(echo "$RESPONSE" | jq -r '.deployments[0].deployment_uuid // empty')
 
-            echo "--- Git pull ---"
-            git pull origin main
+          if [ -z "$DEPLOYMENT_UUID" ]; then
+            echo "::error::Failed to trigger deployment"
+            exit 1
+          fi
 
-            echo "--- Build des images Docker ---"
-            cd docker
-            docker compose build --parallel
+          echo "Deployment queued: $DEPLOYMENT_UUID"
+          echo "DEPLOYMENT_UUID=$DEPLOYMENT_UUID" >> $GITHUB_ENV
 
-            echo "--- Mise a jour des services ---"
-            docker compose up -d --remove-orphans
+      - name: Wait for deployment to complete
+        run: |
+          echo "Waiting for deployment $DEPLOYMENT_UUID to complete..."
+          for i in $(seq 1 60); do
+            STATUS=$(curl -sf --max-time 10 \
+              -H "Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}" \
+              -H "Accept: application/json" \
+              "${{ secrets.COOLIFY_URL }}/api/v1/deployments/$DEPLOYMENT_UUID" \
+              | jq -r '.status // "unknown"')
 
-            echo "--- Nettoyage des anciennes images ---"
-            docker image prune -f
+            echo "  Attempt $i: status=$STATUS"
 
-            echo "--- Health checks ---"
+            case "$STATUS" in
+              finished)
+                echo "Deployment succeeded!"
+                exit 0
+                ;;
+              failed|cancelled)
+                echo "::error::Deployment $STATUS"
+                exit 1
+                ;;
+            esac
+
             sleep 15
+          done
 
-            # Verifier PostgreSQL
-            docker compose exec -T postgres pg_isready -U kouroukan -d kouroukan
-            echo "[OK] PostgreSQL"
+          echo "::error::Deployment timed out after 15 minutes"
+          exit 1
 
-            # Verifier Redis
-            docker compose exec -T redis redis-cli ping
-            echo "[OK] Redis"
+      - name: Health check
+        if: success()
+        run: |
+          echo "Running health checks..."
+          sleep 10
 
-            # Verifier RabbitMQ
-            docker compose exec -T rabbitmq rabbitmq-diagnostics -q ping
-            echo "[OK] RabbitMQ"
+          for domain in kouroukan.dianora.org app.kouroukan.dianora.org api.kouroukan.dianora.org; do
+            HTTP_CODE=$(curl -sk --max-time 15 -o /dev/null -w '%{http_code}' "https://$domain" || echo "000")
+            if [ "$HTTP_CODE" = "000" ]; then
+              echo "::warning::$domain is unreachable (timeout)"
+            elif [ "$HTTP_CODE" -ge 500 ] && [ "$domain" != "api.kouroukan.dianora.org" ]; then
+              echo "::error::$domain returned HTTP $HTTP_CODE"
+              exit 1
+            else
+              echo "  $domain -> HTTP $HTTP_CODE OK"
+            fi
+          done
 
-            # Verifier Gateway
-            curl -sf http://localhost:5000/health || (echo "[FAIL] Gateway" && exit 1)
-            echo "[OK] Gateway"
-
-            # Verifier Frontend
-            curl -sf http://localhost:3000/ || (echo "[FAIL] Frontend" && exit 1)
-            echo "[OK] Frontend"
-
-            # Verifier Ollama
-            curl -sf http://localhost:11434/api/tags || (echo "[WARN] Ollama pas encore pret" && true)
-            echo "[OK] Ollama"
-
-            echo "=== Deploiement termine avec succes ==="
+          echo "All health checks passed"
 
       - name: Notify success
         if: success()
@@ -89,9 +107,9 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
-            ✅ Kouroukan deploye en production
+            ✅ Kouroukan deploye en test (Coolify)
             Commit: ${{ github.event.workflow_run.head_sha }}
-            Par: ${{ github.event.workflow_run.head_commit.author.name }}
+            Branche: develop
 
       - name: Notify failure
         if: failure()
@@ -101,6 +119,23 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
-            ❌ Echec deploiement Kouroukan
+            ❌ Echec deploiement Kouroukan (test)
             Commit: ${{ github.event.workflow_run.head_sha }}
             Verifier les logs GitHub Actions.
+
+  # ===========================================================================
+  # Deploy Production (main → a configurer plus tard)
+  # ===========================================================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main'
+    environment: production
+
+    steps:
+      - name: Placeholder
+        run: |
+          echo "Production deployment via Coolify will be configured later."
+          echo "For now, production deploys require manual trigger."
