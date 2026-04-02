@@ -1,7 +1,7 @@
 # =============================================================================
 # Kouroukan - CI Pipeline
 # =============================================================================
-# Declenchement : push et pull requests sur main/develop
+# Declenchement : push et pull requests sur toutes les branches
 # Jobs intelligents : chaque job ne se lance que si ses fichiers sont modifies
 # =============================================================================
 
@@ -9,9 +9,10 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: ["**"]
   pull_request:
     branches: [main, develop]
+  workflow_dispatch:
 
 env:
   DOTNET_VERSION: "8.0.x"
@@ -69,6 +70,7 @@ jobs:
               - 'vs2022/support.service/**'
             docker:
               - 'docker/**'
+              - 'docker-compose.coolify.yml'
             sql:
               - 'sql/**'
 
