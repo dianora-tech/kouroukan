@@ -72,6 +72,8 @@ services:
     build:
       context: ./kouroukan.portal
       dockerfile: Dockerfile
+      args:
+        APP_URL: https://app.kouroukan.dianora.org
     container_name: kouroukan-portal
     restart: unless-stopped
     <<: *app-networks
