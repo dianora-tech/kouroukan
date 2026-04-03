@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\src\ServicesPremium.Domain\ServicesPremium.Domain.csproj" />
     <ProjectReference Include="..\..\src\ServicesPremium.Application\ServicesPremium.Application.csproj" />
     <ProjectReference Include="..\..\src\ServicesPremium.Infrastructure\ServicesPremium.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\ServicesPremium.Api\ServicesPremium.Api.csproj" />
   </ItemGroup>
 
 </Project>

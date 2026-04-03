@@ -1,3 +1,4 @@
+using Xunit;
 using Documents.Api.Controllers;
 using Documents.Domain.Entities;
 using Documents.Api.Models;

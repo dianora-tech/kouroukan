@@ -1,3 +1,4 @@
+using Xunit;
 using Inscriptions.Api.Controllers;
 using Inscriptions.Domain.Entities;
 using Inscriptions.Api.Models;

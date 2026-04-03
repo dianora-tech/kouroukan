@@ -1,3 +1,4 @@
+using Xunit;
 using Presences.Api.Controllers;
 using Presences.Domain.Entities;
 using Presences.Api.Models;

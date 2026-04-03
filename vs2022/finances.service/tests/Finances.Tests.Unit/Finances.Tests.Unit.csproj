@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Finances.Domain\Finances.Domain.csproj" />
     <ProjectReference Include="..\..\src\Finances.Application\Finances.Application.csproj" />
+    <ProjectReference Include="..\..\src\Finances.Api\Finances.Api.csproj" />
   </ItemGroup>
 
 </Project>

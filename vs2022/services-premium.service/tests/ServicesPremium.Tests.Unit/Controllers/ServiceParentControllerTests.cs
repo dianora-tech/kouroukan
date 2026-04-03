@@ -1,3 +1,4 @@
+using Xunit;
 using ServicesPremium.Api.Controllers;
 using ServicesPremium.Domain.Entities;
 using ServicesPremium.Api.Models;

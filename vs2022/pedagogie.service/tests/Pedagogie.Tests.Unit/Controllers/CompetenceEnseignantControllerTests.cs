@@ -1,3 +1,4 @@
+using Xunit;
 using Pedagogie.Api.Controllers;
 using Pedagogie.Domain.Entities;
 using Pedagogie.Api.Models;

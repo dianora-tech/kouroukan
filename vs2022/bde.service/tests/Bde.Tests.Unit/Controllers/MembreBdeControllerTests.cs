@@ -1,3 +1,4 @@
+using Xunit;
 using Bde.Api.Controllers;
 using Bde.Domain.Entities;
 using Bde.Api.Models;

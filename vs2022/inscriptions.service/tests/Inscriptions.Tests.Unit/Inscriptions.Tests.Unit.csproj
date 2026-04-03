@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\src\Inscriptions.Domain\Inscriptions.Domain.csproj" />
     <ProjectReference Include="..\..\src\Inscriptions.Application\Inscriptions.Application.csproj" />
     <ProjectReference Include="..\..\src\Inscriptions.Infrastructure\Inscriptions.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Inscriptions.Api\Inscriptions.Api.csproj" />
   </ItemGroup>
 
 </Project>

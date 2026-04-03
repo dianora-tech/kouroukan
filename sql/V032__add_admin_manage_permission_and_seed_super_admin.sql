@@ -27,22 +27,31 @@ ON CONFLICT DO NOTHING;
 -- danger de le relancer plusieurs fois et il n'ecrase jamais un hash reel.
 --
 -- IMPORTANT : Ne PAS deployer en production sans executer le script d'init.
-INSERT INTO auth.users (
-    email, password_hash, first_name, last_name,
-    is_active, type_compte, identifiant_unique,
-    cgu_accepted_at, cgu_version,
-    created_at, created_by
-)
-VALUES (
-    'admin@kouroukan.gn',
-    -- Placeholder hash — sera regenere au deploiement via script d'init
-    'CHANGE_ME_AT_DEPLOY',
-    'Admin', 'Kouroukan',
-    TRUE, 'super_admin', 'SUPER-ADMIN-001',
-    NOW(), '1.0',
-    NOW(), 'system'
-)
-ON CONFLICT (email) DO NOTHING;
+--
+-- Note : ON CONFLICT (email) requiert un index unique non-partiel sur email.
+-- V022 ne cree qu'un index partiel (WHERE is_deleted = FALSE), donc on
+-- insere conditionnellement via un DO block.
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'admin@kouroukan.gn') THEN
+        INSERT INTO auth.users (
+            email, password_hash, first_name, last_name,
+            is_active, type_compte, identifiant_unique,
+            cgu_accepted_at, cgu_version,
+            created_at, created_by
+        )
+        VALUES (
+            'admin@kouroukan.gn',
+            -- Placeholder hash — sera regenere au deploiement via script d'init
+            'CHANGE_ME_AT_DEPLOY',
+            'Admin', 'Kouroukan',
+            TRUE, 'super_admin', 'SUPER-ADMIN-001',
+            NOW(), '1.0',
+            NOW(), 'system'
+        );
+    END IF;
+END
+$$;
 
 -- 4. Attribuer le role super_admin a l'utilisateur admin@kouroukan.gn
 INSERT INTO auth.user_roles (user_id, role_id, created_at, created_by)

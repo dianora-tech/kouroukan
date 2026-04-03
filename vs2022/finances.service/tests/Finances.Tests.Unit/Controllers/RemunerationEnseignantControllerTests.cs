@@ -1,3 +1,4 @@
+using Xunit;
 using Finances.Api.Controllers;
 using Finances.Domain.Entities;
 using Finances.Api.Models;

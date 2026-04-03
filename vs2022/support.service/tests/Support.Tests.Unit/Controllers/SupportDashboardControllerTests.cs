@@ -1,3 +1,4 @@
+using Xunit;
 using Support.Api.Controllers;
 using Support.Api.Models;
 using Support.Application.Queries;

@@ -1,3 +1,4 @@
+using Xunit;
 using Communication.Api.Controllers;
 using Communication.Domain.Entities;
 using Communication.Api.Models;
