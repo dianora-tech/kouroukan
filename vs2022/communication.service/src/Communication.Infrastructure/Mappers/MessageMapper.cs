@@ -10,8 +10,6 @@ public static class MessageMapper
         return new Message
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             TypeId = dto.TypeId,
             ExpediteurId = dto.ExpediteurId,
             DestinataireId = dto.DestinataireId,
@@ -36,8 +34,6 @@ public static class MessageMapper
         return new MessageDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             TypeId = entity.TypeId,
             ExpediteurId = entity.ExpediteurId,
             DestinataireId = entity.DestinataireId,

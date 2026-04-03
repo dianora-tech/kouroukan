@@ -9,7 +9,6 @@ public sealed class CreateAnnonceValidator : BaseEntityValidator<CreateAnnonceCo
     public CreateAnnonceValidator()
     {
         RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.TypeId, "Type");
         RuleForRequiredString(x => x.Contenu, 10000, "Contenu");
         RuleFor(x => x.DateDebut).NotEmpty().WithMessage("La date de debut est obligatoire");

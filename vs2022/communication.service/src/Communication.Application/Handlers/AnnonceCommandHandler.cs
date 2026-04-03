@@ -25,7 +25,6 @@ public sealed class AnnonceCommandHandler :
         var entity = new Annonce
         {
             Name = request.Name,
-            Description = request.Description,
             TypeId = request.TypeId,
             Contenu = request.Contenu,
             DateDebut = request.DateDebut,
@@ -44,7 +43,6 @@ public sealed class AnnonceCommandHandler :
         {
             Id = request.Id,
             Name = request.Name,
-            Description = request.Description,
             TypeId = request.TypeId,
             Contenu = request.Contenu,
             DateDebut = request.DateDebut,

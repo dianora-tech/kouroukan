@@ -7,8 +7,6 @@ namespace Evaluations.Application.Commands;
 /// </summary>
 public sealed record UpdateBulletinCommand(
     int Id,
-    string Name,
-    string? Description,
     int EleveId,
     int ClasseId,
     int Trimestre,

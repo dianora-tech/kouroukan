@@ -10,8 +10,6 @@ public static class EvaluationMapper
         return new Evaluation
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             TypeId = dto.TypeId,
             MatiereId = dto.MatiereId,
             ClasseId = dto.ClasseId,
@@ -37,8 +35,6 @@ public static class EvaluationMapper
         return new EvaluationDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             TypeId = entity.TypeId,
             MatiereId = entity.MatiereId,
             ClasseId = entity.ClasseId,

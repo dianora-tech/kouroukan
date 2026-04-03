@@ -9,8 +9,6 @@ public sealed class UpdateEvaluationValidator : BaseEntityValidator<UpdateEvalua
     public UpdateEvaluationValidator()
     {
         RuleFor(x => x.Id).GreaterThan(0).WithMessage("L'identifiant est obligatoire");
-        RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.TypeId, "Type");
         RuleForRequiredFk(x => x.MatiereId, "Matiere");
         RuleForRequiredFk(x => x.ClasseId, "Classe");

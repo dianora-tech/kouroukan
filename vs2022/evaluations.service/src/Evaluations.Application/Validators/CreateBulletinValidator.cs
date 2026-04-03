@@ -8,8 +8,6 @@ public sealed class CreateBulletinValidator : BaseEntityValidator<CreateBulletin
 {
     public CreateBulletinValidator()
     {
-        RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.EleveId, "Eleve");
         RuleForRequiredFk(x => x.ClasseId, "Classe");
         RuleFor(x => x.Trimestre).InclusiveBetween(1, 3).WithMessage("Le trimestre doit etre compris entre 1 et 3");

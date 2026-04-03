@@ -1,12 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Bde.Infrastructure.Dtos;
 
+[Table("bde.membres_bde")]
 public sealed class MembreBdeDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public int AssociationId { get; set; }
     public int EleveId { get; set; }
     public string RoleBde { get; set; } = string.Empty;

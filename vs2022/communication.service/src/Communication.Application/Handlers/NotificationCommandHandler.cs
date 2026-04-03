@@ -24,8 +24,6 @@ public sealed class NotificationCommandHandler :
     {
         var entity = new Notification
         {
-            Name = request.Name,
-            Description = request.Description,
             TypeId = request.TypeId,
             DestinatairesIds = request.DestinatairesIds,
             Contenu = request.Contenu,
@@ -43,8 +41,6 @@ public sealed class NotificationCommandHandler :
         var entity = new Notification
         {
             Id = request.Id,
-            Name = request.Name,
-            Description = request.Description,
             TypeId = request.TypeId,
             DestinatairesIds = request.DestinatairesIds,
             Contenu = request.Contenu,

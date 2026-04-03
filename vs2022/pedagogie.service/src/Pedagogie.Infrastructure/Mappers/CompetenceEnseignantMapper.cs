@@ -14,12 +14,7 @@ public static class CompetenceEnseignantMapper
             MatiereId = dto.MatiereId,
             CycleEtude = dto.CycleEtude,
             CreatedAt = dto.CreatedAt,
-            UpdatedAt = dto.UpdatedAt,
-            CreatedBy = dto.CreatedBy,
-            UpdatedBy = dto.UpdatedBy,
             IsDeleted = dto.IsDeleted,
-            DeletedAt = dto.DeletedAt,
-            DeletedBy = dto.DeletedBy,
         };
     }
 
@@ -32,12 +27,7 @@ public static class CompetenceEnseignantMapper
             MatiereId = entity.MatiereId,
             CycleEtude = entity.CycleEtude,
             CreatedAt = entity.CreatedAt,
-            UpdatedAt = entity.UpdatedAt,
-            CreatedBy = entity.CreatedBy,
-            UpdatedBy = entity.UpdatedBy,
             IsDeleted = entity.IsDeleted,
-            DeletedAt = entity.DeletedAt,
-            DeletedBy = entity.DeletedBy,
         };
     }
 }

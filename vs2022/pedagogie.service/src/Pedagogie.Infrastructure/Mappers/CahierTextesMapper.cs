@@ -10,13 +10,10 @@ public static class CahierTextesMapper
         return new CahierTextes
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             SeanceId = dto.SeanceId,
             Contenu = dto.Contenu,
             DateSeance = dto.DateSeance,
             TravailAFaire = dto.TravailAFaire,
-            UserId = dto.UserId,
             CreatedAt = dto.CreatedAt,
             UpdatedAt = dto.UpdatedAt,
             CreatedBy = dto.CreatedBy,
@@ -32,13 +29,10 @@ public static class CahierTextesMapper
         return new CahierTextesDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             SeanceId = entity.SeanceId,
             Contenu = entity.Contenu,
             DateSeance = entity.DateSeance,
             TravailAFaire = entity.TravailAFaire,
-            UserId = entity.UserId,
             CreatedAt = entity.CreatedAt,
             UpdatedAt = entity.UpdatedAt,
             CreatedBy = entity.CreatedBy,

@@ -1,12 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Personnel.Infrastructure.Dtos;
 
+[Table("personnel.demandes_conges")]
 public sealed class DemandeCongeDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public int EnseignantId { get; set; }
     public DateTime DateDebut { get; set; }
     public DateTime DateFin { get; set; }

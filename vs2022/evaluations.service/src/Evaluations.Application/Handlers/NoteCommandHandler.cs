@@ -24,8 +24,6 @@ public sealed class NoteCommandHandler :
     {
         var entity = new Note
         {
-            Name = request.Name,
-            Description = request.Description,
             EvaluationId = request.EvaluationId,
             EleveId = request.EleveId,
             Valeur = request.Valeur,
@@ -41,8 +39,6 @@ public sealed class NoteCommandHandler :
         var entity = new Note
         {
             Id = request.Id,
-            Name = request.Name,
-            Description = request.Description,
             EvaluationId = request.EvaluationId,
             EleveId = request.EleveId,
             Valeur = request.Valeur,

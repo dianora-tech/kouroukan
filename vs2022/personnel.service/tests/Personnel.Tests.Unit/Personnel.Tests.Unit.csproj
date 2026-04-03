@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\src\Personnel.Domain\Personnel.Domain.csproj" />
     <ProjectReference Include="..\..\src\Personnel.Application\Personnel.Application.csproj" />
     <ProjectReference Include="..\..\src\Personnel.Infrastructure\Personnel.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Personnel.Api\Personnel.Api.csproj" />
   </ItemGroup>
 
 </Project>

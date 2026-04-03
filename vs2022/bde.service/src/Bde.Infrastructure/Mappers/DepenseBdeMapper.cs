@@ -11,8 +11,6 @@ public static class DepenseBdeMapper
         {
             Id = dto.Id,
             TypeId = dto.TypeId,
-            Name = dto.Name,
-            Description = dto.Description,
             AssociationId = dto.AssociationId,
             Montant = dto.Montant,
             Motif = dto.Motif,
@@ -36,8 +34,6 @@ public static class DepenseBdeMapper
         {
             Id = entity.Id,
             TypeId = entity.TypeId,
-            Name = entity.Name,
-            Description = entity.Description,
             AssociationId = entity.AssociationId,
             Montant = entity.Montant,
             Motif = entity.Motif,

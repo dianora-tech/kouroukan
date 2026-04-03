@@ -18,10 +18,7 @@ public static class AffectationEnseignantMapper
             CreatedAt = dto.CreatedAt,
             UpdatedAt = dto.UpdatedAt,
             CreatedBy = dto.CreatedBy,
-            UpdatedBy = dto.UpdatedBy,
             IsDeleted = dto.IsDeleted,
-            DeletedAt = dto.DeletedAt,
-            DeletedBy = dto.DeletedBy,
         };
     }
 
@@ -38,10 +35,7 @@ public static class AffectationEnseignantMapper
             CreatedAt = entity.CreatedAt,
             UpdatedAt = entity.UpdatedAt,
             CreatedBy = entity.CreatedBy,
-            UpdatedBy = entity.UpdatedBy,
             IsDeleted = entity.IsDeleted,
-            DeletedAt = entity.DeletedAt,
-            DeletedBy = entity.DeletedBy,
         };
     }
 }

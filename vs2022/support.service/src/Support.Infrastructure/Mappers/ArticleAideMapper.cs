@@ -8,8 +8,6 @@ public static class ArticleAideMapper
     public static ArticleAide ToEntity(ArticleAideDto dto) => new()
     {
         Id = dto.Id,
-        Name = dto.Name,
-        Description = dto.Description,
         TypeId = dto.TypeId,
         Titre = dto.Titre,
         Contenu = dto.Contenu,
@@ -33,8 +31,6 @@ public static class ArticleAideMapper
     public static ArticleAideDto ToDto(ArticleAide entity) => new()
     {
         Id = entity.Id,
-        Name = entity.Name,
-        Description = entity.Description,
         TypeId = entity.TypeId,
         Titre = entity.Titre,
         Contenu = entity.Contenu,

@@ -17,5 +17,6 @@
     <ProjectReference Include="..\..\src\Presences.Domain\Presences.Domain.csproj" />
     <ProjectReference Include="..\..\src\Presences.Application\Presences.Application.csproj" />
     <ProjectReference Include="..\..\src\Presences.Infrastructure\Presences.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Presences.Api\Presences.Api.csproj" />
   </ItemGroup>
 </Project>

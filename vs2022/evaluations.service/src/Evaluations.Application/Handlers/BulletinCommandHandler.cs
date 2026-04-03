@@ -24,8 +24,6 @@ public sealed class BulletinCommandHandler :
     {
         var entity = new Bulletin
         {
-            Name = request.Name,
-            Description = request.Description,
             EleveId = request.EleveId,
             ClasseId = request.ClasseId,
             Trimestre = request.Trimestre,
@@ -46,8 +44,6 @@ public sealed class BulletinCommandHandler :
         var entity = new Bulletin
         {
             Id = request.Id,
-            Name = request.Name,
-            Description = request.Description,
             EleveId = request.EleveId,
             ClasseId = request.ClasseId,
             Trimestre = request.Trimestre,

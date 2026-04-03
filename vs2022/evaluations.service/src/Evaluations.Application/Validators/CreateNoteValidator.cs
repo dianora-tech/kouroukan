@@ -8,8 +8,6 @@ public sealed class CreateNoteValidator : BaseEntityValidator<CreateNoteCommand>
 {
     public CreateNoteValidator()
     {
-        RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.EvaluationId, "Evaluation");
         RuleForRequiredFk(x => x.EleveId, "Eleve");
         RuleFor(x => x.Valeur).GreaterThanOrEqualTo(0).WithMessage("La note ne peut pas etre negative");

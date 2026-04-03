@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Presences.Infrastructure.Dtos;
 
+[Table("presences.appels")]
 public sealed class AppelDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }

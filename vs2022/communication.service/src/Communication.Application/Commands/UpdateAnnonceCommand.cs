@@ -8,7 +8,6 @@ namespace Communication.Application.Commands;
 public sealed record UpdateAnnonceCommand(
     int Id,
     string Name,
-    string? Description,
     int TypeId,
     string Contenu,
     DateTime DateDebut,

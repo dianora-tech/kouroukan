@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Communication.Api\Communication.Api.csproj" />
     <ProjectReference Include="..\..\src\Communication.Domain\Communication.Domain.csproj" />
     <ProjectReference Include="..\..\src\Communication.Application\Communication.Application.csproj" />
     <ProjectReference Include="..\..\src\Communication.Infrastructure\Communication.Infrastructure.csproj" />

@@ -8,8 +8,6 @@ public static class SuggestionMapper
     public static Suggestion ToEntity(SuggestionDto dto) => new()
     {
         Id = dto.Id,
-        Name = dto.Name,
-        Description = dto.Description,
         TypeId = dto.TypeId,
         AuteurId = dto.AuteurId,
         Titre = dto.Titre,
@@ -31,8 +29,6 @@ public static class SuggestionMapper
     public static SuggestionDto ToDto(Suggestion entity) => new()
     {
         Id = entity.Id,
-        Name = entity.Name,
-        Description = entity.Description,
         TypeId = entity.TypeId,
         AuteurId = entity.AuteurId,
         Titre = entity.Titre,

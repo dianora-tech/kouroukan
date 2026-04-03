@@ -19,7 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Documents.Domain\Documents.Domain.csproj" />
     <ProjectReference Include="..\..\src\Documents.Application\Documents.Application.csproj" />
-    <ProjectReference Include="..\..\src\Documents.Infrastructure\Documents.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Documents.Api\Documents.Api.csproj" />
   </ItemGroup>
 
 </Project>

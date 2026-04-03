@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Bde.Infrastructure.Dtos;
 
+[Table("bde.evenements")]
 public sealed class EvenementDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }

@@ -7,8 +7,6 @@ namespace Evaluations.Application.Commands;
 /// </summary>
 public sealed record UpdateEvaluationCommand(
     int Id,
-    string Name,
-    string? Description,
     int TypeId,
     int MatiereId,
     int ClasseId,

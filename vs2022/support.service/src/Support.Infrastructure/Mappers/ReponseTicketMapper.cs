@@ -8,8 +8,6 @@ public static class ReponseTicketMapper
     public static ReponseTicket ToEntity(ReponseTicketDto dto) => new()
     {
         Id = dto.Id,
-        Name = dto.Name,
-        Description = dto.Description,
         TicketId = dto.TicketId,
         AuteurId = dto.AuteurId,
         Contenu = dto.Contenu,
@@ -28,8 +26,6 @@ public static class ReponseTicketMapper
     public static ReponseTicketDto ToDto(ReponseTicket entity) => new()
     {
         Id = entity.Id,
-        Name = entity.Name,
-        Description = entity.Description,
         TicketId = entity.TicketId,
         AuteurId = entity.AuteurId,
         Contenu = entity.Contenu,

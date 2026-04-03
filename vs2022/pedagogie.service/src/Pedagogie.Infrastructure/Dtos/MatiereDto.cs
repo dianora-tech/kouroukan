@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Pedagogie.Infrastructure.Dtos;
 
+[Table("pedagogie.matieres")]
 public sealed class MatiereDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }

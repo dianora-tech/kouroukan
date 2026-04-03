@@ -8,8 +8,6 @@ public sealed class CreateEvaluationValidator : BaseEntityValidator<CreateEvalua
 {
     public CreateEvaluationValidator()
     {
-        RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.TypeId, "Type");
         RuleForRequiredFk(x => x.MatiereId, "Matiere");
         RuleForRequiredFk(x => x.ClasseId, "Classe");

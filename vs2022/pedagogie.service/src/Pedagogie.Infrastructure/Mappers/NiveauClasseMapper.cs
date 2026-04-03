@@ -11,7 +11,6 @@ public static class NiveauClasseMapper
         {
             Id = dto.Id,
             Name = dto.Name,
-            Description = dto.Description,
             TypeId = dto.TypeId,
             Code = dto.Code,
             Ordre = dto.Ordre,
@@ -20,7 +19,6 @@ public static class NiveauClasseMapper
             MinistereTutelle = dto.MinistereTutelle,
             ExamenSortie = dto.ExamenSortie,
             TauxHoraireEnseignant = dto.TauxHoraireEnseignant,
-            UserId = dto.UserId,
             CreatedAt = dto.CreatedAt,
             UpdatedAt = dto.UpdatedAt,
             CreatedBy = dto.CreatedBy,
@@ -37,7 +35,6 @@ public static class NiveauClasseMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            Description = entity.Description,
             TypeId = entity.TypeId,
             Code = entity.Code,
             Ordre = entity.Ordre,
@@ -46,7 +43,6 @@ public static class NiveauClasseMapper
             MinistereTutelle = entity.MinistereTutelle,
             ExamenSortie = entity.ExamenSortie,
             TauxHoraireEnseignant = entity.TauxHoraireEnseignant,
-            UserId = entity.UserId,
             CreatedAt = entity.CreatedAt,
             UpdatedAt = entity.UpdatedAt,
             CreatedBy = entity.CreatedBy,

@@ -10,12 +10,6 @@ public class Message : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
 
-    /// <summary>Nom du message.</summary>
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>Description du message.</summary>
-    public string? Description { get; set; }
-
     /// <summary>FK vers le type de message (communication.type_messages).</summary>
     public int TypeId { get; set; }
 

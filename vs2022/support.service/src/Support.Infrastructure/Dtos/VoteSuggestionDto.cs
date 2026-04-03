@@ -1,15 +1,14 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Support.Infrastructure.Dtos;
 
+[Table("support.votes_suggestions")]
 public sealed class VoteSuggestionDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public int SuggestionId { get; set; }
     public int VotantId { get; set; }
-    public int UserId { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

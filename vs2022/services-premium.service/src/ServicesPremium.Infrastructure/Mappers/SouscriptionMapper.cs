@@ -13,8 +13,6 @@ public static class SouscriptionMapper
         return new Souscription
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             ServiceParentId = dto.ServiceParentId,
             ParentId = dto.ParentId,
             DateDebut = dto.DateDebut,
@@ -39,8 +37,6 @@ public static class SouscriptionMapper
         return new SouscriptionDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             ServiceParentId = entity.ServiceParentId,
             ParentId = entity.ParentId,
             DateDebut = entity.DateDebut,

@@ -1,12 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Evaluations.Infrastructure.Dtos;
 
+[Table("evaluations.bulletins")]
 public sealed class BulletinDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public int EleveId { get; set; }
     public int ClasseId { get; set; }
     public int Trimestre { get; set; }

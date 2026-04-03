@@ -8,8 +8,6 @@ public sealed class CreateMessageValidator : BaseEntityValidator<CreateMessageCo
 {
     public CreateMessageValidator()
     {
-        RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.TypeId, "Type");
         RuleForRequiredFk(x => x.ExpediteurId, "Expediteur");
         RuleForRequiredString(x => x.Sujet, 200, "Sujet");

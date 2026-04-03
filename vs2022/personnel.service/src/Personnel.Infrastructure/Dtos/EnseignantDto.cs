@@ -1,12 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Personnel.Infrastructure.Dtos;
 
+[Table("personnel.enseignants")]
 public sealed class EnseignantDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public string Matricule { get; set; } = string.Empty;
     public string Specialite { get; set; } = string.Empty;
     public DateTime DateEmbauche { get; set; }
