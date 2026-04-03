@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Documents.Domain.Ports.Output;
 
 namespace Documents.Tests.Unit.Controllers;
 
 public sealed class SignatureControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<ISignatureRepository> _repository;
     private readonly Mock<ILogger<SignatureController>> _logger;
     private readonly SignatureController _sut;
 
     public SignatureControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<ISignatureRepository>();
         _logger = new Mock<ILogger<SignatureController>>();
-        _sut = new SignatureController(_mediator.Object, _logger.Object);
+        _sut = new SignatureController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

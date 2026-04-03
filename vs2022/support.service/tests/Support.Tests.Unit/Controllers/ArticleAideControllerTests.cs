@@ -120,7 +120,7 @@ public sealed class ArticleAideControllerTests
     [Fact]
     public async Task Update_DoitRetournerBadRequest_QuandIdNonCorrespondant()
     {
-        var command = new UpdateArticleAideCommand(999, "titre", "contenu", "slug", "cat", null, 1, 1);
+        var command = new UpdateArticleAideCommand(999, "name", null, 1, "titre", "contenu", "slug", "cat", null, 1, true, 1);
 
         var result = await _sut.Update(1, command, CancellationToken.None);
 

@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Pedagogie.Domain.Ports.Output;
 
 namespace Pedagogie.Tests.Unit.Controllers;
 
 public sealed class SalleControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<ISalleRepository> _repository;
     private readonly Mock<ILogger<SalleController>> _logger;
     private readonly SalleController _sut;
 
     public SalleControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<ISalleRepository>();
         _logger = new Mock<ILogger<SalleController>>();
-        _sut = new SalleController(_mediator.Object, _logger.Object);
+        _sut = new SalleController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

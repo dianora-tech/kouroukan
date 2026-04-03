@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Communication.Domain.Ports.Output;
 
 namespace Communication.Tests.Unit.Controllers;
 
 public sealed class AnnonceControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IAnnonceRepository> _repository;
     private readonly Mock<ILogger<AnnonceController>> _logger;
     private readonly AnnonceController _sut;
 
     public AnnonceControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IAnnonceRepository>();
         _logger = new Mock<ILogger<AnnonceController>>();
-        _sut = new AnnonceController(_mediator.Object, _logger.Object);
+        _sut = new AnnonceController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

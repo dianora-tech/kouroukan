@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Evaluations.Domain.Ports.Output;
 
 namespace Evaluations.Tests.Unit.Controllers;
 
 public sealed class EvaluationControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IEvaluationRepository> _repository;
     private readonly Mock<ILogger<EvaluationController>> _logger;
     private readonly EvaluationController _sut;
 
     public EvaluationControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IEvaluationRepository>();
         _logger = new Mock<ILogger<EvaluationController>>();
-        _sut = new EvaluationController(_mediator.Object, _logger.Object);
+        _sut = new EvaluationController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

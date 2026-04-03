@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Pedagogie.Domain.Ports.Output;
 
 namespace Pedagogie.Tests.Unit.Controllers;
 
 public sealed class NiveauClasseControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<INiveauClasseRepository> _repository;
     private readonly Mock<ILogger<NiveauClasseController>> _logger;
     private readonly NiveauClasseController _sut;
 
     public NiveauClasseControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<INiveauClasseRepository>();
         _logger = new Mock<ILogger<NiveauClasseController>>();
-        _sut = new NiveauClasseController(_mediator.Object, _logger.Object);
+        _sut = new NiveauClasseController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

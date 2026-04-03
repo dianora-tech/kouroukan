@@ -1,6 +1,5 @@
 using Xunit;
 using Inscriptions.Api.Controllers;
-using Inscriptions.Domain.Entities;
 using Inscriptions.Api.Models;
 using GnDapper.Models;
 using MediatR;
@@ -9,20 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Inscriptions.Domain.Ports.Output;
+using InscriptionEntity = Inscriptions.Domain.Entities.Inscription;
 
 namespace Inscriptions.Tests.Unit.Controllers;
 
 public sealed class InscriptionControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IInscriptionRepository> _repository;
     private readonly Mock<ILogger<InscriptionController>> _logger;
     private readonly InscriptionController _sut;
 
     public InscriptionControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IInscriptionRepository>();
         _logger = new Mock<ILogger<InscriptionController>>();
-        _sut = new InscriptionController(_mediator.Object, _logger.Object);
+        _sut = new InscriptionController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

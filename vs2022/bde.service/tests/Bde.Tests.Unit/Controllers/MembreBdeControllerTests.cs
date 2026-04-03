@@ -1,7 +1,7 @@
 using Xunit;
 using Bde.Api.Controllers;
-using Bde.Domain.Entities;
 using Bde.Api.Models;
+using MembreBdeEntity = Bde.Domain.Entities.MembreBde;
 using GnDapper.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;

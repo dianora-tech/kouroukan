@@ -39,7 +39,7 @@ public sealed class ConversationIAControllerTests
         _mediator.Setup(m => m.Send(It.IsAny<CreerConversationIACommand>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(conversation);
 
-        var command = new CreerConversationIACommand(1, "module");
+        var command = new CreerConversationIACommand(1, 1);
         var result = await _sut.Create(command, CancellationToken.None);
 
         result.Result.Should().BeOfType<OkObjectResult>();

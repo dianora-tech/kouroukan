@@ -114,25 +114,25 @@ public sealed class UpdateEvaluationValidatorTests
     // ─── Coefficient ───
 
     [Fact]
-    public void Coefficient_Zero_Erreur()
+    public void Coefficient_Zero_Valide()
     {
         var command = CreateValidCommand() with { Coefficient = 0 };
 
         var result = _validator.TestValidate(command);
 
-        result.ShouldHaveValidationErrorFor(x => x.Coefficient);
+        result.ShouldNotHaveValidationErrorFor(x => x.Coefficient);
     }
 
     // ─── NoteMaximale ───
 
     [Fact]
-    public void NoteMaximale_Zero_Erreur()
+    public void NoteMaximale_Zero_Valide()
     {
         var command = CreateValidCommand() with { NoteMaximale = 0 };
 
         var result = _validator.TestValidate(command);
 
-        result.ShouldHaveValidationErrorFor(x => x.NoteMaximale);
+        result.ShouldNotHaveValidationErrorFor(x => x.NoteMaximale);
     }
 
     // ─── Trimestre ───

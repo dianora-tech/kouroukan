@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using ServicesPremium.Domain.Ports.Output;
 
 namespace ServicesPremium.Tests.Unit.Controllers;
 
 public sealed class ServiceParentControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IServiceParentRepository> _repository;
     private readonly Mock<ILogger<ServiceParentController>> _logger;
     private readonly ServiceParentController _sut;
 
     public ServiceParentControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IServiceParentRepository>();
         _logger = new Mock<ILogger<ServiceParentController>>();
-        _sut = new ServiceParentController(_mediator.Object, _logger.Object);
+        _sut = new ServiceParentController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

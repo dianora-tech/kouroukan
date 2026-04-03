@@ -1,6 +1,5 @@
 using Xunit;
 using Bde.Api.Controllers;
-using Bde.Domain.Entities;
 using Bde.Api.Models;
 using GnDapper.Models;
 using MediatR;
@@ -9,20 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Bde.Domain.Ports.Output;
+using AssociationEntity = Bde.Domain.Entities.Association;
 
 namespace Bde.Tests.Unit.Controllers;
 
 public sealed class AssociationControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IAssociationRepository> _repository;
     private readonly Mock<ILogger<AssociationController>> _logger;
     private readonly AssociationController _sut;
 
     public AssociationControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IAssociationRepository>();
         _logger = new Mock<ILogger<AssociationController>>();
-        _sut = new AssociationController(_mediator.Object, _logger.Object);
+        _sut = new AssociationController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

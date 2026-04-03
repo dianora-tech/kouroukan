@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Communication.Domain.Ports.Output;
 
 namespace Communication.Tests.Unit.Controllers;
 
 public sealed class MessageControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IMessageRepository> _repository;
     private readonly Mock<ILogger<MessageController>> _logger;
     private readonly MessageController _sut;
 
     public MessageControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IMessageRepository>();
         _logger = new Mock<ILogger<MessageController>>();
-        _sut = new MessageController(_mediator.Object, _logger.Object);
+        _sut = new MessageController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

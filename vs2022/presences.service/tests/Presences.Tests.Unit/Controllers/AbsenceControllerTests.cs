@@ -1,6 +1,5 @@
 using Xunit;
 using Presences.Api.Controllers;
-using Presences.Domain.Entities;
 using Presences.Api.Models;
 using GnDapper.Models;
 using MediatR;
@@ -9,20 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Presences.Domain.Ports.Output;
+using AbsenceEntity = Presences.Domain.Entities.Absence;
 
 namespace Presences.Tests.Unit.Controllers;
 
 public sealed class AbsenceControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IAbsenceRepository> _repository;
     private readonly Mock<ILogger<AbsenceController>> _logger;
     private readonly AbsenceController _sut;
 
     public AbsenceControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IAbsenceRepository>();
         _logger = new Mock<ILogger<AbsenceController>>();
-        _sut = new AbsenceController(_mediator.Object, _logger.Object);
+        _sut = new AbsenceController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

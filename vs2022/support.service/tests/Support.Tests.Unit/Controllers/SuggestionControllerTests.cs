@@ -98,7 +98,7 @@ public sealed class SuggestionControllerTests
     [Fact]
     public async Task Update_DoitRetournerBadRequest_QuandIdNonCorrespondant()
     {
-        var command = new UpdateSuggestionCommand(999, 1, "titre", "contenu", null, "EnAttente", 1);
+        var command = new UpdateSuggestionCommand(999, "name", null, 1, 1, "titre", "contenu", null, "EnAttente", null, 1);
 
         var result = await _sut.Update(1, command, CancellationToken.None);
 
@@ -121,7 +121,7 @@ public sealed class SuggestionControllerTests
     [Fact]
     public async Task Voter_DoitRetournerBadRequest_QuandIdNonCorrespondant()
     {
-        var command = new VoterSuggestionCommand(999, 1);
+        var command = new VoterSuggestionCommand(999, 1, 1);
 
         var result = await _sut.Voter(1, command, CancellationToken.None);
 

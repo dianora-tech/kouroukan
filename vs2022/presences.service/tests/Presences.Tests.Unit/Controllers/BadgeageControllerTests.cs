@@ -1,6 +1,5 @@
 using Xunit;
 using Presences.Api.Controllers;
-using Presences.Domain.Entities;
 using Presences.Api.Models;
 using GnDapper.Models;
 using MediatR;
@@ -9,20 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Presences.Domain.Ports.Output;
+using BadgeageEntity = Presences.Domain.Entities.Badgeage;
 
 namespace Presences.Tests.Unit.Controllers;
 
 public sealed class BadgeageControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IBadgeageRepository> _repository;
     private readonly Mock<ILogger<BadgeageController>> _logger;
     private readonly BadgeageController _sut;
 
     public BadgeageControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IBadgeageRepository>();
         _logger = new Mock<ILogger<BadgeageController>>();
-        _sut = new BadgeageController(_mediator.Object, _logger.Object);
+        _sut = new BadgeageController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

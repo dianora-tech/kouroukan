@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Inscriptions.Domain.Ports.Output;
 
 namespace Inscriptions.Tests.Unit.Controllers;
 
 public sealed class DossierAdmissionControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IDossierAdmissionRepository> _repository;
     private readonly Mock<ILogger<DossierAdmissionController>> _logger;
     private readonly DossierAdmissionController _sut;
 
     public DossierAdmissionControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IDossierAdmissionRepository>();
         _logger = new Mock<ILogger<DossierAdmissionController>>();
-        _sut = new DossierAdmissionController(_mediator.Object, _logger.Object);
+        _sut = new DossierAdmissionController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

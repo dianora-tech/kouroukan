@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Documents.Domain.Ports.Output;
 
 namespace Documents.Tests.Unit.Controllers;
 
 public sealed class DocumentGenereControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IDocumentGenereRepository> _repository;
     private readonly Mock<ILogger<DocumentGenereController>> _logger;
     private readonly DocumentGenereController _sut;
 
     public DocumentGenereControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IDocumentGenereRepository>();
         _logger = new Mock<ILogger<DocumentGenereController>>();
-        _sut = new DocumentGenereController(_mediator.Object, _logger.Object);
+        _sut = new DocumentGenereController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

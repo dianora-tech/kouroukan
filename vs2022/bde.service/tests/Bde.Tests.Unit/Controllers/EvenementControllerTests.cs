@@ -1,6 +1,5 @@
 using Xunit;
 using Bde.Api.Controllers;
-using Bde.Domain.Entities;
 using Bde.Api.Models;
 using GnDapper.Models;
 using MediatR;
@@ -9,20 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Bde.Domain.Ports.Output;
+using EvenementEntity = Bde.Domain.Entities.Evenement;
 
 namespace Bde.Tests.Unit.Controllers;
 
 public sealed class EvenementControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IEvenementRepository> _repository;
     private readonly Mock<ILogger<EvenementController>> _logger;
     private readonly EvenementController _sut;
 
     public EvenementControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IEvenementRepository>();
         _logger = new Mock<ILogger<EvenementController>>();
-        _sut = new EvenementController(_mediator.Object, _logger.Object);
+        _sut = new EvenementController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

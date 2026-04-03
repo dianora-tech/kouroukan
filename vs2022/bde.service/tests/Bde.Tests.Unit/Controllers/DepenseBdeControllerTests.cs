@@ -1,6 +1,5 @@
 using Xunit;
 using Bde.Api.Controllers;
-using Bde.Domain.Entities;
 using Bde.Api.Models;
 using GnDapper.Models;
 using MediatR;
@@ -9,20 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Bde.Domain.Ports.Output;
+using DepenseBdeEntity = Bde.Domain.Entities.DepenseBde;
 
 namespace Bde.Tests.Unit.Controllers;
 
 public sealed class DepenseBdeControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IDepenseBdeRepository> _repository;
     private readonly Mock<ILogger<DepenseBdeController>> _logger;
     private readonly DepenseBdeController _sut;
 
     public DepenseBdeControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<IDepenseBdeRepository>();
         _logger = new Mock<ILogger<DepenseBdeController>>();
-        _sut = new DepenseBdeController(_mediator.Object, _logger.Object);
+        _sut = new DepenseBdeController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

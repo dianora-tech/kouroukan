@@ -9,20 +9,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using FluentAssertions;
+using Communication.Domain.Ports.Output;
 
 namespace Communication.Tests.Unit.Controllers;
 
 public sealed class NotificationControllerTests
 {
     private readonly Mock<IMediator> _mediator;
+    private readonly Mock<INotificationRepository> _repository;
     private readonly Mock<ILogger<NotificationController>> _logger;
     private readonly NotificationController _sut;
 
     public NotificationControllerTests()
     {
         _mediator = new Mock<IMediator>();
+        _repository = new Mock<INotificationRepository>();
         _logger = new Mock<ILogger<NotificationController>>();
-        _sut = new NotificationController(_mediator.Object, _logger.Object);
+        _sut = new NotificationController(_mediator.Object, _repository.Object, _logger.Object);
         _sut.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()

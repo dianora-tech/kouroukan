@@ -1,7 +1,7 @@
 using Xunit;
 using Presences.Api.Controllers;
-using Presences.Domain.Entities;
 using Presences.Api.Models;
+using AppelEntity = Presences.Domain.Entities.Appel;
 using GnDapper.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;

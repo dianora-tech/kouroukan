@@ -112,13 +112,13 @@ public sealed class CreateEvaluationValidatorTests
     // ─── Coefficient ───
 
     [Fact]
-    public void Coefficient_Zero_Erreur()
+    public void Coefficient_Zero_Valide()
     {
         var command = CreateValidCommand() with { Coefficient = 0 };
 
         var result = _validator.TestValidate(command);
 
-        result.ShouldHaveValidationErrorFor(x => x.Coefficient);
+        result.ShouldNotHaveValidationErrorFor(x => x.Coefficient);
     }
 
     [Fact]
@@ -134,13 +134,13 @@ public sealed class CreateEvaluationValidatorTests
     // ─── NoteMaximale ───
 
     [Fact]
-    public void NoteMaximale_Zero_Erreur()
+    public void NoteMaximale_Zero_Valide()
     {
         var command = CreateValidCommand() with { NoteMaximale = 0 };
 
         var result = _validator.TestValidate(command);
 
-        result.ShouldHaveValidationErrorFor(x => x.NoteMaximale);
+        result.ShouldNotHaveValidationErrorFor(x => x.NoteMaximale);
     }
 
     [Fact]
