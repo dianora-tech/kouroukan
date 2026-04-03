@@ -8,7 +8,6 @@ namespace Communication.Application.Commands;
 /// </summary>
 public sealed record CreateAnnonceCommand(
     string Name,
-    string? Description,
     int TypeId,
     string Contenu,
     DateTime DateDebut,

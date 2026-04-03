@@ -1,12 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Communication.Infrastructure.Dtos;
 
+[Table("communication.notifications")]
 public sealed class NotificationDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public int TypeId { get; set; }
     public string DestinatairesIds { get; set; } = string.Empty;
     public string Contenu { get; set; } = string.Empty;

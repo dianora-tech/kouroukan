@@ -7,8 +7,6 @@ namespace Communication.Application.Commands;
 /// Commande de creation d'une notification.
 /// </summary>
 public sealed record CreateNotificationCommand(
-    string Name,
-    string? Description,
     int TypeId,
     string DestinatairesIds,
     string Contenu,

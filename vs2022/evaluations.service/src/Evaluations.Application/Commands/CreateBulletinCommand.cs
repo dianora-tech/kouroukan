@@ -7,8 +7,6 @@ namespace Evaluations.Application.Commands;
 /// Commande de creation d'un bulletin de notes.
 /// </summary>
 public sealed record CreateBulletinCommand(
-    string Name,
-    string? Description,
     int EleveId,
     int ClasseId,
     int Trimestre,

@@ -10,8 +10,6 @@ public static class BulletinMapper
         return new Bulletin
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             EleveId = dto.EleveId,
             ClasseId = dto.ClasseId,
             Trimestre = dto.Trimestre,
@@ -38,8 +36,6 @@ public static class BulletinMapper
         return new BulletinDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             EleveId = entity.EleveId,
             ClasseId = entity.ClasseId,
             Trimestre = entity.Trimestre,

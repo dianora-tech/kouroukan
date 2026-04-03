@@ -17,9 +17,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Evaluations.Domain\Evaluations.Domain.csproj" />
     <ProjectReference Include="..\..\src\Evaluations.Application\Evaluations.Application.csproj" />
     <ProjectReference Include="..\..\src\Evaluations.Infrastructure\Evaluations.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Evaluations.Api\Evaluations.Api.csproj" />
   </ItemGroup>
 
 </Project>

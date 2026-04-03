@@ -11,7 +11,6 @@ public static class AnnonceMapper
         {
             Id = dto.Id,
             Name = dto.Name,
-            Description = dto.Description,
             TypeId = dto.TypeId,
             Contenu = dto.Contenu,
             DateDebut = dto.DateDebut,
@@ -36,7 +35,6 @@ public static class AnnonceMapper
         {
             Id = entity.Id,
             Name = entity.Name,
-            Description = entity.Description,
             TypeId = entity.TypeId,
             Contenu = entity.Contenu,
             DateDebut = entity.DateDebut,

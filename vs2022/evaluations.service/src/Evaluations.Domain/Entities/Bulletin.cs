@@ -10,12 +10,6 @@ public class Bulletin : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
 
-    /// <summary>Nom (libelle) du bulletin.</summary>
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>Description complementaire.</summary>
-    public string? Description { get; set; }
-
     /// <summary>FK vers l'eleve (inscriptions.eleves).</summary>
     public int EleveId { get; set; }
 

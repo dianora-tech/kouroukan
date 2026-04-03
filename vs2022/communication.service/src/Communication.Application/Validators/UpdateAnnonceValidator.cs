@@ -10,7 +10,6 @@ public sealed class UpdateAnnonceValidator : BaseEntityValidator<UpdateAnnonceCo
     {
         RuleFor(x => x.Id).GreaterThan(0).WithMessage("L'identifiant est obligatoire");
         RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.TypeId, "Type");
         RuleForRequiredString(x => x.Contenu, 10000, "Contenu");
         RuleFor(x => x.DateDebut).NotEmpty().WithMessage("La date de debut est obligatoire");

@@ -7,8 +7,6 @@ namespace Evaluations.Application.Commands;
 /// Commande de creation d'une evaluation.
 /// </summary>
 public sealed record CreateEvaluationCommand(
-    string Name,
-    string? Description,
     int TypeId,
     int MatiereId,
     int ClasseId,

@@ -10,8 +10,6 @@ public static class NotificationMapper
         return new Notification
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             TypeId = dto.TypeId,
             DestinatairesIds = dto.DestinatairesIds,
             Contenu = dto.Contenu,
@@ -35,8 +33,6 @@ public static class NotificationMapper
         return new NotificationDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             TypeId = entity.TypeId,
             DestinatairesIds = entity.DestinatairesIds,
             Contenu = entity.Contenu,

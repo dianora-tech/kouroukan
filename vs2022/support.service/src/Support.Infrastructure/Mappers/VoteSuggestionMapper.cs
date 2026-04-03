@@ -8,11 +8,8 @@ public static class VoteSuggestionMapper
     public static VoteSuggestion ToEntity(VoteSuggestionDto dto) => new()
     {
         Id = dto.Id,
-        Name = dto.Name,
-        Description = dto.Description,
         SuggestionId = dto.SuggestionId,
         VotantId = dto.VotantId,
-        UserId = dto.UserId,
         CreatedAt = dto.CreatedAt,
         UpdatedAt = dto.UpdatedAt,
         CreatedBy = dto.CreatedBy,
@@ -25,11 +22,8 @@ public static class VoteSuggestionMapper
     public static VoteSuggestionDto ToDto(VoteSuggestion entity) => new()
     {
         Id = entity.Id,
-        Name = entity.Name,
-        Description = entity.Description,
         SuggestionId = entity.SuggestionId,
         VotantId = entity.VotantId,
-        UserId = entity.UserId,
         CreatedAt = entity.CreatedAt,
         UpdatedAt = entity.UpdatedAt,
         CreatedBy = entity.CreatedBy,

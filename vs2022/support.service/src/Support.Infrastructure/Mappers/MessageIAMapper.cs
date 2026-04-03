@@ -8,14 +8,11 @@ public static class MessageIAMapper
     public static MessageIA ToEntity(MessageIADto dto) => new()
     {
         Id = dto.Id,
-        Name = dto.Name,
-        Description = dto.Description,
         ConversationIAId = dto.ConversationIAId,
         Role = dto.Role,
         Contenu = dto.Contenu,
         ContexteArticlesIds = dto.ContexteArticlesIds,
         TokensUtilises = dto.TokensUtilises,
-        UserId = dto.UserId,
         CreatedAt = dto.CreatedAt,
         UpdatedAt = dto.UpdatedAt,
         CreatedBy = dto.CreatedBy,
@@ -28,14 +25,11 @@ public static class MessageIAMapper
     public static MessageIADto ToDto(MessageIA entity) => new()
     {
         Id = entity.Id,
-        Name = entity.Name,
-        Description = entity.Description,
         ConversationIAId = entity.ConversationIAId,
         Role = entity.Role,
         Contenu = entity.Contenu,
         ContexteArticlesIds = entity.ContexteArticlesIds,
         TokensUtilises = entity.TokensUtilises,
-        UserId = entity.UserId,
         CreatedAt = entity.CreatedAt,
         UpdatedAt = entity.UpdatedAt,
         CreatedBy = entity.CreatedBy,

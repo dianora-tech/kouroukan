@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 using GnDapper.Models;
 
@@ -6,6 +7,7 @@ namespace ServicesPremium.Infrastructure.Dtos;
 /// <summary>
 /// DTO pour la table services.ServicesParents.
 /// </summary>
+[Table("services.services_parents")]
 public sealed class ServiceParentDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }

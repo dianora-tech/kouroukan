@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Presences.Infrastructure.Dtos;
 
+[Table("presences.absences")]
 public sealed class AbsenceDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }

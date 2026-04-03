@@ -8,8 +8,6 @@ public static class TicketMapper
     public static Ticket ToEntity(TicketDto dto) => new()
     {
         Id = dto.Id,
-        Name = dto.Name,
-        Description = dto.Description,
         TypeId = dto.TypeId,
         AuteurId = dto.AuteurId,
         Sujet = dto.Sujet,
@@ -35,8 +33,6 @@ public static class TicketMapper
     public static TicketDto ToDto(Ticket entity) => new()
     {
         Id = entity.Id,
-        Name = entity.Name,
-        Description = entity.Description,
         TypeId = entity.TypeId,
         AuteurId = entity.AuteurId,
         Sujet = entity.Sujet,

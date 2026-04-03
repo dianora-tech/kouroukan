@@ -10,8 +10,6 @@ public static class EnseignantMapper
         return new Enseignant
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             Matricule = dto.Matricule,
             Specialite = dto.Specialite,
             DateEmbauche = dto.DateEmbauche,
@@ -38,8 +36,6 @@ public static class EnseignantMapper
         return new EnseignantDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             Matricule = entity.Matricule,
             Specialite = entity.Specialite,
             DateEmbauche = entity.DateEmbauche,

@@ -24,8 +24,6 @@ public sealed class EvaluationCommandHandler :
     {
         var entity = new Evaluation
         {
-            Name = request.Name,
-            Description = request.Description,
             TypeId = request.TypeId,
             MatiereId = request.MatiereId,
             ClasseId = request.ClasseId,
@@ -45,8 +43,6 @@ public sealed class EvaluationCommandHandler :
         var entity = new Evaluation
         {
             Id = request.Id,
-            Name = request.Name,
-            Description = request.Description,
             TypeId = request.TypeId,
             MatiereId = request.MatiereId,
             ClasseId = request.ClasseId,

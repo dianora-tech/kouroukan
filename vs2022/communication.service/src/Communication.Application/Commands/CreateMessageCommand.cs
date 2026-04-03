@@ -7,8 +7,6 @@ namespace Communication.Application.Commands;
 /// Commande de creation d'un message.
 /// </summary>
 public sealed record CreateMessageCommand(
-    string Name,
-    string? Description,
     int TypeId,
     int ExpediteurId,
     int? DestinataireId,

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Pedagogie.Infrastructure.Dtos;
@@ -5,7 +6,8 @@ namespace Pedagogie.Infrastructure.Dtos;
 /// <summary>
 /// DTO de mapping BDD pour la table pedagogie.competences_enseignant.
 /// </summary>
-public sealed class CompetenceEnseignantDto : IAuditableEntity, ISoftDeletable
+[Table("pedagogie.competences_enseignant")]
+public sealed class CompetenceEnseignantDto : IEntity
 {
     public int Id { get; set; }
     public int UserId { get; set; }
@@ -14,12 +16,7 @@ public sealed class CompetenceEnseignantDto : IAuditableEntity, ISoftDeletable
 
     // IAuditableEntity
     public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public string CreatedBy { get; set; } = string.Empty;
-    public string? UpdatedBy { get; set; }
 
     // ISoftDeletable
     public bool IsDeleted { get; set; }
-    public DateTime? DeletedAt { get; set; }
-    public string? DeletedBy { get; set; }
 }

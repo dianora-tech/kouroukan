@@ -11,6 +11,7 @@ public static class ModeleDocumentMapper
         {
             Id = dto.Id,
             TypeId = dto.TypeId,
+            Name = dto.Name,
             Code = dto.Code,
             Contenu = dto.Contenu,
             LogoUrl = dto.LogoUrl,
@@ -34,6 +35,7 @@ public static class ModeleDocumentMapper
         {
             Id = entity.Id,
             TypeId = entity.TypeId,
+            Name = entity.Name,
             Code = entity.Code,
             Contenu = entity.Contenu,
             LogoUrl = entity.LogoUrl,

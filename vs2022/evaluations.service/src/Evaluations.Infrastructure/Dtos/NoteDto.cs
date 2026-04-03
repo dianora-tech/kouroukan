@@ -1,12 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Evaluations.Infrastructure.Dtos;
 
+[Table("evaluations.notes")]
 public sealed class NoteDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public int EvaluationId { get; set; }
     public int EleveId { get; set; }
     public decimal Valeur { get; set; }

@@ -10,8 +10,6 @@ public static class NoteMapper
         return new Note
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             EvaluationId = dto.EvaluationId,
             EleveId = dto.EleveId,
             Valeur = dto.Valeur,
@@ -33,8 +31,6 @@ public static class NoteMapper
         return new NoteDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             EvaluationId = entity.EvaluationId,
             EleveId = entity.EleveId,
             Valeur = entity.Valeur,

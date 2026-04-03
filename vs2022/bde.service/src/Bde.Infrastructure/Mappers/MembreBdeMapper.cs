@@ -10,8 +10,6 @@ public static class MembreBdeMapper
         return new MembreBde
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             AssociationId = dto.AssociationId,
             EleveId = dto.EleveId,
             RoleBde = dto.RoleBde,
@@ -34,8 +32,6 @@ public static class MembreBdeMapper
         return new MembreBdeDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             AssociationId = entity.AssociationId,
             EleveId = entity.EleveId,
             RoleBde = entity.RoleBde,

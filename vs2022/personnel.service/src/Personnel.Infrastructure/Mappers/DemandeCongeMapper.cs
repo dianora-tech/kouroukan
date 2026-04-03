@@ -10,8 +10,6 @@ public static class DemandeCongeMapper
         return new DemandeConge
         {
             Id = dto.Id,
-            Name = dto.Name,
-            Description = dto.Description,
             EnseignantId = dto.EnseignantId,
             DateDebut = dto.DateDebut,
             DateFin = dto.DateFin,
@@ -39,8 +37,6 @@ public static class DemandeCongeMapper
         return new DemandeCongeDto
         {
             Id = entity.Id,
-            Name = entity.Name,
-            Description = entity.Description,
             EnseignantId = entity.EnseignantId,
             DateDebut = entity.DateDebut,
             DateFin = entity.DateFin,

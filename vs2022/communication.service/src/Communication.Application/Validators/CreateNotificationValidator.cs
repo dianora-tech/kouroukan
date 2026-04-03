@@ -8,8 +8,6 @@ public sealed class CreateNotificationValidator : BaseEntityValidator<CreateNoti
 {
     public CreateNotificationValidator()
     {
-        RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.TypeId, "Type");
         RuleForRequiredString(x => x.DestinatairesIds, 10000, "Destinataires");
         RuleForRequiredString(x => x.Contenu, 500, "Contenu");

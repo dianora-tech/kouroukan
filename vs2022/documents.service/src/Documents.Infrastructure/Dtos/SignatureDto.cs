@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Documents.Infrastructure.Dtos;
 
+[Table("documents.signatures")]
 public sealed class SignatureDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }

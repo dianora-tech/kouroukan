@@ -24,8 +24,6 @@ public sealed class MessageCommandHandler :
     {
         var entity = new Message
         {
-            Name = request.Name,
-            Description = request.Description,
             TypeId = request.TypeId,
             ExpediteurId = request.ExpediteurId,
             DestinataireId = request.DestinataireId,
@@ -44,8 +42,6 @@ public sealed class MessageCommandHandler :
         var entity = new Message
         {
             Id = request.Id,
-            Name = request.Name,
-            Description = request.Description,
             TypeId = request.TypeId,
             ExpediteurId = request.ExpediteurId,
             DestinataireId = request.DestinataireId,

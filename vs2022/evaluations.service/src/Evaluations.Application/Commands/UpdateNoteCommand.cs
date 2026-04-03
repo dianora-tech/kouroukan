@@ -7,8 +7,6 @@ namespace Evaluations.Application.Commands;
 /// </summary>
 public sealed record UpdateNoteCommand(
     int Id,
-    string Name,
-    string? Description,
     int EvaluationId,
     int EleveId,
     decimal Valeur,

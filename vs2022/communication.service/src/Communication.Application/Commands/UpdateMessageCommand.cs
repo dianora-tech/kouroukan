@@ -7,8 +7,6 @@ namespace Communication.Application.Commands;
 /// </summary>
 public sealed record UpdateMessageCommand(
     int Id,
-    string Name,
-    string? Description,
     int TypeId,
     int ExpediteurId,
     int? DestinataireId,

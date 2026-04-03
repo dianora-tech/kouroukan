@@ -10,12 +10,6 @@ public class Evaluation : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
 
-    /// <summary>Nom de l'evaluation.</summary>
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>Description de l'evaluation.</summary>
-    public string? Description { get; set; }
-
     /// <summary>FK vers le type d'evaluation (evaluations.type_evaluations).</summary>
     public int TypeId { get; set; }
 

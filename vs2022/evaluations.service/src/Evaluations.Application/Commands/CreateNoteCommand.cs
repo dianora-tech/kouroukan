@@ -7,8 +7,6 @@ namespace Evaluations.Application.Commands;
 /// Commande de creation d'une note.
 /// </summary>
 public sealed record CreateNoteCommand(
-    string Name,
-    string? Description,
     int EvaluationId,
     int EleveId,
     decimal Valeur,

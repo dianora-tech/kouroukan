@@ -10,12 +10,6 @@ public class Note : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
 
-    /// <summary>Nom (libelle) de la note.</summary>
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>Description complementaire.</summary>
-    public string? Description { get; set; }
-
     /// <summary>FK vers l'evaluation (evaluations.evaluations).</summary>
     public int EvaluationId { get; set; }
 

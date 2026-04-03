@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Pedagogie.Domain\Pedagogie.Domain.csproj" />
     <ProjectReference Include="..\..\src\Pedagogie.Application\Pedagogie.Application.csproj" />
+    <ProjectReference Include="..\..\src\Pedagogie.Api\Pedagogie.Api.csproj" />
   </ItemGroup>
 
 </Project>

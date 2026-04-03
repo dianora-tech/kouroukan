@@ -10,11 +10,8 @@ public class Annonce : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
 
-    /// <summary>Nom de l'annonce.</summary>
+    /// <summary>Titre de l'annonce.</summary>
     public string Name { get; set; } = string.Empty;
-
-    /// <summary>Description de l'annonce.</summary>
-    public string? Description { get; set; }
 
     /// <summary>FK vers le type d'annonce (communication.type_annonces).</summary>
     public int TypeId { get; set; }

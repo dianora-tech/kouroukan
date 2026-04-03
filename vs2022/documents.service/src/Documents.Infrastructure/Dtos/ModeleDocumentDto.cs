@@ -1,11 +1,14 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Documents.Infrastructure.Dtos;
 
+[Table("documents.modeles_documents")]
 public sealed class ModeleDocumentDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
     public int TypeId { get; set; }
+    public string Name { get; set; } = string.Empty;
     public string Code { get; set; } = string.Empty;
     public string Contenu { get; set; } = string.Empty;
     public string? LogoUrl { get; set; }

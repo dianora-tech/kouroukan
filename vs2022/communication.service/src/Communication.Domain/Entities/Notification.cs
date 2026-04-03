@@ -10,12 +10,6 @@ public class Notification : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
 
-    /// <summary>Nom de la notification.</summary>
-    public string Name { get; set; } = string.Empty;
-
-    /// <summary>Description de la notification.</summary>
-    public string? Description { get; set; }
-
     /// <summary>FK vers le type de notification (communication.type_notifications).</summary>
     public int TypeId { get; set; }
 

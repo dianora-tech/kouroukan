@@ -1,12 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using GnDapper.Entities;
 
 namespace Support.Infrastructure.Dtos;
 
+[Table("support.tickets")]
 public sealed class TicketDto : IAuditableEntity, ISoftDeletable
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string? Description { get; set; }
     public int TypeId { get; set; }
     public int AuteurId { get; set; }
     public string Sujet { get; set; } = string.Empty;

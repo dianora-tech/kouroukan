@@ -9,8 +9,6 @@ public sealed class UpdateBulletinValidator : BaseEntityValidator<UpdateBulletin
     public UpdateBulletinValidator()
     {
         RuleFor(x => x.Id).GreaterThan(0).WithMessage("L'identifiant est obligatoire");
-        RuleForRequiredString(x => x.Name, 200, "Nom");
-        RuleForOptionalString(x => x.Description, 500, "Description");
         RuleForRequiredFk(x => x.EleveId, "Eleve");
         RuleForRequiredFk(x => x.ClasseId, "Classe");
         RuleFor(x => x.Trimestre).InclusiveBetween(1, 3).WithMessage("Le trimestre doit etre compris entre 1 et 3");
