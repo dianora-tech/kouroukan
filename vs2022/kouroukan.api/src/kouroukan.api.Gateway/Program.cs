@@ -67,6 +67,7 @@ try
     builder.Services.AddScoped<IUserService, UserService>();
 
     // Services d'administration de la plateforme
+    builder.Services.AddHttpClient<NimbaSmsService>();
     builder.Services.AddScoped<IAdminService, AdminService>();
     builder.Services.AddScoped<ILiaisonEnseignantService, LiaisonEnseignantService>();
     builder.Services.AddScoped<IQrCodeService, QrCodeService>();

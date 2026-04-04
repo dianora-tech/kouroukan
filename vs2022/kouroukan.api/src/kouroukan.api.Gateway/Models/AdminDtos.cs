@@ -257,11 +257,11 @@ public class QrCodeResolvedDto
 public class EmailConfigDto
 {
     public int Id { get; set; }
-    public string SmtpHost { get; set; } = string.Empty;
-    public int SmtpPort { get; set; }
-    public string SmtpUser { get; set; } = string.Empty;
-    public string EmailExpediteur { get; set; } = string.Empty;
-    public string NomExpediteur { get; set; } = string.Empty;
+    public string Host { get; set; } = string.Empty;
+    public int Port { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string ExpediteurNom { get; set; } = string.Empty;
+    public string ExpediteurEmail { get; set; } = string.Empty;
     public bool EstActif { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
@@ -271,12 +271,12 @@ public class EmailConfigDto
 /// </summary>
 public class UpdateEmailConfigRequest
 {
-    public string SmtpHost { get; set; } = string.Empty;
-    public int SmtpPort { get; set; }
-    public string SmtpUser { get; set; } = string.Empty;
-    public string? SmtpPassword { get; set; }
-    public string EmailExpediteur { get; set; } = string.Empty;
-    public string NomExpediteur { get; set; } = string.Empty;
+    public string Host { get; set; } = string.Empty;
+    public int Port { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string? Password { get; set; }
+    public string ExpediteurNom { get; set; } = string.Empty;
+    public string ExpediteurEmail { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -284,7 +284,7 @@ public class UpdateEmailConfigRequest
 /// </summary>
 public class TestEmailRequest
 {
-    public string To { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }
 
 // ─── SMS Config ────────────────────────────────────────────────────────────────
@@ -298,23 +298,34 @@ public class TestEmailRequest
 public class SmsConfigDto
 {
     public int Id { get; set; }
-    public string ApiKey { get; set; } = string.Empty;
-    public string? ApiSecret { get; set; }
+    public string ServiceId { get; set; } = string.Empty;
+    public string SecretToken { get; set; } = string.Empty;
     public string SenderName { get; set; } = string.Empty;
     public bool EstActif { get; set; }
-    public int? SoldeActuel { get; set; }
+    public int Solde { get; set; }
+    public int SmsRestants { get; set; }
+    public int CoutUnitaire { get; set; }
     public DateTime? DerniereSynchro { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
 
 /// <summary>
-/// Requete de mise a jour de la configuration SMS.
+/// Requete de mise a jour de la configuration SMS NimbaSMS.
 /// </summary>
 public class UpdateSmsConfigRequest
 {
-    public string ApiKey { get; set; } = string.Empty;
-    public string? ApiSecret { get; set; }
+    public string ServiceId { get; set; } = string.Empty;
+    public string? SecretToken { get; set; }
     public string SenderName { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Requete d'envoi d'un SMS de test.
+/// </summary>
+public class TestSmsRequest
+{
+    public string To { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
 }
 
 // ─── Comptes Mobile Money ──────────────────────────────────────────────────────
@@ -449,6 +460,37 @@ public class AdminEtablissementDetailDto
     public string? DirecteurNom { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsActive { get; set; }
+}
+
+// ─── SMS Historique ────────────────────────────────────────────────────────────
+
+/// <summary>
+/// Historique d'un envoi SMS.
+/// </summary>
+public class SmsHistoriqueDto
+{
+    public int Id { get; set; }
+    public string Destinataire { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
+    public string Statut { get; set; } = string.Empty;
+    public DateTime Date { get; set; }
+    public int Cout { get; set; }
+}
+
+// ─── Transactions Mobile Money ────────────────────────────────────────────────
+
+/// <summary>
+/// Transaction Mobile Money.
+/// </summary>
+public class TransactionMobileDto
+{
+    public int Id { get; set; }
+    public string Operateur { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
+    public int Montant { get; set; }
+    public string Reference { get; set; } = string.Empty;
+    public DateTime Date { get; set; }
+    public string Statut { get; set; } = string.Empty;
 }
 
 /// <summary>

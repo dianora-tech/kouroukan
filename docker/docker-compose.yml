@@ -16,11 +16,9 @@ services:
     container_name: kouroukan-nginx
     ports:
       - "80:80"
-      - "443:443"
+      - "8080:8080"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - certbot-certs:/etc/letsencrypt:ro
-      - certbot-www:/var/www/certbot:ro
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       frontend:
         condition: service_healthy
@@ -75,6 +73,7 @@ services:
     container_name: kouroukan-gateway
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
       - Jwt__Key=${JWT_SECRET}
       - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
       - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
@@ -101,6 +100,10 @@ services:
     container_name: kouroukan-inscriptions
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -118,6 +121,10 @@ services:
     container_name: kouroukan-pedagogie
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -135,6 +142,10 @@ services:
     container_name: kouroukan-evaluations
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -152,6 +163,10 @@ services:
     container_name: kouroukan-presences
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -169,6 +184,10 @@ services:
     container_name: kouroukan-finances
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -186,6 +205,10 @@ services:
     container_name: kouroukan-personnel
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -203,6 +226,10 @@ services:
     container_name: kouroukan-communication
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -220,6 +247,10 @@ services:
     container_name: kouroukan-bde
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -237,6 +268,10 @@ services:
     container_name: kouroukan-documents
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -259,6 +294,10 @@ services:
     container_name: kouroukan-services-premium
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
@@ -277,6 +316,10 @@ services:
     container_name: kouroukan-support
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+      - GnDapper__ConnectionString=${DB_CONNECTION_STRING}
+      - Jwt__Key=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER:-kouroukan.gn}
+      - Jwt__Audience=${JWT_AUDIENCE:-kouroukan-app}
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
