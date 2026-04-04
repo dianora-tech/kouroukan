@@ -2,7 +2,8 @@
 # Kouroukan - Deploy Pipeline (via Coolify)
 # =============================================================================
 # Declenchement : apres CI reussie sur develop (env test) ou main (production)
-# Action : appel API Coolify pour declencher le deploiement
+# Note : Coolify gere le projet en docker-compose unique, le deploy est global
+# La selectivite est geree en amont par le CI (tests + builds par service)
 # =============================================================================
 
 name: Deploy
