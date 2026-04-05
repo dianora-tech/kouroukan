@@ -295,7 +295,7 @@ public sealed class AdminControllerTests
     public async Task GetEmailConfig_DoitRetournerConfig_QuandExiste()
     {
         // Arrange
-        var config = new EmailConfigDto { Id = 1, SmtpHost = "smtp.test.com" };
+        var config = new EmailConfigDto { Id = 1, Host = "smtp.test.com" };
         _adminServiceMock
             .Setup(x => x.GetEmailConfigAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(config);
@@ -306,7 +306,7 @@ public sealed class AdminControllerTests
         // Assert
         var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
         var response = okResult.Value.Should().BeOfType<ApiResponse<EmailConfigDto>>().Subject;
-        response.Data!.SmtpHost.Should().Be("smtp.test.com");
+        response.Data!.Host.Should().Be("smtp.test.com");
     }
 
     [Fact]
@@ -328,7 +328,7 @@ public sealed class AdminControllerTests
     public async Task UpdateEmailConfig_DoitRetournerOk()
     {
         // Arrange
-        var request = new UpdateEmailConfigRequest { SmtpHost = "smtp.new.com" };
+        var request = new UpdateEmailConfigRequest { Host = "smtp.new.com" };
         _adminServiceMock
             .Setup(x => x.UpdateEmailConfigAsync(request, It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
@@ -344,7 +344,7 @@ public sealed class AdminControllerTests
     public async Task SendTestEmail_DoitRetournerOk_QuandSucces()
     {
         // Arrange
-        var request = new TestEmailRequest { To = "test@test.com" };
+        var request = new TestEmailRequest { Email = "test@test.com" };
         _adminServiceMock
             .Setup(x => x.SendTestEmailAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -360,7 +360,7 @@ public sealed class AdminControllerTests
     public async Task SendTestEmail_DoitRetournerBadRequest_QuandEchec()
     {
         // Arrange
-        var request = new TestEmailRequest { To = "test@test.com" };
+        var request = new TestEmailRequest { Email = "test@test.com" };
         _adminServiceMock
             .Setup(x => x.SendTestEmailAsync(request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
@@ -411,7 +411,7 @@ public sealed class AdminControllerTests
     public async Task UpdateSmsConfig_DoitRetournerOk()
     {
         // Arrange
-        var request = new UpdateSmsConfigRequest { ApiKey = "key", SenderName = "Test" };
+        var request = new UpdateSmsConfigRequest { ServiceId = "svc", SecretToken = "key", SenderName = "Test" };
         _adminServiceMock
             .Setup(x => x.UpdateSmsConfigAsync(request, It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);

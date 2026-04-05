@@ -16,7 +16,7 @@ public sealed class AdminServiceTests
     {
         _connectionFactoryMock = new Mock<IDbConnectionFactory>();
         _loggerMock = new Mock<ILogger<AdminService>>();
-        _sut = new AdminService(_connectionFactoryMock.Object, _loggerMock.Object);
+        _sut = new AdminService(_connectionFactoryMock.Object, _loggerMock.Object, new NimbaSmsService(new HttpClient(), new Mock<ILogger<NimbaSmsService>>().Object));
     }
 
     // ─── Construction ───
