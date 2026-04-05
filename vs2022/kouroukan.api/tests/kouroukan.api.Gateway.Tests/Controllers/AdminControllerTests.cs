@@ -423,6 +423,83 @@ public sealed class AdminControllerTests
         result.Should().BeOfType<OkObjectResult>();
     }
 
+    // ─── SMS Test / Sync / Historique ───
+
+    [Fact]
+    public async Task SendTestSms_DoitRetournerOk_QuandSucces()
+    {
+        // Arrange
+        var request = new TestSmsRequest { To = "224621000000", Message = "Test" };
+        _adminServiceMock
+            .Setup(x => x.SendTestSmsAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        // Act
+        var result = await _sut.SendTestSms(request, CancellationToken.None);
+
+        // Assert
+        result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [Fact]
+    public async Task SendTestSms_DoitRetournerBadRequest_QuandEchec()
+    {
+        // Arrange
+        var request = new TestSmsRequest { To = "224621000000", Message = "Test" };
+        _adminServiceMock
+            .Setup(x => x.SendTestSmsAsync(request, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+
+        // Act
+        var result = await _sut.SendTestSms(request, CancellationToken.None);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+    }
+
+    [Fact]
+    public async Task SyncSmsBalance_DoitRetournerConfigMiseAJour()
+    {
+        // Arrange
+        _adminServiceMock
+            .Setup(x => x.SyncSmsBalanceAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        var config = new SmsConfigDto { Id = 1, Solde = 5000, SmsRestants = 25 };
+        _adminServiceMock
+            .Setup(x => x.GetSmsConfigAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(config);
+
+        // Act
+        var result = await _sut.SyncSmsBalance(CancellationToken.None);
+
+        // Assert
+        var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+        var response = okResult.Value.Should().BeOfType<ApiResponse<SmsConfigDto>>().Subject;
+        response.Data!.Solde.Should().Be(5000);
+    }
+
+    [Fact]
+    public async Task GetSmsHistorique_DoitRetournerListePaginee()
+    {
+        // Arrange
+        var paged = new PagedResult<SmsHistoriqueDto>
+        {
+            Items = new List<SmsHistoriqueDto> { new() { Id = 1, Destinataire = "224621000000" } },
+            TotalCount = 1, Page = 1, PageSize = 20
+        };
+        _adminServiceMock
+            .Setup(x => x.GetSmsHistoriqueAsync(1, 20, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(paged);
+
+        // Act
+        var result = await _sut.GetSmsHistorique();
+
+        // Assert
+        var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+        var response = okResult.Value.Should().BeOfType<ApiResponse<PagedResult<SmsHistoriqueDto>>>().Subject;
+        response.Data!.Items.Should().HaveCount(1);
+    }
+
     // ─── Comptes Mobile Money ───
 
     [Fact]
@@ -705,5 +782,120 @@ public sealed class AdminControllerTests
         var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
         var response = okResult.Value.Should().BeOfType<ApiResponse<ForfaitStatsDto>>().Subject;
         response.Data!.TotalEtablissements.Should().Be(50);
+    }
+
+    // ─── Transactions Mobile Money ───
+
+    [Fact]
+    public async Task GetTransactionsMobile_DoitRetournerListePaginee()
+    {
+        // Arrange
+        var paged = new PagedResult<TransactionMobileDto>
+        {
+            Items = new List<TransactionMobileDto> { new() { Id = 1, Operateur = "OrangeMoney", Montant = 50000 } },
+            TotalCount = 1, Page = 1, PageSize = 20
+        };
+        _adminServiceMock
+            .Setup(x => x.GetTransactionsMobileAsync(1, 20, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(paged);
+
+        // Act
+        var result = await _sut.GetTransactionsMobile();
+
+        // Assert
+        var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+        var response = okResult.Value.Should().BeOfType<ApiResponse<PagedResult<TransactionMobileDto>>>().Subject;
+        response.Data!.Items.Should().HaveCount(1);
+        response.Data!.Items[0].Montant.Should().Be(50000);
+    }
+
+    // ─── Dashboard Stats ───
+
+    [Fact]
+    public async Task GetDashboardKpis_DoitRetournerKpis()
+    {
+        // Arrange
+        var kpis = new DashboardKpiDto { TotalEtablissements = 10, TotalEnseignants = 50, TotalParents = 200, TotalEleves = 500 };
+        _adminServiceMock
+            .Setup(x => x.GetDashboardKpisAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(kpis);
+
+        // Act
+        var result = await _sut.GetDashboardKpis(CancellationToken.None);
+
+        // Assert
+        var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+        var response = okResult.Value.Should().BeOfType<ApiResponse<DashboardKpiDto>>().Subject;
+        response.Data!.TotalEtablissements.Should().Be(10);
+        response.Data!.TotalEleves.Should().Be(500);
+    }
+
+    [Fact]
+    public async Task GetRevenusMensuels_DoitRetournerRevenus()
+    {
+        // Arrange
+        var revenus = new List<RevenuMensuelDto>
+        {
+            new() { Mois = "Jan", Montant = 3_500_000 },
+            new() { Mois = "Fev", Montant = 4_200_000 },
+        };
+        _adminServiceMock
+            .Setup(x => x.GetRevenusMensuelsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(revenus);
+
+        // Act
+        var result = await _sut.GetRevenusMensuels(CancellationToken.None);
+
+        // Assert
+        var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+        var response = okResult.Value.Should().BeOfType<ApiResponse<List<RevenuMensuelDto>>>().Subject;
+        response.Data.Should().HaveCount(2);
+        response.Data![0].Mois.Should().Be("Jan");
+    }
+
+    [Fact]
+    public async Task GetRegionStats_DoitRetournerRegions()
+    {
+        // Arrange
+        var regions = new List<RegionStatDto>
+        {
+            new() { Nom = "Conakry", Count = 22, Pct = 47 },
+            new() { Nom = "Kindia", Count = 8, Pct = 17 },
+        };
+        _adminServiceMock
+            .Setup(x => x.GetRegionStatsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(regions);
+
+        // Act
+        var result = await _sut.GetRegionStats(CancellationToken.None);
+
+        // Assert
+        var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+        var response = okResult.Value.Should().BeOfType<ApiResponse<List<RegionStatDto>>>().Subject;
+        response.Data.Should().HaveCount(2);
+        response.Data![0].Nom.Should().Be("Conakry");
+    }
+
+    [Fact]
+    public async Task GetUsageStats_DoitRetournerStatistiquesUsage()
+    {
+        // Arrange
+        var usage = new List<UsageStatDto>
+        {
+            new() { Label = "Taux de connexion", Value = "68%", Trend = "+5%" },
+            new() { Label = "SMS envoyes", Value = "450", Trend = "+22%" },
+        };
+        _adminServiceMock
+            .Setup(x => x.GetUsageStatsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(usage);
+
+        // Act
+        var result = await _sut.GetUsageStats(CancellationToken.None);
+
+        // Assert
+        var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+        var response = okResult.Value.Should().BeOfType<ApiResponse<List<UsageStatDto>>>().Subject;
+        response.Data.Should().HaveCount(2);
+        response.Data![0].Value.Should().Be("68%");
     }
 }
