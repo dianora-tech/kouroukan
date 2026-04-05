@@ -493,6 +493,48 @@ public class TransactionMobileDto
     public string Statut { get; set; } = string.Empty;
 }
 
+// ─── Dashboard Stats ──────────────────────────────────────────────────────────
+
+/// <summary>
+/// KPIs du tableau de bord admin.
+/// </summary>
+public class DashboardKpiDto
+{
+    public int TotalEtablissements { get; set; }
+    public int TotalEnseignants { get; set; }
+    public int TotalParents { get; set; }
+    public int TotalEleves { get; set; }
+}
+
+/// <summary>
+/// Revenu mensuel pour le graphique.
+/// </summary>
+public class RevenuMensuelDto
+{
+    public string Mois { get; set; } = string.Empty;
+    public long Montant { get; set; }
+}
+
+/// <summary>
+/// Repartition par region.
+/// </summary>
+public class RegionStatDto
+{
+    public string Nom { get; set; } = string.Empty;
+    public int Count { get; set; }
+    public int Pct { get; set; }
+}
+
+/// <summary>
+/// Statistique d'usage.
+/// </summary>
+public class UsageStatDto
+{
+    public string Label { get; set; } = string.Empty;
+    public string Value { get; set; } = string.Empty;
+    public string Trend { get; set; } = string.Empty;
+}
+
 /// <summary>
 /// Requete de mise a jour d'un etablissement par l'admin.
 /// </summary>

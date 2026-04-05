@@ -1128,4 +1128,116 @@ public sealed class AdminService : IAdminService
 
         _logger.LogInformation("Etablissement {CompanyId} supprime par l'admin", id);
     }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // DASHBOARD STATS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    public async Task<DashboardKpiDto> GetDashboardKpisAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var raw = await connection.QuerySingleAsync<DashboardKpiRaw>(
+            """
+            SELECT
+              (SELECT COUNT(*) FROM auth.companies WHERE is_deleted = FALSE) AS TotalEtablissements,
+              (SELECT COUNT(DISTINCT u.id) FROM auth.users u
+               JOIN auth.user_roles ur ON ur.user_id = u.id
+               JOIN auth.roles r ON r.id = ur.role_id
+               WHERE r.name = 'enseignant' AND u.is_deleted = FALSE AND u.is_active = TRUE) AS TotalEnseignants,
+              (SELECT COUNT(DISTINCT u.id) FROM auth.users u
+               JOIN auth.user_roles ur ON ur.user_id = u.id
+               JOIN auth.roles r ON r.id = ur.role_id
+               WHERE r.name = 'parent' AND u.is_deleted = FALSE AND u.is_active = TRUE) AS TotalParents,
+              (SELECT COUNT(*) FROM inscriptions.eleves WHERE is_deleted = FALSE) AS TotalEleves
+            """);
+
+        return new DashboardKpiDto
+        {
+            TotalEtablissements = (int)raw.TotalEtablissements,
+            TotalEnseignants = (int)raw.TotalEnseignants,
+            TotalParents = (int)raw.TotalParents,
+            TotalEleves = (int)raw.TotalEleves,
+        };
+    }
+
+    private sealed class DashboardKpiRaw
+    {
+        public long TotalEtablissements { get; set; }
+        public long TotalEnseignants { get; set; }
+        public long TotalParents { get; set; }
+        public long TotalEleves { get; set; }
+    }
+
+    public async Task<List<RevenuMensuelDto>> GetRevenusMensuelsAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var items = await connection.QueryAsync<RevenuMensuelDto>(
+            """
+            SELECT
+              TO_CHAR(date_trunc('month', ab.date_debut), 'Mon') AS Mois,
+              COALESCE(SUM(f.prix_mensuel), 0) AS Montant
+            FROM auth.abonnements ab
+            JOIN auth.forfaits f ON f.id = ab.forfait_id
+            WHERE ab.is_deleted = FALSE
+              AND ab.date_debut >= date_trunc('month', CURRENT_DATE) - INTERVAL '5 months'
+            GROUP BY date_trunc('month', ab.date_debut)
+            ORDER BY date_trunc('month', ab.date_debut)
+            """);
+
+        return items.AsList();
+    }
+
+    public async Task<List<RegionStatDto>> GetRegionStatsAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var items = await connection.QueryAsync<RegionStatDto>(
+            """
+            WITH region_counts AS (
+              SELECT COALESCE(r.name, 'Non renseigne') AS Nom,
+                     COUNT(*) AS Count
+              FROM auth.companies c
+              LEFT JOIN geo.regions r ON r.code = c.region_code AND r.is_deleted = FALSE
+              WHERE c.is_deleted = FALSE
+              GROUP BY r.name
+            ),
+            total AS (
+              SELECT SUM(Count) AS Total FROM region_counts
+            )
+            SELECT rc.Nom, rc.Count::int,
+                   CASE WHEN t.Total > 0 THEN ROUND(rc.Count * 100.0 / t.Total)::int ELSE 0 END AS Pct
+            FROM region_counts rc, total t
+            ORDER BY rc.Count DESC
+            LIMIT 10
+            """);
+
+        return items.AsList();
+    }
+
+    public async Task<List<UsageStatDto>> GetUsageStatsAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        // Compute real usage stats from database
+        var smsCount = await connection.ExecuteScalarAsync<long>(
+            "SELECT COUNT(*) FROM support.sms_historique WHERE created_at >= date_trunc('month', CURRENT_DATE)");
+
+        var activeUsers = await connection.ExecuteScalarAsync<long>(
+            "SELECT COUNT(*) FROM auth.users WHERE is_active = TRUE AND is_deleted = FALSE AND last_login_at >= CURRENT_DATE - INTERVAL '30 days'");
+
+        var totalUsers = await connection.ExecuteScalarAsync<long>(
+            "SELECT COUNT(*) FROM auth.users WHERE is_active = TRUE AND is_deleted = FALSE");
+
+        var tauxConnexion = totalUsers > 0 ? Math.Round((decimal)activeUsers / totalUsers * 100) : 0;
+
+        return new List<UsageStatDto>
+        {
+            new() { Label = "Taux de connexion (30j)", Value = $"{tauxConnexion}%", Trend = "" },
+            new() { Label = "Utilisateurs actifs", Value = activeUsers.ToString("N0"), Trend = "" },
+            new() { Label = "SMS envoyes ce mois", Value = smsCount.ToString("N0"), Trend = "" },
+            new() { Label = "Etablissements", Value = (await connection.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM auth.companies WHERE is_deleted = FALSE")).ToString("N0"), Trend = "" },
+        };
+    }
 }

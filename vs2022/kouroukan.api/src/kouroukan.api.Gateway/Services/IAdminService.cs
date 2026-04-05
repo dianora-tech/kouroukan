@@ -65,6 +65,13 @@ public interface IAdminService
 
     Task<ForfaitStatsDto> GetForfaitStatsAsync(CancellationToken ct = default);
 
+    // ─── Dashboard Stats ──────────��───────────────────────────────────────────
+
+    Task<DashboardKpiDto> GetDashboardKpisAsync(CancellationToken ct = default);
+    Task<List<RevenuMensuelDto>> GetRevenusMensuelsAsync(CancellationToken ct = default);
+    Task<List<RegionStatDto>> GetRegionStatsAsync(CancellationToken ct = default);
+    Task<List<UsageStatDto>> GetUsageStatsAsync(CancellationToken ct = default);
+
     // ─── Etablissements ────────────────────────────────────────────────────────
 
     Task<PagedResult<AdminEtablissementDto>> GetEtablissementsAsync(int page, int pageSize, CancellationToken ct = default);

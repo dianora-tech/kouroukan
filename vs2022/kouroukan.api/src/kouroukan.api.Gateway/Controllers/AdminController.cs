@@ -491,6 +491,54 @@ public sealed class AdminController : ControllerBase
         return Ok(ApiResponse<ForfaitStatsDto>.Ok(stats));
     }
 
+    // ═══════════════════════════════════════════════════════════════════════════
+    // DASHBOARD STATS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Recupere les KPIs du tableau de bord (etablissements, enseignants, parents, eleves).
+    /// </summary>
+    [HttpGet("stats/dashboard")]
+    [ProducesResponseType(typeof(ApiResponse<DashboardKpiDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetDashboardKpis(CancellationToken ct)
+    {
+        var kpis = await _adminService.GetDashboardKpisAsync(ct);
+        return Ok(ApiResponse<DashboardKpiDto>.Ok(kpis));
+    }
+
+    /// <summary>
+    /// Recupere les revenus mensuels des 6 derniers mois.
+    /// </summary>
+    [HttpGet("stats/revenus")]
+    [ProducesResponseType(typeof(ApiResponse<List<RevenuMensuelDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRevenusMensuels(CancellationToken ct)
+    {
+        var revenus = await _adminService.GetRevenusMensuelsAsync(ct);
+        return Ok(ApiResponse<List<RevenuMensuelDto>>.Ok(revenus));
+    }
+
+    /// <summary>
+    /// Recupere la repartition des etablissements par region.
+    /// </summary>
+    [HttpGet("stats/regions")]
+    [ProducesResponseType(typeof(ApiResponse<List<RegionStatDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRegionStats(CancellationToken ct)
+    {
+        var regions = await _adminService.GetRegionStatsAsync(ct);
+        return Ok(ApiResponse<List<RegionStatDto>>.Ok(regions));
+    }
+
+    /// <summary>
+    /// Recupere les statistiques d'usage de la plateforme.
+    /// </summary>
+    [HttpGet("stats/usage")]
+    [ProducesResponseType(typeof(ApiResponse<List<UsageStatDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUsageStats(CancellationToken ct)
+    {
+        var usage = await _adminService.GetUsageStatsAsync(ct);
+        return Ok(ApiResponse<List<UsageStatDto>>.Ok(usage));
+    }
+
     /// <summary>Supprime (soft delete) un etablissement.</summary>
     [HttpDelete("etablissements/{id:int}")]
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]

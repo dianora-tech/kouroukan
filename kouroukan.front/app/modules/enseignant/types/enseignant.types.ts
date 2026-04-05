@@ -35,6 +35,26 @@ export interface AffectationEnseignant extends BaseEntity {
   anneeScolaireId: number
 }
 
+// ── Heures d'enseignement (seances realisees) ───────────
+export interface HeureEnseignant extends BaseEntity {
+  date: string
+  etablissement: string
+  classe: string
+  matiere: string
+  duree: number
+  statut: string
+}
+
+// ── Bulletin Enseignant ─────────────────────────────────
+export interface BulletinEnseignant extends BaseEntity {
+  etablissement: string
+  classe: string
+  trimestre: string
+  date: string
+  statut: string
+  url: string
+}
+
 // ── Enseignant Filters ───────────────────────────────────
 export interface EnseignantFilters {
   search?: string

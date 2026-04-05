@@ -1,57 +1,30 @@
 <script setup lang="ts">
-import { apiClient } from '~/core/api/client'
+import { useDashboardStore } from '~/modules/admin/stores/dashboard.store'
 
 definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
 
-const kpis = [
-  { label: t('admin.kpi.etablissements'), value: 47, icon: 'i-heroicons-building-office-2', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-  { label: t('admin.kpi.enseignants'), value: 312, icon: 'i-heroicons-academic-cap', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-900/20' },
-  { label: t('admin.kpi.parents'), value: 1_845, icon: 'i-heroicons-users', color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20' },
-  { label: t('admin.kpi.eleves'), value: 3_210, icon: 'i-heroicons-user-group', color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-900/20' },
-]
+const store = useDashboardStore()
+const loading = computed(() => store.loading)
 
-const revenusMensuels = [
-  { mois: 'Oct', montant: 2_400_000 },
-  { mois: 'Nov', montant: 3_100_000 },
-  { mois: 'Dec', montant: 2_800_000 },
-  { mois: 'Jan', montant: 3_500_000 },
-  { mois: 'Fev', montant: 3_900_000 },
-  { mois: 'Mar', montant: 4_200_000 },
-]
+const kpiCards = computed(() => {
+  const k = store.kpis
+  if (!k) return []
+  return [
+    { label: t('admin.kpi.etablissements'), value: k.totalEtablissements, icon: 'i-heroicons-building-office-2', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+    { label: t('admin.kpi.enseignants'), value: k.totalEnseignants, icon: 'i-heroicons-academic-cap', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-900/20' },
+    { label: t('admin.kpi.parents'), value: k.totalParents, icon: 'i-heroicons-users', color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20' },
+    { label: t('admin.kpi.eleves'), value: k.totalEleves, icon: 'i-heroicons-user-group', color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-900/20' },
+  ]
+})
 
-const regions = [
-  { nom: 'Conakry', count: 22, pct: 47 },
-  { nom: 'Kindia', count: 8, pct: 17 },
-  { nom: 'Kankan', count: 6, pct: 13 },
-  { nom: 'Labé', count: 5, pct: 11 },
-  { nom: 'Autres', count: 6, pct: 12 },
-]
+const revenus = computed(() => store.revenus)
+const maxRevenu = computed(() => Math.max(...revenus.value.map(r => r.montant), 1))
+const regions = computed(() => store.regions)
+const usage = computed(() => store.usage)
 
-const ameliorations = [
-  { label: t('admin.usage.connexionMoyenne'), value: '68%', trend: '+5%' },
-  { label: t('admin.usage.tauxUtilisationNotes'), value: '42%', trend: '+12%' },
-  { label: t('admin.usage.tauxPaiementEnLigne'), value: '31%', trend: '+8%' },
-  { label: t('admin.usage.smsEnvoyes'), value: '12 450', trend: '+22%' },
-]
-
-// --- Forfait Stats (données réelles depuis l'API) ---
-interface ForfaitStats {
-  totalEtablissements: number
-  etablissementsAvecForfait: number
-  tauxEtablissements: number
-  totalEnseignants: number
-  enseignantsAvecForfait: number
-  tauxEnseignants: number
-  totalParents: number
-  parentsAvecForfait: number
-  tauxParents: number
-}
-
-const forfaitStats = ref<ForfaitStats | null>(null)
-const forfaitStatsLoading = ref(false)
-
+const forfaitStats = computed(() => store.forfaitStats)
 const forfaitStatsCards = computed(() => {
   if (!forfaitStats.value) return []
   const s = forfaitStats.value
@@ -89,22 +62,8 @@ const forfaitStatsCards = computed(() => {
   ]
 })
 
-async function fetchForfaitStats() {
-  forfaitStatsLoading.value = true
-  try {
-    const res = await apiClient.get<{ data: ForfaitStats }>('/api/admin/stats/forfaits')
-    forfaitStats.value = res.data
-  }
-  catch {
-    // silently fail — stats section simply won't show
-  }
-  finally {
-    forfaitStatsLoading.value = false
-  }
-}
-
 onMounted(() => {
-  fetchForfaitStats()
+  store.fetchAll()
 })
 </script>
 
@@ -122,10 +81,24 @@ onMounted(() => {
       </h1>
     </div>
 
+    <!-- Loading -->
+    <div
+      v-if="loading && kpiCards.length === 0"
+      class="flex justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
+    </div>
+
     <!-- KPI Cards -->
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div
+      v-if="kpiCards.length > 0"
+      class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+    >
       <div
-        v-for="kpi in kpis"
+        v-for="kpi in kpiCards"
         :key="kpi.label"
         class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800"
       >
@@ -154,13 +127,16 @@ onMounted(() => {
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <!-- Revenus du mois -->
-      <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+      <div
+        v-if="revenus.length > 0"
+        class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800"
+      >
         <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
           {{ $t('admin.revenus.title') }}
         </h2>
         <div class="space-y-3">
           <div
-            v-for="r in revenusMensuels"
+            v-for="r in revenus"
             :key="r.mois"
             class="flex items-center gap-3"
           >
@@ -168,7 +144,7 @@ onMounted(() => {
             <div class="flex-1 rounded-full bg-gray-100 dark:bg-gray-700">
               <div
                 class="h-6 rounded-full bg-primary-500"
-                :style="{ width: `${(r.montant / 4_200_000) * 100}%` }"
+                :style="{ width: `${(r.montant / maxRevenu) * 100}%` }"
               />
             </div>
             <span class="w-24 text-right text-sm font-medium text-gray-900 dark:text-white">
@@ -179,7 +155,10 @@ onMounted(() => {
       </div>
 
       <!-- Repartition par region -->
-      <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+      <div
+        v-if="regions.length > 0"
+        class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800"
+      >
         <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
           {{ $t('admin.demographie.title') }}
         </h2>
@@ -247,13 +226,16 @@ onMounted(() => {
     </div>
 
     <!-- Axes d'amelioration -->
-    <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+    <div
+      v-if="usage.length > 0"
+      class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800"
+    >
       <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
         {{ $t('admin.ameliorations.title') }}
       </h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div
-          v-for="item in ameliorations"
+          v-for="item in usage"
           :key="item.label"
           class="rounded-lg border border-gray-100 p-4 dark:border-gray-700"
         >
@@ -263,6 +245,7 @@ onMounted(() => {
           <div class="mt-1 flex items-baseline gap-2">
             <span class="text-xl font-bold text-gray-900 dark:text-white">{{ item.value }}</span>
             <UBadge
+              v-if="item.trend"
               color="success"
               variant="subtle"
               size="xs"
