@@ -17,6 +17,15 @@
 #   2. Renseigner toutes les variables d'environnement dans Coolify
 #   3. Coolify provisionne automatiquement les certificats SSL
 #
+# ⚠️  BUILD SUR SERVEURS < 8 Go RAM :
+#   Coolify lance `docker compose build` qui builde TOUS les services en
+#   parallèle. Sur un serveur avec peu de RAM (< 8 Go), cela échoue par OOM.
+#   Utiliser le script de build par lots à la place :
+#
+#     ./scripts/build-batched.sh              # Build tout par lots de 2
+#     BATCH_SIZE=3 ./scripts/build-batched.sh # Build par lots de 3
+#     ./scripts/build-batched.sh gateway      # Build un seul service
+#
 # Domaines configurés :
 #   portal       → https://kouroukan.dianora.org
 #   frontend     → https://app.kouroukan.dianora.org
