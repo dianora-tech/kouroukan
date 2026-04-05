@@ -12,10 +12,17 @@ const store = useSmsConfigStore()
 
 const loading = computed(() => store.loading)
 const saving = computed(() => store.saving)
+const testSending = computed(() => store.testSending)
+const syncing = computed(() => store.syncing)
 const config = computed(() => store.config)
 const historique = computed(() => store.historique)
 
-const apiKey = ref('')
+const serviceId = ref('')
+const secretToken = ref('')
+const senderName = ref('Kouroukan')
+const testPhone = ref('')
+const testMessage = ref('')
+
 const solde = computed(() => config.value?.solde ?? 0)
 const smsRestants = computed(() => config.value?.smsRestants ?? 0)
 const coutUnitaire = computed(() => config.value?.coutUnitaire ?? 200)
@@ -24,17 +31,48 @@ onMounted(async () => {
   await store.fetch()
   await store.fetchHistorique()
   if (config.value) {
-    apiKey.value = config.value.apiKey
+    serviceId.value = config.value.serviceId
+    senderName.value = config.value.senderName || 'Kouroukan'
   }
 })
 
 async function saveConfig(): Promise<void> {
-  const success = await store.update({ apiKey: apiKey.value })
+  const success = await store.update({
+    serviceId: serviceId.value,
+    secretToken: secretToken.value || undefined,
+    senderName: senderName.value,
+  })
   if (success) {
+    secretToken.value = ''
     toast.add({ title: t('admin.sms.saveSuccess'), color: 'success' })
   }
   else {
     toast.add({ title: t('admin.sms.saveError'), color: 'error' })
+  }
+}
+
+async function sendTestSms(): Promise<void> {
+  if (!testPhone.value || !testMessage.value) return
+  const success = await store.sendTest({
+    to: testPhone.value,
+    message: testMessage.value,
+  })
+  if (success) {
+    toast.add({ title: 'SMS de test envoye avec succes !', color: 'success' })
+    testMessage.value = ''
+  }
+  else {
+    toast.add({ title: 'Echec de l\'envoi du SMS. Verifiez la configuration.', color: 'error' })
+  }
+}
+
+async function syncBalance(): Promise<void> {
+  const success = await store.syncBalance()
+  if (success) {
+    toast.add({ title: 'Solde synchronise avec NimbaSMS.', color: 'success' })
+  }
+  else {
+    toast.add({ title: 'Impossible de synchroniser le solde.', color: 'error' })
   }
 }
 
@@ -89,27 +127,81 @@ const columns: Column[] = [
       </div>
     </div>
 
-    <!-- API Config -->
-    <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+    <!-- Bouton Sync Solde -->
+    <div class="flex justify-end">
+      <UButton
+        color="neutral"
+        variant="outline"
+        :loading="syncing"
+        @click="syncBalance"
+      >
+        Synchroniser le solde
+      </UButton>
+    </div>
+
+    <!-- Configuration NimbaSMS -->
+    <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
       <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-        {{ $t('admin.sms.configApi') }}
+        Configuration NimbaSMS
       </h2>
-      <div class="flex items-end gap-4">
-        <UFormField
-          :label="$t('admin.sms.apiKey')"
-          class="flex-1"
-        >
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <UFormField label="Service ID (Account SID)">
           <UInput
-            v-model="apiKey"
-            type="password"
+            v-model="serviceId"
+            placeholder="Votre Service ID NimbaSMS"
           />
         </UFormField>
+        <UFormField label="Secret Token (Auth Token)">
+          <UInput
+            v-model="secretToken"
+            type="password"
+            placeholder="Laisser vide pour ne pas modifier"
+          />
+        </UFormField>
+        <UFormField label="Nom expediteur">
+          <UInput
+            v-model="senderName"
+            placeholder="Kouroukan"
+          />
+        </UFormField>
+      </div>
+      <div class="mt-6">
         <UButton
           color="primary"
           :loading="saving"
           @click="saveConfig"
         >
           {{ $t('admin.sms.save') }}
+        </UButton>
+      </div>
+    </div>
+
+    <!-- Envoyer un SMS de test -->
+    <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+        Envoyer un SMS de test
+      </h2>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <UFormField label="Numero de telephone">
+          <UInput
+            v-model="testPhone"
+            placeholder="+224 6XX XX XX XX"
+          />
+        </UFormField>
+        <UFormField label="Message">
+          <UInput
+            v-model="testMessage"
+            placeholder="Votre message de test"
+          />
+        </UFormField>
+      </div>
+      <div class="mt-4">
+        <UButton
+          color="primary"
+          :loading="testSending"
+          @click="sendTestSms"
+        >
+          Envoyer le test
         </UButton>
       </div>
     </div>
@@ -126,7 +218,7 @@ const columns: Column[] = [
       >
         <template #cell-statut="{ row }">
           <UBadge
-            :color="(row as SmsEnvoi).statut === 'Envoyé' ? 'success' : 'error'"
+            :color="(row as SmsEnvoi).statut === 'envoye' ? 'success' : (row as SmsEnvoi).statut === 'echoue' ? 'error' : 'warning'"
             variant="subtle"
             size="sm"
           >

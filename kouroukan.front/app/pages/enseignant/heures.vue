@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useForfaitGating } from '~/composables/useForfaitGating'
+import { useHeuresStore } from '~/modules/enseignant/stores/heures.store'
 
 definePageMeta({ layout: 'default' })
 
@@ -8,18 +9,14 @@ const { formatDate } = useFormatDate()
 const { isFeatureLocked } = useForfaitGating()
 const isLocked = computed(() => isFeatureLocked('heures'))
 
-const heures = ref([
-  { id: 1, date: '2025-03-03', etablissement: 'Lycee Kwame Nkrumah', classe: 'TS', matiere: 'Mathematiques', duree: 2 },
-  { id: 2, date: '2025-03-03', etablissement: 'College Soundjata Keita', classe: '3eme', matiere: 'Physique', duree: 2 },
-  { id: 3, date: '2025-03-04', etablissement: 'Lycee Kwame Nkrumah', classe: '1S', matiere: 'Mathematiques', duree: 2 },
-  { id: 4, date: '2025-03-05', etablissement: 'Lycee Kwame Nkrumah', classe: '2nde', matiere: 'Mathematiques', duree: 2 },
-  { id: 5, date: '2025-03-06', etablissement: 'College Soundjata Keita', classe: '4eme', matiere: 'Physique', duree: 2 },
-  { id: 6, date: '2025-03-07', etablissement: 'Lycee Kwame Nkrumah', classe: 'TS', matiere: 'Mathematiques', duree: 2 },
-  { id: 7, date: '2025-03-10', etablissement: 'Lycee Kwame Nkrumah', classe: 'TS', matiere: 'Mathematiques', duree: 2 },
-  { id: 8, date: '2025-03-10', etablissement: 'College Soundjata Keita', classe: '3eme', matiere: 'Physique', duree: 2 },
-])
+const store = useHeuresStore()
+const loading = computed(() => store.loading)
+const heures = computed(() => store.items)
+const totalMois = computed(() => store.totalHeuresMois)
 
-const totalMois = computed(() => heures.value.reduce((sum, h) => sum + h.duree, 0))
+onMounted(async () => {
+  await store.fetchAll()
+})
 </script>
 
 <template>
@@ -61,8 +58,36 @@ const totalMois = computed(() => heures.value.reduce((sum, h) => sum + h.duree, 
       </div>
     </div>
 
+    <!-- Loading -->
+    <div
+      v-if="loading"
+      class="flex justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="heures.length === 0"
+      class="rounded-xl border border-gray-200 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-800"
+    >
+      <UIcon
+        name="i-heroicons-clock"
+        class="mx-auto h-12 w-12 text-gray-300"
+      />
+      <p class="mt-4 text-sm text-gray-500">
+        {{ $t('common.noData') }}
+      </p>
+    </div>
+
     <!-- Table -->
-    <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+    <div
+      v-else
+      class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+    >
       <table class="w-full text-left text-sm">
         <thead class="border-b border-gray-200 dark:border-gray-700">
           <tr>

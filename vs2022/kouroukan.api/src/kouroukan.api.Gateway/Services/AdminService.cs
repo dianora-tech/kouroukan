@@ -11,13 +11,16 @@ public sealed class AdminService : IAdminService
 {
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly ILogger<AdminService> _logger;
+    private readonly NimbaSmsService _nimbaSmsService;
 
     public AdminService(
         IDbConnectionFactory connectionFactory,
-        ILogger<AdminService> logger)
+        ILogger<AdminService> logger,
+        NimbaSmsService nimbaSmsService)
     {
         _connectionFactory = connectionFactory;
         _logger = logger;
+        _nimbaSmsService = nimbaSmsService;
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -468,8 +471,8 @@ public sealed class AdminService : IAdminService
 
         return await connection.QuerySingleOrDefaultAsync<EmailConfigDto>(
             """
-            SELECT id, smtp_host AS SmtpHost, smtp_port AS SmtpPort, smtp_user AS SmtpUser,
-                   email_expediteur AS EmailExpediteur, nom_expediteur AS NomExpediteur,
+            SELECT id, smtp_host AS Host, smtp_port AS Port, smtp_user AS Username,
+                   nom_expediteur AS ExpediteurNom, email_expediteur AS ExpediteurEmail,
                    est_actif AS EstActif, updated_at AS UpdatedAt
             FROM support.email_config
             LIMIT 1
@@ -485,29 +488,29 @@ public sealed class AdminService : IAdminService
 
         if (exists)
         {
-            var sql = string.IsNullOrWhiteSpace(request.SmtpPassword)
+            var sql = string.IsNullOrWhiteSpace(request.Password)
                 ? """
                   UPDATE support.email_config
-                  SET smtp_host = @SmtpHost, smtp_port = @SmtpPort, smtp_user = @SmtpUser,
-                      email_expediteur = @EmailExpediteur, nom_expediteur = @NomExpediteur,
+                  SET smtp_host = @Host, smtp_port = @Port, smtp_user = @Username,
+                      email_expediteur = @ExpediteurEmail, nom_expediteur = @ExpediteurNom,
                       est_actif = TRUE, updated_at = NOW()
                   """
                 : """
                   UPDATE support.email_config
-                  SET smtp_host = @SmtpHost, smtp_port = @SmtpPort, smtp_user = @SmtpUser,
-                      smtp_password = @SmtpPassword,
-                      email_expediteur = @EmailExpediteur, nom_expediteur = @NomExpediteur,
+                  SET smtp_host = @Host, smtp_port = @Port, smtp_user = @Username,
+                      smtp_password = @Password,
+                      email_expediteur = @ExpediteurEmail, nom_expediteur = @ExpediteurNom,
                       est_actif = TRUE, updated_at = NOW()
                   """;
 
             await connection.ExecuteAsync(sql, new
             {
-                request.SmtpHost,
-                request.SmtpPort,
-                request.SmtpUser,
-                request.SmtpPassword,
-                request.EmailExpediteur,
-                request.NomExpediteur
+                request.Host,
+                request.Port,
+                request.Username,
+                request.Password,
+                request.ExpediteurEmail,
+                request.ExpediteurNom
             });
         }
         else
@@ -516,16 +519,16 @@ public sealed class AdminService : IAdminService
                 """
                 INSERT INTO support.email_config (smtp_host, smtp_port, smtp_user, smtp_password,
                                                   email_expediteur, nom_expediteur, est_actif)
-                VALUES (@SmtpHost, @SmtpPort, @SmtpUser, @SmtpPassword, @EmailExpediteur, @NomExpediteur, TRUE)
+                VALUES (@Host, @Port, @Username, @Password, @ExpediteurEmail, @ExpediteurNom, TRUE)
                 """,
                 new
                 {
-                    request.SmtpHost,
-                    request.SmtpPort,
-                    request.SmtpUser,
-                    SmtpPassword = request.SmtpPassword ?? string.Empty,
-                    request.EmailExpediteur,
-                    request.NomExpediteur
+                    request.Host,
+                    request.Port,
+                    request.Username,
+                    Password = request.Password ?? string.Empty,
+                    request.ExpediteurEmail,
+                    request.ExpediteurNom
                 });
         }
 
@@ -547,15 +550,15 @@ public sealed class AdminService : IAdminService
 
         try
         {
-            using var smtpClient = new System.Net.Mail.SmtpClient(config.SmtpHost, config.SmtpPort)
+            using var smtpClient = new System.Net.Mail.SmtpClient(config.Host, config.Port)
             {
-                Credentials = new System.Net.NetworkCredential(config.SmtpUser, smtpPassword),
+                Credentials = new System.Net.NetworkCredential(config.Username, smtpPassword),
                 EnableSsl = true
             };
 
             var message = new System.Net.Mail.MailMessage(
-                new System.Net.Mail.MailAddress(config.EmailExpediteur, config.NomExpediteur),
-                new System.Net.Mail.MailAddress(request.To))
+                new System.Net.Mail.MailAddress(config.ExpediteurEmail, config.ExpediteurNom),
+                new System.Net.Mail.MailAddress(request.Email))
             {
                 Subject = "Kouroukan - Email de test",
                 Body = "Ceci est un email de test envoye depuis la plateforme Kouroukan.",
@@ -563,12 +566,12 @@ public sealed class AdminService : IAdminService
             };
 
             await smtpClient.SendMailAsync(message, ct);
-            _logger.LogInformation("Email de test envoye a {To}", request.To);
+            _logger.LogInformation("Email de test envoye a {To}", request.Email);
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erreur lors de l'envoi de l'email de test a {To}", request.To);
+            _logger.LogError(ex, "Erreur lors de l'envoi de l'email de test a {To}", request.Email);
             return false;
         }
     }
@@ -581,16 +584,24 @@ public sealed class AdminService : IAdminService
     {
         using var connection = _connectionFactory.CreateConnection();
 
-        return await connection.QuerySingleOrDefaultAsync<SmsConfigDto>(
+        var config = await connection.QuerySingleOrDefaultAsync<SmsConfigDto>(
             """
-            SELECT id, api_key AS ApiKey, api_secret AS ApiSecret,
+            SELECT id, service_id AS ServiceId, api_key AS SecretToken,
                    sender_name AS SenderName,
-                   est_actif AS EstActif, solde_actuel AS SoldeActuel,
+                   est_actif AS EstActif, solde_actuel AS Solde,
+                   cout_unitaire AS CoutUnitaire,
                    derniere_synchro AS DerniereSynchro,
                    updated_at AS UpdatedAt
             FROM support.sms_config
             LIMIT 1
             """);
+
+        if (config is not null && config.CoutUnitaire > 0)
+        {
+            config.SmsRestants = config.Solde / config.CoutUnitaire;
+        }
+
+        return config;
     }
 
     public async Task UpdateSmsConfigAsync(UpdateSmsConfigRequest request, CancellationToken ct = default)
@@ -602,25 +613,117 @@ public sealed class AdminService : IAdminService
 
         if (exists)
         {
-            await connection.ExecuteAsync(
-                """
-                UPDATE support.sms_config
-                SET api_key = @ApiKey, api_secret = @ApiSecret,
-                    sender_name = @SenderName, est_actif = TRUE, updated_at = NOW()
-                """,
-                new { request.ApiKey, request.ApiSecret, request.SenderName });
+            var sql = string.IsNullOrWhiteSpace(request.SecretToken)
+                ? """
+                  UPDATE support.sms_config
+                  SET service_id = @ServiceId,
+                      sender_name = @SenderName, est_actif = TRUE, updated_at = NOW()
+                  """
+                : """
+                  UPDATE support.sms_config
+                  SET service_id = @ServiceId, api_key = @SecretToken,
+                      sender_name = @SenderName, est_actif = TRUE, updated_at = NOW()
+                  """;
+
+            await connection.ExecuteAsync(sql, new
+            {
+                request.ServiceId,
+                request.SecretToken,
+                request.SenderName
+            });
         }
         else
         {
             await connection.ExecuteAsync(
                 """
-                INSERT INTO support.sms_config (api_key, api_secret, sender_name, est_actif)
-                VALUES (@ApiKey, @ApiSecret, @SenderName, TRUE)
+                INSERT INTO support.sms_config (service_id, api_key, sender_name, est_actif)
+                VALUES (@ServiceId, @SecretToken, @SenderName, TRUE)
                 """,
-                new { request.ApiKey, request.ApiSecret, request.SenderName });
+                new
+                {
+                    request.ServiceId,
+                    SecretToken = request.SecretToken ?? string.Empty,
+                    request.SenderName
+                });
         }
 
-        _logger.LogInformation("Configuration SMS mise a jour");
+        _logger.LogInformation("Configuration SMS NimbaSMS mise a jour");
+    }
+
+    public async Task<bool> SendTestSmsAsync(TestSmsRequest request, CancellationToken ct = default)
+    {
+        var config = await GetSmsConfigAsync(ct);
+        if (config is null || string.IsNullOrWhiteSpace(config.ServiceId) || string.IsNullOrWhiteSpace(config.SecretToken))
+            throw new InvalidOperationException("Configuration NimbaSMS manquante.");
+
+        var result = await _nimbaSmsService.SendSmsAsync(
+            config.ServiceId, config.SecretToken, config.SenderName,
+            request.To, request.Message);
+
+        // Enregistrer dans l'historique
+        using var connection = _connectionFactory.CreateConnection();
+        await connection.ExecuteAsync(
+            """
+            INSERT INTO support.sms_historique (destinataire, message, statut, cout)
+            VALUES (@To, @Message, @Statut, @Cout)
+            """,
+            new
+            {
+                request.To,
+                request.Message,
+                Statut = result.Success ? "envoye" : "echoue",
+                Cout = config.CoutUnitaire
+            });
+
+        return result.Success;
+    }
+
+    public async Task SyncSmsBalanceAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var config = await GetSmsConfigAsync(ct);
+        if (config is null || string.IsNullOrWhiteSpace(config.ServiceId) || string.IsNullOrWhiteSpace(config.SecretToken))
+            return;
+
+        var balance = await _nimbaSmsService.GetBalanceAsync(config.ServiceId, config.SecretToken);
+
+        await connection.ExecuteAsync(
+            """
+            UPDATE support.sms_config
+            SET solde_actuel = @Balance, derniere_synchro = NOW()
+            """,
+            new { Balance = balance });
+
+        _logger.LogInformation("Solde NimbaSMS synchronise: {Balance}", balance);
+    }
+
+    public async Task<PagedResult<SmsHistoriqueDto>> GetSmsHistoriqueAsync(int page, int pageSize, CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var offset = (page - 1) * pageSize;
+
+        var totalCount = await connection.ExecuteScalarAsync<int>(
+            "SELECT COUNT(*) FROM support.sms_historique");
+
+        var items = await connection.QueryAsync<SmsHistoriqueDto>(
+            """
+            SELECT id, destinataire AS Destinataire, message AS Message,
+                   statut AS Statut, created_at AS Date, cout AS Cout
+            FROM support.sms_historique
+            ORDER BY created_at DESC
+            LIMIT @PageSize OFFSET @Offset
+            """,
+            new { PageSize = pageSize, Offset = offset });
+
+        return new PagedResult<SmsHistoriqueDto>
+        {
+            Items = items.ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -705,6 +808,35 @@ public sealed class AdminService : IAdminService
             throw new InvalidOperationException("Compte Mobile Money introuvable.");
 
         _logger.LogInformation("Compte Mobile Money {CompteId} supprime (soft)", id);
+    }
+
+    public async Task<PagedResult<TransactionMobileDto>> GetTransactionsMobileAsync(int page, int pageSize, CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var offset = (page - 1) * pageSize;
+
+        var totalCount = await connection.ExecuteScalarAsync<int>(
+            "SELECT COUNT(*) FROM finances.transactions_mobile");
+
+        var items = await connection.QueryAsync<TransactionMobileDto>(
+            """
+            SELECT t.id, t.operateur AS Operateur, t.type AS Type,
+                   t.montant AS Montant, COALESCE(t.reference, '') AS Reference,
+                   t.created_at AS Date, t.statut AS Statut
+            FROM finances.transactions_mobile t
+            ORDER BY t.created_at DESC
+            LIMIT @PageSize OFFSET @Offset
+            """,
+            new { PageSize = pageSize, Offset = offset });
+
+        return new PagedResult<TransactionMobileDto>
+        {
+            Items = items.ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -995,5 +1127,117 @@ public sealed class AdminService : IAdminService
             throw new InvalidOperationException("Etablissement introuvable.");
 
         _logger.LogInformation("Etablissement {CompanyId} supprime par l'admin", id);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // DASHBOARD STATS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    public async Task<DashboardKpiDto> GetDashboardKpisAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var raw = await connection.QuerySingleAsync<DashboardKpiRaw>(
+            """
+            SELECT
+              (SELECT COUNT(*) FROM auth.companies WHERE is_deleted = FALSE) AS TotalEtablissements,
+              (SELECT COUNT(DISTINCT u.id) FROM auth.users u
+               JOIN auth.user_roles ur ON ur.user_id = u.id
+               JOIN auth.roles r ON r.id = ur.role_id
+               WHERE r.name = 'enseignant' AND u.is_deleted = FALSE AND u.is_active = TRUE) AS TotalEnseignants,
+              (SELECT COUNT(DISTINCT u.id) FROM auth.users u
+               JOIN auth.user_roles ur ON ur.user_id = u.id
+               JOIN auth.roles r ON r.id = ur.role_id
+               WHERE r.name = 'parent' AND u.is_deleted = FALSE AND u.is_active = TRUE) AS TotalParents,
+              (SELECT COUNT(*) FROM inscriptions.eleves WHERE is_deleted = FALSE) AS TotalEleves
+            """);
+
+        return new DashboardKpiDto
+        {
+            TotalEtablissements = (int)raw.TotalEtablissements,
+            TotalEnseignants = (int)raw.TotalEnseignants,
+            TotalParents = (int)raw.TotalParents,
+            TotalEleves = (int)raw.TotalEleves,
+        };
+    }
+
+    private sealed class DashboardKpiRaw
+    {
+        public long TotalEtablissements { get; set; }
+        public long TotalEnseignants { get; set; }
+        public long TotalParents { get; set; }
+        public long TotalEleves { get; set; }
+    }
+
+    public async Task<List<RevenuMensuelDto>> GetRevenusMensuelsAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var items = await connection.QueryAsync<RevenuMensuelDto>(
+            """
+            SELECT
+              TO_CHAR(date_trunc('month', ab.date_debut), 'Mon') AS Mois,
+              COALESCE(SUM(f.prix_mensuel), 0) AS Montant
+            FROM auth.abonnements ab
+            JOIN auth.forfaits f ON f.id = ab.forfait_id
+            WHERE ab.is_deleted = FALSE
+              AND ab.date_debut >= date_trunc('month', CURRENT_DATE) - INTERVAL '5 months'
+            GROUP BY date_trunc('month', ab.date_debut)
+            ORDER BY date_trunc('month', ab.date_debut)
+            """);
+
+        return items.AsList();
+    }
+
+    public async Task<List<RegionStatDto>> GetRegionStatsAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        var items = await connection.QueryAsync<RegionStatDto>(
+            """
+            WITH region_counts AS (
+              SELECT COALESCE(r.name, 'Non renseigne') AS Nom,
+                     COUNT(*) AS Count
+              FROM auth.companies c
+              LEFT JOIN geo.regions r ON r.code = c.region_code AND r.is_deleted = FALSE
+              WHERE c.is_deleted = FALSE
+              GROUP BY r.name
+            ),
+            total AS (
+              SELECT SUM(Count) AS Total FROM region_counts
+            )
+            SELECT rc.Nom, rc.Count::int,
+                   CASE WHEN t.Total > 0 THEN ROUND(rc.Count * 100.0 / t.Total)::int ELSE 0 END AS Pct
+            FROM region_counts rc, total t
+            ORDER BY rc.Count DESC
+            LIMIT 10
+            """);
+
+        return items.AsList();
+    }
+
+    public async Task<List<UsageStatDto>> GetUsageStatsAsync(CancellationToken ct = default)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+
+        // Compute real usage stats from database
+        var smsCount = await connection.ExecuteScalarAsync<long>(
+            "SELECT COUNT(*) FROM support.sms_historique WHERE created_at >= date_trunc('month', CURRENT_DATE)");
+
+        var activeUsers = await connection.ExecuteScalarAsync<long>(
+            "SELECT COUNT(*) FROM auth.users WHERE is_active = TRUE AND is_deleted = FALSE AND last_login_at >= CURRENT_DATE - INTERVAL '30 days'");
+
+        var totalUsers = await connection.ExecuteScalarAsync<long>(
+            "SELECT COUNT(*) FROM auth.users WHERE is_active = TRUE AND is_deleted = FALSE");
+
+        var tauxConnexion = totalUsers > 0 ? Math.Round((decimal)activeUsers / totalUsers * 100) : 0;
+
+        return new List<UsageStatDto>
+        {
+            new() { Label = "Taux de connexion (30j)", Value = $"{tauxConnexion}%", Trend = "" },
+            new() { Label = "Utilisateurs actifs", Value = activeUsers.ToString("N0"), Trend = "" },
+            new() { Label = "SMS envoyes ce mois", Value = smsCount.ToString("N0"), Trend = "" },
+            new() { Label = "Etablissements", Value = (await connection.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM auth.companies WHERE is_deleted = FALSE")).ToString("N0"), Trend = "" },
+        };
     }
 }

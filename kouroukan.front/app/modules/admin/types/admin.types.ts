@@ -133,16 +133,25 @@ export interface UpdateContenuIAPayload {
   contenu?: string
 }
 
-// ── SMS Config ───────────────────────────────────────────
+// ── SMS Config (NimbaSMS) ────────────────────────────────
 export interface SmsConfig {
-  apiKey: string
+  serviceId: string
+  secretToken: string
+  senderName: string
   solde: number
   smsRestants: number
   coutUnitaire: number
 }
 
 export interface UpdateSmsConfigPayload {
-  apiKey: string
+  serviceId: string
+  secretToken?: string
+  senderName: string
+}
+
+export interface SendTestSmsPayload {
+  to: string
+  message: string
 }
 
 export interface SmsEnvoi extends BaseEntity {

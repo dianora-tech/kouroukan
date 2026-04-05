@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useForfaitGating } from '~/composables/useForfaitGating'
+import { useLiaisonParentStore } from '~/modules/famille/stores/liaison-parent.store'
+import { useEmploiDuTempsStore } from '~/modules/famille/stores/emploi-du-temps.store'
 
 definePageMeta({ layout: 'default' })
 
@@ -7,33 +9,43 @@ const { t } = useI18n()
 const { isFeatureLocked } = useForfaitGating()
 const isLocked = computed(() => isFeatureLocked('emploi-du-temps'))
 
-const enfants = ref([
-  { label: 'Aissatou Diallo - 3eme', value: '1' },
-  { label: 'Ibrahim Diallo - CM2', value: '2' },
-])
+const liaisonStore = useLiaisonParentStore()
+const emploiStore = useEmploiDuTempsStore()
 
-const selectedEnfant = ref('1')
+const loading = computed(() => liaisonStore.loading || emploiStore.loading)
+
+const enfants = computed(() =>
+  liaisonStore.items.map(l => ({
+    label: `${l.enfantPrenom} ${l.enfantNom} - ${l.classe}`,
+    value: String(l.enfantId),
+  })),
+)
+
+const selectedEnfant = ref('')
 
 const jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
+const joursMap: Record<string, number> = { Lundi: 1, Mardi: 2, Mercredi: 3, Jeudi: 4, Vendredi: 5 }
 const creneaux = ['08:00', '10:00', '12:00', '14:00', '16:00']
 
-const planning = ref([
-  { jour: 'Lundi', heure: '08:00', matiere: 'Mathematiques', salle: 'S101' },
-  { jour: 'Lundi', heure: '10:00', matiere: 'Francais', salle: 'S102' },
-  { jour: 'Lundi', heure: '14:00', matiere: 'Anglais', salle: 'S103' },
-  { jour: 'Mardi', heure: '08:00', matiere: 'Physique-Chimie', salle: 'Labo' },
-  { jour: 'Mardi', heure: '10:00', matiere: 'Histoire-Geo', salle: 'S104' },
-  { jour: 'Mercredi', heure: '08:00', matiere: 'Mathematiques', salle: 'S101' },
-  { jour: 'Mercredi', heure: '10:00', matiere: 'SVT', salle: 'Labo' },
-  { jour: 'Jeudi', heure: '08:00', matiere: 'Francais', salle: 'S102' },
-  { jour: 'Jeudi', heure: '14:00', matiere: 'EPS', salle: 'Terrain' },
-  { jour: 'Vendredi', heure: '08:00', matiere: 'Anglais', salle: 'S103' },
-  { jour: 'Vendredi', heure: '10:00', matiere: 'Mathematiques', salle: 'S101' },
-])
+const planning = computed(() => emploiStore.items)
 
 function getCours(jour: string, heure: string) {
-  return planning.value.find(p => p.jour === jour && p.heure === heure)
+  const jourNum = joursMap[jour]
+  return planning.value.find(p => p.jourSemaine === jourNum && p.heureDebut.startsWith(heure))
 }
+
+watch(selectedEnfant, async (val) => {
+  if (val) {
+    await emploiStore.fetchByEnfant(Number(val))
+  }
+})
+
+onMounted(async () => {
+  await liaisonStore.fetchAll()
+  if (enfants.value.length > 0) {
+    selectedEnfant.value = enfants.value[0].value
+  }
+})
 </script>
 
 <template>
@@ -58,12 +70,41 @@ function getCours(jour: string, heure: string) {
     </div>
 
     <USelect
+      v-if="enfants.length > 0"
       v-model="selectedEnfant"
       :items="enfants"
       class="w-72"
     />
 
-    <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+    <!-- Loading -->
+    <div
+      v-if="loading"
+      class="flex justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="planning.length === 0 && selectedEnfant"
+      class="rounded-xl border border-gray-200 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-800"
+    >
+      <UIcon
+        name="i-heroicons-calendar-days"
+        class="mx-auto h-12 w-12 text-gray-300"
+      />
+      <p class="mt-4 text-sm text-gray-500">
+        {{ $t('common.noData') }}
+      </p>
+    </div>
+
+    <div
+      v-else-if="planning.length > 0"
+      class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+    >
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-gray-200 dark:border-gray-700">

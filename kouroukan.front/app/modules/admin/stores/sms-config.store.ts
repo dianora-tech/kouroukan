@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import type {
   SmsConfig,
   UpdateSmsConfigPayload,
+  SendTestSmsPayload,
   SmsEnvoi,
 } from '../types/admin.types'
 import { apiClient } from '~/core/api/client'
@@ -13,6 +14,8 @@ interface SmsConfigState {
   historique: SmsEnvoi[]
   loading: boolean
   saving: boolean
+  testSending: boolean
+  syncing: boolean
   pagination: {
     page: number
     pageSize: number
@@ -27,6 +30,8 @@ export const useSmsConfigStore = defineStore('admin-sms-config', {
     historique: [],
     loading: false,
     saving: false,
+    testSending: false,
+    syncing: false,
     pagination: {
       page: 1,
       pageSize: 20,
@@ -85,6 +90,35 @@ export const useSmsConfigStore = defineStore('admin-sms-config', {
       }
       finally {
         this.saving = false
+      }
+    },
+
+    async sendTest(payload: SendTestSmsPayload): Promise<boolean> {
+      this.testSending = true
+      try {
+        const response = await apiClient.post<void>(`${API_PATH}/test`, payload)
+        if (response.success) {
+          await this.fetchHistorique()
+        }
+        return response.success
+      }
+      finally {
+        this.testSending = false
+      }
+    },
+
+    async syncBalance(): Promise<boolean> {
+      this.syncing = true
+      try {
+        const response = await apiClient.post<SmsConfig>(`${API_PATH}/sync-balance`, {})
+        if (response.success && response.data) {
+          this.config = response.data
+          return true
+        }
+        return false
+      }
+      finally {
+        this.syncing = false
       }
     },
   },

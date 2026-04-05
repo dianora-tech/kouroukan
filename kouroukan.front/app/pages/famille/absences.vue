@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useForfaitGating } from '~/composables/useForfaitGating'
+import { useLiaisonParentStore } from '~/modules/famille/stores/liaison-parent.store'
+import { useAbsencesStore } from '~/modules/famille/stores/absences.store'
 
 definePageMeta({ layout: 'default' })
 
@@ -8,19 +10,34 @@ const { formatDate } = useFormatDate()
 const { isFeatureLocked } = useForfaitGating()
 const isLocked = computed(() => isFeatureLocked('absences'))
 
-const enfants = ref([
-  { label: 'Aissatou Diallo - 3eme', value: '1' },
-  { label: 'Ibrahim Diallo - CM2', value: '2' },
-])
+const liaisonStore = useLiaisonParentStore()
+const absencesStore = useAbsencesStore()
 
-const selectedEnfant = ref('1')
+const loading = computed(() => liaisonStore.loading || absencesStore.loading)
 
-const absences = ref([
-  { id: 1, date: '2025-03-10', motif: 'Maladie', justifie: true, duree: '1 jour' },
-  { id: 2, date: '2025-02-25', motif: 'Rendez-vous medical', justifie: true, duree: '2 heures' },
-  { id: 3, date: '2025-02-14', motif: 'Non communique', justifie: false, duree: '1 jour' },
-  { id: 4, date: '2025-01-20', motif: 'Evenement familial', justifie: true, duree: '1 jour' },
-])
+const enfants = computed(() =>
+  liaisonStore.items.map(l => ({
+    label: `${l.enfantPrenom} ${l.enfantNom} - ${l.classe}`,
+    value: String(l.enfantId),
+  })),
+)
+
+const selectedEnfant = ref('')
+
+const absences = computed(() => absencesStore.items)
+
+watch(selectedEnfant, async (val) => {
+  if (val) {
+    await absencesStore.fetchByEnfant(Number(val))
+  }
+})
+
+onMounted(async () => {
+  await liaisonStore.fetchAll()
+  if (enfants.value.length > 0) {
+    selectedEnfant.value = enfants.value[0].value
+  }
+})
 </script>
 
 <template>
@@ -45,12 +62,41 @@ const absences = ref([
     </div>
 
     <USelect
+      v-if="enfants.length > 0"
       v-model="selectedEnfant"
       :items="enfants"
       class="w-72"
     />
 
-    <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+    <!-- Loading -->
+    <div
+      v-if="loading"
+      class="flex justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="absences.length === 0 && selectedEnfant"
+      class="rounded-xl border border-gray-200 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-800"
+    >
+      <UIcon
+        name="i-heroicons-calendar-days"
+        class="mx-auto h-12 w-12 text-gray-300"
+      />
+      <p class="mt-4 text-sm text-gray-500">
+        {{ $t('common.noData') }}
+      </p>
+    </div>
+
+    <div
+      v-else-if="absences.length > 0"
+      class="overflow-x-auto rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+    >
       <table class="w-full text-left text-sm">
         <thead class="border-b border-gray-200 dark:border-gray-700">
           <tr>

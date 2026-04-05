@@ -276,6 +276,43 @@ public sealed class AdminController : ControllerBase
         return Ok(ApiResponse<object>.Ok(null!, "Configuration SMS mise a jour."));
     }
 
+    /// <summary>
+    /// Envoie un SMS de test via NimbaSMS.
+    /// </summary>
+    [HttpPost("sms-config/test")]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> SendTestSms([FromBody] TestSmsRequest request, CancellationToken ct)
+    {
+        var success = await _adminService.SendTestSmsAsync(request, ct);
+        if (!success)
+            return BadRequest(ApiResponse<object>.Fail("Echec de l'envoi du SMS. Verifiez la configuration NimbaSMS."));
+        return Ok(ApiResponse<object>.Ok(null!, "SMS de test envoye avec succes."));
+    }
+
+    /// <summary>
+    /// Synchronise le solde NimbaSMS.
+    /// </summary>
+    [HttpPost("sms-config/sync-balance")]
+    [ProducesResponseType(typeof(ApiResponse<SmsConfigDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SyncSmsBalance(CancellationToken ct)
+    {
+        await _adminService.SyncSmsBalanceAsync(ct);
+        var config = await _adminService.GetSmsConfigAsync(ct);
+        return Ok(ApiResponse<SmsConfigDto>.Ok(config!));
+    }
+
+    /// <summary>
+    /// Historique des SMS envoyes (pagine).
+    /// </summary>
+    [HttpGet("sms-config/historique")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<SmsHistoriqueDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetSmsHistorique([FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
+    {
+        var result = await _adminService.GetSmsHistoriqueAsync(page, pageSize, ct);
+        return Ok(ApiResponse<PagedResult<SmsHistoriqueDto>>.Ok(result));
+    }
+
     // ═══════════════════════════════════════════════════════════════════════════
     // COMPTES MOBILE MONEY
     // ═══════════════════════════════════════════════════════════════════════════
@@ -322,6 +359,17 @@ public sealed class AdminController : ControllerBase
     {
         await _adminService.DeleteCompteMobileAsync(id, ct);
         return Ok(ApiResponse<object>.Ok(null!, "Compte Mobile Money supprime."));
+    }
+
+    /// <summary>
+    /// Historique des transactions Mobile Money (pagine).
+    /// </summary>
+    [HttpGet("comptes-mobile/transactions")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<TransactionMobileDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetTransactionsMobile([FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
+    {
+        var result = await _adminService.GetTransactionsMobileAsync(page, pageSize, ct);
+        return Ok(ApiResponse<PagedResult<TransactionMobileDto>>.Ok(result));
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -441,6 +489,54 @@ public sealed class AdminController : ControllerBase
     {
         var stats = await _adminService.GetForfaitStatsAsync(ct);
         return Ok(ApiResponse<ForfaitStatsDto>.Ok(stats));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // DASHBOARD STATS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Recupere les KPIs du tableau de bord (etablissements, enseignants, parents, eleves).
+    /// </summary>
+    [HttpGet("stats/dashboard")]
+    [ProducesResponseType(typeof(ApiResponse<DashboardKpiDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetDashboardKpis(CancellationToken ct)
+    {
+        var kpis = await _adminService.GetDashboardKpisAsync(ct);
+        return Ok(ApiResponse<DashboardKpiDto>.Ok(kpis));
+    }
+
+    /// <summary>
+    /// Recupere les revenus mensuels des 6 derniers mois.
+    /// </summary>
+    [HttpGet("stats/revenus")]
+    [ProducesResponseType(typeof(ApiResponse<List<RevenuMensuelDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRevenusMensuels(CancellationToken ct)
+    {
+        var revenus = await _adminService.GetRevenusMensuelsAsync(ct);
+        return Ok(ApiResponse<List<RevenuMensuelDto>>.Ok(revenus));
+    }
+
+    /// <summary>
+    /// Recupere la repartition des etablissements par region.
+    /// </summary>
+    [HttpGet("stats/regions")]
+    [ProducesResponseType(typeof(ApiResponse<List<RegionStatDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRegionStats(CancellationToken ct)
+    {
+        var regions = await _adminService.GetRegionStatsAsync(ct);
+        return Ok(ApiResponse<List<RegionStatDto>>.Ok(regions));
+    }
+
+    /// <summary>
+    /// Recupere les statistiques d'usage de la plateforme.
+    /// </summary>
+    [HttpGet("stats/usage")]
+    [ProducesResponseType(typeof(ApiResponse<List<UsageStatDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUsageStats(CancellationToken ct)
+    {
+        var usage = await _adminService.GetUsageStatsAsync(ct);
+        return Ok(ApiResponse<List<UsageStatDto>>.Ok(usage));
     }
 
     /// <summary>Supprime (soft delete) un etablissement.</summary>

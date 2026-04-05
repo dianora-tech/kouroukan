@@ -41,6 +41,9 @@ public interface IAdminService
 
     Task<SmsConfigDto?> GetSmsConfigAsync(CancellationToken ct = default);
     Task UpdateSmsConfigAsync(UpdateSmsConfigRequest request, CancellationToken ct = default);
+    Task<bool> SendTestSmsAsync(TestSmsRequest request, CancellationToken ct = default);
+    Task SyncSmsBalanceAsync(CancellationToken ct = default);
+    Task<PagedResult<SmsHistoriqueDto>> GetSmsHistoriqueAsync(int page, int pageSize, CancellationToken ct = default);
 
     // ─── Comptes Mobile Money ──────────────────────────────────────────────────
 
@@ -48,6 +51,7 @@ public interface IAdminService
     Task<CompteMobileDto> CreateCompteMobileAsync(CreateCompteMobileRequest request, CancellationToken ct = default);
     Task UpdateCompteMobileAsync(int id, UpdateCompteMobileRequest request, CancellationToken ct = default);
     Task DeleteCompteMobileAsync(int id, CancellationToken ct = default);
+    Task<PagedResult<TransactionMobileDto>> GetTransactionsMobileAsync(int page, int pageSize, CancellationToken ct = default);
 
     // ─── Contenu IA ────────────────────────────────────────────────────────────
 
@@ -60,6 +64,13 @@ public interface IAdminService
     // ─── Statistiques Forfaits ────────────────────────────────────────────────
 
     Task<ForfaitStatsDto> GetForfaitStatsAsync(CancellationToken ct = default);
+
+    // ─── Dashboard Stats ──────────��───────────────────────────────────────────
+
+    Task<DashboardKpiDto> GetDashboardKpisAsync(CancellationToken ct = default);
+    Task<List<RevenuMensuelDto>> GetRevenusMensuelsAsync(CancellationToken ct = default);
+    Task<List<RegionStatDto>> GetRegionStatsAsync(CancellationToken ct = default);
+    Task<List<UsageStatDto>> GetUsageStatsAsync(CancellationToken ct = default);
 
     // ─── Etablissements ────────────────────────────────────────────────────────
 

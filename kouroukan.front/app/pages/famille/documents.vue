@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useForfaitGating } from '~/composables/useForfaitGating'
+import { useLiaisonParentStore } from '~/modules/famille/stores/liaison-parent.store'
+import { useDocumentsStore } from '~/modules/famille/stores/documents.store'
 
 definePageMeta({ layout: 'default' })
 
@@ -8,19 +10,21 @@ const { formatDate } = useFormatDate()
 const { isFeatureLocked } = useForfaitGating()
 const isLocked = computed(() => isFeatureLocked('documents'))
 
-const enfants = ref([
-  { label: 'Aissatou Diallo - 3eme', value: '1' },
-  { label: 'Ibrahim Diallo - CM2', value: '2' },
-])
+const liaisonStore = useLiaisonParentStore()
+const documentsStore = useDocumentsStore()
 
-const selectedEnfant = ref('1')
+const loading = computed(() => liaisonStore.loading || documentsStore.loading)
 
-const documents = ref([
-  { id: 1, nom: 'Bulletin Trimestre 1 - 2024/2025', type: 'bulletin', date: '2024-12-20', taille: '245 Ko' },
-  { id: 2, nom: 'Attestation de scolarite', type: 'attestation', date: '2024-10-01', taille: '120 Ko' },
-  { id: 3, nom: 'Certificat de frequentation', type: 'attestation', date: '2024-10-15', taille: '98 Ko' },
-  { id: 4, nom: 'Bulletin Trimestre 2 - 2024/2025', type: 'bulletin', date: '2025-03-20', taille: '260 Ko' },
-])
+const enfants = computed(() =>
+  liaisonStore.items.map(l => ({
+    label: `${l.enfantPrenom} ${l.enfantNom} - ${l.classe}`,
+    value: String(l.enfantId),
+  })),
+)
+
+const selectedEnfant = ref('')
+
+const documents = computed(() => documentsStore.items)
 
 const typeIcon: Record<string, string> = {
   bulletin: 'i-heroicons-document-chart-bar',
@@ -31,6 +35,19 @@ const typeColor: Record<string, string> = {
   bulletin: 'text-blue-600',
   attestation: 'text-green-600',
 }
+
+watch(selectedEnfant, async (val) => {
+  if (val) {
+    await documentsStore.fetchByEnfant(Number(val))
+  }
+})
+
+onMounted(async () => {
+  await liaisonStore.fetchAll()
+  if (enfants.value.length > 0) {
+    selectedEnfant.value = enfants.value[0].value
+  }
+})
 </script>
 
 <template>
@@ -55,12 +72,41 @@ const typeColor: Record<string, string> = {
     </div>
 
     <USelect
+      v-if="enfants.length > 0"
       v-model="selectedEnfant"
       :items="enfants"
       class="w-72"
     />
 
-    <div class="space-y-3">
+    <!-- Loading -->
+    <div
+      v-if="loading"
+      class="flex justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="documents.length === 0 && selectedEnfant"
+      class="rounded-xl border border-gray-200 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-800"
+    >
+      <UIcon
+        name="i-heroicons-document-text"
+        class="mx-auto h-12 w-12 text-gray-300"
+      />
+      <p class="mt-4 text-sm text-gray-500">
+        {{ $t('common.noData') }}
+      </p>
+    </div>
+
+    <div
+      v-else
+      class="space-y-3"
+    >
       <div
         v-for="doc in documents"
         :key="doc.id"
@@ -68,8 +114,8 @@ const typeColor: Record<string, string> = {
       >
         <div class="flex items-center gap-3">
           <UIcon
-            :name="typeIcon[doc.type]"
-            :class="['h-8 w-8', typeColor[doc.type]]"
+            :name="typeIcon[doc.type] ?? 'i-heroicons-document-text'"
+            :class="['h-8 w-8', typeColor[doc.type] ?? 'text-gray-600']"
           />
           <div>
             <p class="font-medium text-gray-900 dark:text-white">
@@ -81,9 +127,12 @@ const typeColor: Record<string, string> = {
           </div>
         </div>
         <UButton
+          v-if="doc.url"
           variant="ghost"
           size="sm"
           icon="i-heroicons-arrow-down-tray"
+          :to="doc.url"
+          target="_blank"
         >
           {{ $t('famille.documents.telecharger') }}
         </UButton>

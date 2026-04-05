@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useForfaitGating } from '~/composables/useForfaitGating'
+import { useCommunicationStore } from '~/modules/famille/stores/communication.store'
 
 definePageMeta({ layout: 'default' })
 
@@ -8,13 +9,17 @@ const { formatDate } = useFormatDate()
 const { isFeatureLocked } = useForfaitGating()
 const isLocked = computed(() => isFeatureLocked('communication'))
 
-const messages = ref([
-  { id: 1, expediteur: 'M. Barry', objet: 'Resultats du controle de Mathematiques', date: '2025-03-15', lu: true, extrait: 'Votre fille a obtenu 16/20 au dernier controle.' },
-  { id: 2, expediteur: 'Administration', objet: 'Rappel: Reunion parents-professeurs', date: '2025-03-14', lu: true, extrait: 'La reunion aura lieu le 20 mars a 17h.' },
-  { id: 3, expediteur: 'Mme Camara', objet: 'Comportement en classe', date: '2025-03-12', lu: false, extrait: 'Je souhaiterais vous rencontrer concernant...' },
-  { id: 4, expediteur: 'Administration', objet: 'Paiement scolarite - Rappel', date: '2025-03-10', lu: true, extrait: 'Veuillez regulariser le paiement du 2eme trimestre.' },
-  { id: 5, expediteur: 'M. Sylla', objet: 'Sortie pedagogique prevue', date: '2025-03-08', lu: true, extrait: 'Une sortie au musee est prevue pour la semaine prochaine.' },
-])
+const store = useCommunicationStore()
+const loading = computed(() => store.loading)
+const messages = computed(() => store.items)
+
+async function onClickMessage(id: number) {
+  await store.markAsRead(id)
+}
+
+onMounted(async () => {
+  await store.fetchAll()
+})
 </script>
 
 <template>
@@ -38,7 +43,35 @@ const messages = ref([
       </h1>
     </div>
 
-    <div class="space-y-3">
+    <!-- Loading -->
+    <div
+      v-if="loading"
+      class="flex justify-center py-12"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="h-8 w-8 animate-spin text-gray-400"
+      />
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="messages.length === 0"
+      class="rounded-xl border border-gray-200 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-800"
+    >
+      <UIcon
+        name="i-heroicons-chat-bubble-left-right"
+        class="mx-auto h-12 w-12 text-gray-300"
+      />
+      <p class="mt-4 text-sm text-gray-500">
+        {{ $t('common.noData') }}
+      </p>
+    </div>
+
+    <div
+      v-else
+      class="space-y-3"
+    >
       <div
         v-for="msg in messages"
         :key="msg.id"
@@ -46,6 +79,7 @@ const messages = ref([
           'cursor-pointer rounded-xl border p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50',
           msg.lu ? 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800' : 'border-indigo-200 bg-indigo-50/50 dark:border-indigo-700 dark:bg-indigo-900/10',
         ]"
+        @click="onClickMessage(msg.id)"
       >
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-2">
@@ -63,7 +97,7 @@ const messages = ref([
           {{ msg.objet }}
         </p>
         <p class="mt-1 text-xs text-gray-500 line-clamp-1">
-          {{ msg.extrait }}
+          {{ msg.contenu }}
         </p>
       </div>
     </div>
