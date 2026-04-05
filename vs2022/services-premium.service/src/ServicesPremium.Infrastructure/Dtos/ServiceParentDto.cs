@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
+using GnDapper.Attributes;
 using GnDapper.Entities;
 using GnDapper.Models;
 
