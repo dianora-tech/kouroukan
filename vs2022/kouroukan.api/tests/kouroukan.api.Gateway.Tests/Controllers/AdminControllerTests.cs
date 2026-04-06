@@ -1,5 +1,6 @@
 using Xunit;
 using FluentAssertions;
+using GnDapper.Connection;
 using Kouroukan.Api.Gateway.Controllers;
 using Kouroukan.Api.Gateway.Models;
 using Kouroukan.Api.Gateway.Services;
@@ -11,12 +12,19 @@ namespace Kouroukan.Api.Gateway.Tests.Controllers;
 public sealed class AdminControllerTests
 {
     private readonly Mock<IAdminService> _adminServiceMock;
+    private readonly Mock<IEmailService> _emailServiceMock;
+    private readonly Mock<IDbConnectionFactory> _connectionFactoryMock;
     private readonly AdminController _sut;
 
     public AdminControllerTests()
     {
         _adminServiceMock = new Mock<IAdminService>();
-        _sut = new AdminController(_adminServiceMock.Object);
+        _emailServiceMock = new Mock<IEmailService>();
+        _connectionFactoryMock = new Mock<IDbConnectionFactory>();
+        _sut = new AdminController(
+            _adminServiceMock.Object,
+            _emailServiceMock.Object,
+            _connectionFactoryMock.Object);
     }
 
     // ─── Forfaits ───

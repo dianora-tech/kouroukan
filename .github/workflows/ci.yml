@@ -176,9 +176,17 @@ jobs:
         working-directory: kouroukan.front
         run: npm ci --legacy-peer-deps
 
-      - name: Run tests
+      - name: Run tests with coverage
         working-directory: kouroukan.front
-        run: npm run test
+        run: npx vitest run --coverage.enabled --coverage.thresholds.100=false --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0 --coverage.thresholds.statements=0
+
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: kouroukan.front/coverage/coverage-summary.json
+          retention-days: 7
 
   # ===========================================================================
   # Portal — Lint
@@ -232,15 +240,31 @@ jobs:
       - name: Build
         run: dotnet build ${{ matrix.solution }} --no-restore -c Release
 
-      - name: Test
-        run: dotnet test ${{ matrix.solution }} --no-build -c Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      - name: Test with coverage
+        run: >
+          dotnet test ${{ matrix.solution }} --no-build -c Release --verbosity normal
+          --logger "trx;LogFileName=test-results.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
+
+      - name: Extract solution name
+        id: sln-name
+        run: echo "name=$(basename '${{ matrix.solution }}' .sln)" >> $GITHUB_OUTPUT
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-gateway-${{ strategy.job-index }}
+          name: test-results-${{ steps.sln-name.outputs.name }}
           path: "**/test-results.trx"
+          retention-days: 7
+
+      - name: Upload gateway coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-${{ steps.sln-name.outputs.name }}
+          path: coverage/**/coverage.cobertura.xml
           retention-days: 7
 
   # ===========================================================================
@@ -268,8 +292,12 @@ jobs:
       - name: Build
         run: dotnet build ${{ matrix.service.solution }} --no-restore -c Release
 
-      - name: Test
-        run: dotnet test ${{ matrix.service.solution }} --no-build -c Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      - name: Test with coverage
+        run: >
+          dotnet test ${{ matrix.service.solution }} --no-build -c Release --verbosity normal
+          --logger "trx;LogFileName=test-results.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -277,6 +305,14 @@ jobs:
         with:
           name: test-results-${{ matrix.service.name }}
           path: "**/test-results.trx"
+          retention-days: 7
+
+      - name: Upload service coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-${{ matrix.service.name }}
+          path: coverage/**/coverage.cobertura.xml
           retention-days: 7
 
   # ===========================================================================
@@ -433,3 +469,187 @@ jobs:
           exit-code: "1"
           severity: "CRITICAL"
           ignore-unfixed: true
+
+  # ===========================================================================
+  # Notification CI — Rapport par email apres chaque execution CI
+  # ===========================================================================
+  notify-ci:
+    name: CI Report Email
+    runs-on: ubuntu-latest
+    needs: [changes, lint-frontend, test-frontend, lint-portal, test-gateway, test-services, validate-sql, build-docker, security-scan]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 5
+
+      - name: Collect CI results
+        run: |
+          COMMIT_SHA="${{ github.sha }}"
+          COMMIT_MSG=$(git log -1 --format='%s' "$COMMIT_SHA" 2>/dev/null || echo "N/A")
+          COMMIT_AUTHOR=$(git log -1 --format='%an' "$COMMIT_SHA" 2>/dev/null || echo "N/A")
+          BRANCH="${{ github.ref_name }}"
+
+          echo "COMMIT_SHA=$COMMIT_SHA" >> $GITHUB_ENV
+          echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV
+          echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+          # Determine global status
+          RESULTS="${{ needs.lint-frontend.result }},${{ needs.test-frontend.result }},${{ needs.lint-portal.result }},${{ needs.test-gateway.result }},${{ needs.test-services.result }},${{ needs.validate-sql.result }},${{ needs.build-docker.result }},${{ needs.security-scan.result }}"
+
+          if echo "$RESULTS" | grep -q "failure"; then
+            echo "CI_STATUS=failure" >> $GITHUB_ENV
+          else
+            echo "CI_STATUS=success" >> $GITHUB_ENV
+          fi
+
+          # Build job results JSON
+          cat > /tmp/ci-jobs.json <<'ENDJSON'
+          {
+            "Lint Frontend": "${{ needs.lint-frontend.result }}",
+            "Test Frontend": "${{ needs.test-frontend.result }}",
+            "Lint Portal": "${{ needs.lint-portal.result }}",
+            "Test Gateway": "${{ needs.test-gateway.result }}",
+            "Test Services": "${{ needs.test-services.result }}",
+            "Validate SQL": "${{ needs.validate-sql.result }}",
+            "Build Docker": "${{ needs.build-docker.result }}",
+            "Security Scan": "${{ needs.security-scan.result }}"
+          }
+          ENDJSON
+
+          # Changed services
+          SERVICES=""
+          [ "${{ needs.changes.outputs.frontend }}" = "true" ] && SERVICES="$SERVICES,Frontend"
+          [ "${{ needs.changes.outputs.portal }}" = "true" ] && SERVICES="$SERVICES,Portal"
+          [ "${{ needs.changes.outputs.gateway }}" = "true" ] && SERVICES="$SERVICES,Gateway"
+          [ "${{ needs.changes.outputs.sql }}" = "true" ] && SERVICES="$SERVICES,SQL"
+          [ "${{ needs.changes.outputs.docker }}" = "true" ] && SERVICES="$SERVICES,Docker"
+          SERVICES="${SERVICES#,}"
+          [ -z "$SERVICES" ] && SERVICES="Aucun changement detecte"
+          echo "CHANGED_SERVICES=$SERVICES" >> $GITHUB_ENV
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          path: ci-artifacts
+
+      - name: Parse coverage data
+        run: |
+          COVERAGE_JSON="{"
+          FIRST=true
+
+          # Frontend coverage from vitest json-summary
+          if [ -f ci-artifacts/frontend-coverage/coverage-summary.json ]; then
+            PCT=$(jq -r '.total.lines.pct // "N/A"' ci-artifacts/frontend-coverage/coverage-summary.json 2>/dev/null || echo "N/A")
+            COVERAGE_JSON="${COVERAGE_JSON}\"Frontend\":\"${PCT}%\""
+            FIRST=false
+          fi
+
+          # .NET coverage from Cobertura XML — one entry per artifact folder
+          for dir in $(find ci-artifacts -type d -name "coverage-*" 2>/dev/null | sort -u); do
+            COMPONENT=$(basename "$dir" | sed 's/^coverage-//')
+            # Find the first cobertura XML in this artifact folder (root-level has overall rate)
+            xml=$(find "$dir" -name "coverage.cobertura.xml" 2>/dev/null | head -1)
+            [ -z "$xml" ] && continue
+            # Extract line-rate from the root <coverage> element (first occurrence)
+            LINE_RATE=$(grep -oP 'line-rate="\K[^"]+' "$xml" 2>/dev/null | head -1 || echo "")
+            [ -z "$LINE_RATE" ] && continue
+            # Calculate percentage with 2 decimal precision using awk
+            PCT=$(awk "BEGIN { printf \"%.2f\", $LINE_RATE * 100 }" 2>/dev/null || echo "N/A")
+            [ "$FIRST" = "false" ] && COVERAGE_JSON="${COVERAGE_JSON},"
+            COVERAGE_JSON="${COVERAGE_JSON}\"${COMPONENT}\":\"${PCT}%\""
+            FIRST=false
+          done
+
+          COVERAGE_JSON="${COVERAGE_JSON}}"
+          echo "COVERAGE_DATA=$COVERAGE_JSON" >> $GITHUB_ENV
+
+      - name: Send CI report email
+        run: |
+          JOB_RESULTS=$(cat /tmp/ci-jobs.json)
+
+          # Build errors array using jq (only failed jobs)
+          echo '[]' > /tmp/errors.json
+          for job in "Lint Frontend" "Test Frontend" "Lint Portal" "Test Gateway" "Test Services" "Validate SQL" "Build Docker" "Security Scan"; do
+            RESULT=$(echo "$JOB_RESULTS" | jq -r --arg j "$job" '.[$j] // "skipped"' 2>/dev/null || echo "skipped")
+            if [ "$RESULT" = "failure" ]; then
+              jq --arg e "Job echoue: $job" '. + [$e]' /tmp/errors.json > /tmp/errors2.json && mv /tmp/errors2.json /tmp/errors.json
+            fi
+          done
+
+          # Build health checks object using jq
+          echo '{}' > /tmp/hc.json
+          for job in "Lint Frontend" "Test Frontend" "Lint Portal" "Test Gateway" "Test Services" "Validate SQL" "Build Docker" "Security Scan"; do
+            RESULT=$(echo "$JOB_RESULTS" | jq -r --arg j "$job" '.[$j] // "skipped"' 2>/dev/null || echo "skipped")
+            case "$RESULT" in
+              success) CODE="200" ;;
+              failure) CODE="500" ;;
+              skipped) CODE="304" ;;
+              *) CODE="000" ;;
+            esac
+            jq --arg k "$job" --arg v "$CODE" '. + {($k): $v}' /tmp/hc.json > /tmp/hc2.json && mv /tmp/hc2.json /tmp/hc.json
+          done
+
+          # Build commits and services arrays
+          git log --oneline -5 "$COMMIT_SHA" 2>/dev/null | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/commits.json || echo '[]' > /tmp/commits.json
+          echo "$CHANGED_SERVICES" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/services.json || echo '[]' > /tmp/services.json
+
+          # Write coverage to file (avoid ${VAR:-{}} as bash misparses the braces)
+          if [ -n "${COVERAGE_DATA:-}" ]; then
+            echo "$COVERAGE_DATA" > /tmp/coverage.json
+          else
+            echo '{}' > /tmp/coverage.json
+          fi
+
+          # Build payload safely using --slurpfile to avoid shell quoting issues
+          PAYLOAD=$(jq -n \
+            --arg env "ci-$BRANCH" \
+            --arg branch "$BRANCH" \
+            --arg sha "$COMMIT_SHA" \
+            --arg msg "$COMMIT_MSG" \
+            --arg author "$COMMIT_AUTHOR" \
+            --arg version "CI Run #${{ github.run_number }}" \
+            --arg status "$CI_STATUS" \
+            --argjson duration 0 \
+            --arg startedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg runUrl "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --slurpfile commits /tmp/commits.json \
+            --slurpfile services /tmp/services.json \
+            --slurpfile errors /tmp/errors.json \
+            --slurpfile healthChecks /tmp/hc.json \
+            --slurpfile coverage /tmp/coverage.json \
+            '{
+              environment: $env,
+              branch: $branch,
+              commitSha: $sha,
+              commitMessage: $msg,
+              commitAuthor: $author,
+              appVersion: $version,
+              status: $status,
+              deploymentDurationSeconds: $duration,
+              deploymentStartedAt: $startedAt,
+              workflowRunUrl: $runUrl,
+              commits: $commits[0],
+              impactedServices: $services[0],
+              errors: $errors[0],
+              healthChecks: $healthChecks[0],
+              codeCoverage: $coverage[0]
+            }')
+
+          # Try test environment API first, fall back silently
+          echo "Sending CI report..."
+          HTTP_CODE=$(curl -sf --max-time 15 \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-Deploy-Key: ${{ secrets.DEPLOYMENT_API_KEY }}" \
+            -o /dev/null -w '%{http_code}' \
+            -d "$PAYLOAD" \
+            "https://api.kouroukan.dianora.org/api/deployment/report" 2>/dev/null || echo "000")
+
+          echo "CI Report API response: HTTP $HTTP_CODE"
+          if [ "$HTTP_CODE" = "000" ] || [ "$HTTP_CODE" -ge 400 ]; then
+            echo "::notice::CI report email could not be sent (API response: $HTTP_CODE). This is non-blocking."
+          fi
+        continue-on-error: true

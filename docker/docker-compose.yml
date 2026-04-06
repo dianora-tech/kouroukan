@@ -82,6 +82,8 @@ services:
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+      - Deployment__ApiKey=${DEPLOYMENT_API_KEY:-dev-deploy-key}
+      - Deployment__ReportRecipients=${DEPLOYMENT_REPORT_RECIPIENTS:-}
       - Turnstile__SecretKey=${TURNSTILE_SECRET_KEY:-1x0000000000000000000000000000000AA}
     depends_on:
       postgres:

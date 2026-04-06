@@ -1,5 +1,6 @@
 using Xunit;
 using FluentAssertions;
+using GnDapper.Connection;
 using Kouroukan.Api.Gateway.Controllers;
 using Kouroukan.Api.Gateway.Models;
 using Kouroukan.Api.Gateway.Services;
@@ -13,12 +14,19 @@ namespace Kouroukan.Api.Gateway.Tests.Controllers;
 public sealed class UsersControllerTests
 {
     private readonly Mock<IUserService> _userServiceMock;
+    private readonly Mock<IEmailService> _emailServiceMock;
+    private readonly Mock<IDbConnectionFactory> _connectionFactoryMock;
     private readonly UsersController _sut;
 
     public UsersControllerTests()
     {
         _userServiceMock = new Mock<IUserService>();
-        _sut = new UsersController(_userServiceMock.Object);
+        _emailServiceMock = new Mock<IEmailService>();
+        _connectionFactoryMock = new Mock<IDbConnectionFactory>();
+        _sut = new UsersController(
+            _userServiceMock.Object,
+            _emailServiceMock.Object,
+            _connectionFactoryMock.Object);
         SetupAuthenticatedUser(42);
     }
 

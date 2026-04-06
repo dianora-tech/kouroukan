@@ -1,3 +1,5 @@
+using Dapper;
+using GnDapper.Connection;
 using Kouroukan.Api.Gateway.Models;
 using Kouroukan.Api.Gateway.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -17,10 +19,14 @@ namespace Kouroukan.Api.Gateway.Controllers;
 public sealed class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
+    private readonly IEmailService _emailService;
+    private readonly IDbConnectionFactory _connectionFactory;
 
-    public AdminController(IAdminService adminService)
+    public AdminController(IAdminService adminService, IEmailService emailService, IDbConnectionFactory connectionFactory)
     {
         _adminService = adminService;
+        _emailService = emailService;
+        _connectionFactory = connectionFactory;
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -126,6 +132,12 @@ public sealed class AdminController : ControllerBase
     public async Task<IActionResult> CreateAbonnement([FromBody] CreateAbonnementRequest request, CancellationToken ct)
     {
         var abonnement = await _adminService.CreateAbonnementAsync(request, ct);
+
+        // Notifier l'utilisateur/etablissement (fire-and-forget)
+        _ = NotifyAbonnementOwnerAsync(abonnement.CompanyId, abonnement.UserId, abonnement.ForfaitNom,
+            (email, name, plan) => _emailService.SendAdminSubscriptionCreatedEmailAsync(
+                email, name, plan, abonnement.DateDebut.ToString("dd/MM/yyyy")));
+
         return Ok(ApiResponse<AbonnementDto>.Ok(abonnement, "Abonnement cree avec succes."));
     }
 
@@ -137,6 +149,16 @@ public sealed class AdminController : ControllerBase
     public async Task<IActionResult> UpdateAbonnement(int id, [FromBody] UpdateAbonnementRequest request, CancellationToken ct)
     {
         await _adminService.UpdateAbonnementAsync(id, request, ct);
+
+        // Notifier l'utilisateur/etablissement (fire-and-forget)
+        _ = Task.Run(async () =>
+        {
+            var info = await GetAbonnementInfoAsync(id);
+            if (info.HasValue)
+                await NotifyAbonnementOwnerAsync(info.Value.CompanyId, info.Value.UserId, info.Value.ForfaitNom,
+                    (email, name, plan) => _emailService.SendAdminSubscriptionUpdatedEmailAsync(email, name, plan));
+        });
+
         return Ok(ApiResponse<object>.Ok(null!, "Abonnement mis a jour."));
     }
 
@@ -147,7 +169,18 @@ public sealed class AdminController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteAbonnement(int id, CancellationToken ct)
     {
+        // Recuperer les infos AVANT suppression pour l'email
+        var abonnementInfo = await GetAbonnementInfoAsync(id);
+
         await _adminService.DeleteAbonnementAsync(id, ct);
+
+        // Notifier l'utilisateur/etablissement (fire-and-forget)
+        if (abonnementInfo.HasValue)
+        {
+            _ = NotifyAbonnementOwnerAsync(abonnementInfo.Value.CompanyId, abonnementInfo.Value.UserId, abonnementInfo.Value.ForfaitNom,
+                (email, name, plan) => _emailService.SendAdminSubscriptionDeletedEmailAsync(email, name, plan));
+        }
+
         return Ok(ApiResponse<object>.Ok(null!, "Abonnement supprime."));
     }
 
@@ -546,5 +579,77 @@ public sealed class AdminController : ControllerBase
     {
         await _adminService.DeleteEtablissementAsync(id, ct);
         return Ok(ApiResponse<object>.Ok(null!, "Etablissement supprime."));
+    }
+
+    // ════════════════════════════════��══════════════════════════════════════════
+    // HELPERS EMAIL ABONNEMENT
+    // ════════════════════���══════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Recupere les infos d'un abonnement (company_id, user_id, forfait_nom) pour les notifications.
+    /// </summary>
+    private async Task<(int? CompanyId, int? UserId, string ForfaitNom)?> GetAbonnementInfoAsync(int abonnementId)
+    {
+        try
+        {
+            using var conn = _connectionFactory.CreateConnection();
+            var info = await conn.QuerySingleOrDefaultAsync<(int? CompanyId, int? UserId, string ForfaitNom)>(
+                """
+                SELECT a.company_id AS CompanyId, a.user_id AS UserId,
+                       COALESCE(f.nom, 'Forfait') AS ForfaitNom
+                FROM forfaits.abonnements a
+                LEFT JOIN forfaits.forfaits f ON f.id = a.forfait_id
+                WHERE a.id = @Id
+                """,
+                new { Id = abonnementId });
+            return info;
+        }
+        catch { return null; }
+    }
+
+    /// <summary>
+    /// Notifie le proprietaire d'un abonnement (owner de la company ou user direct).
+    /// </summary>
+    private async Task NotifyAbonnementOwnerAsync(int? companyId, int? userId, string forfaitNom, Func<string, string, string, Task> sendEmail)
+    {
+        try
+        {
+            using var conn = _connectionFactory.CreateConnection();
+
+            string email;
+            string firstName;
+
+            if (companyId.HasValue)
+            {
+                // Notifier le directeur (owner) de l'etablissement
+                var owner = await conn.QuerySingleOrDefaultAsync<(string Email, string FirstName)>(
+                    """
+                    SELECT u.email AS Email, u.first_name AS FirstName
+                    FROM auth.users u
+                    INNER JOIN auth.user_companies uc ON uc.user_id = u.id
+                    WHERE uc.company_id = @CompanyId AND uc.role = 'owner' AND uc.is_deleted = FALSE AND u.is_deleted = FALSE
+                    LIMIT 1
+                    """,
+                    new { CompanyId = companyId.Value });
+                email = owner.Email;
+                firstName = owner.FirstName;
+            }
+            else if (userId.HasValue)
+            {
+                // Notifier l'utilisateur directement
+                var user = await conn.QuerySingleOrDefaultAsync<(string Email, string FirstName)>(
+                    "SELECT email AS Email, first_name AS FirstName FROM auth.users WHERE id = @Id AND is_deleted = FALSE",
+                    new { Id = userId.Value });
+                email = user.Email;
+                firstName = user.FirstName;
+            }
+            else return;
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                await sendEmail(email, firstName, forfaitNom);
+            }
+        }
+        catch { /* logged in EmailService */ }
     }
 }

@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using Dapper;
+using GnDapper.Connection;
 using Kouroukan.Api.Gateway.Models;
 using Kouroukan.Api.Gateway.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,10 +18,14 @@ namespace Kouroukan.Api.Gateway.Controllers;
 public sealed class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IEmailService _emailService;
+    private readonly IDbConnectionFactory _connectionFactory;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IEmailService emailService, IDbConnectionFactory connectionFactory)
     {
         _userService = userService;
+        _emailService = emailService;
+        _connectionFactory = connectionFactory;
     }
 
     private int GetUserId() =>
@@ -50,6 +56,29 @@ public sealed class UsersController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request, CancellationToken ct)
     {
         var result = await _userService.CreateUserAsync(GetUserId(), request, ct);
+
+        // Email de credentials au nouvel utilisateur (fire-and-forget)
+        if (!string.IsNullOrWhiteSpace(request.Email) && !string.IsNullOrEmpty(result.TemporaryPassword))
+        {
+            using var conn = _connectionFactory.CreateConnection();
+            var companyName = await conn.ExecuteScalarAsync<string>(
+                """
+                SELECT c.name FROM auth.companies c
+                INNER JOIN auth.user_companies uc ON uc.company_id = c.id
+                WHERE uc.user_id = @DirectorId AND uc.role = 'owner' AND uc.is_deleted = FALSE
+                LIMIT 1
+                """,
+                new { DirectorId = GetUserId() }) ?? "Kouroukan";
+
+            _ = _emailService.SendAccountCreatedEmailAsync(
+                request.Email,
+                request.FirstName,
+                result.TemporaryPassword,
+                companyName,
+                request.Role,
+                ct);
+        }
+
         return Ok(ApiResponse<CreateUserResultDto>.Ok(result, "Utilisateur cree avec succes."));
     }
 
@@ -92,7 +121,35 @@ public sealed class UsersController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
-        await _userService.DeleteUserFromCompanyAsync(GetUserId(), id, ct);
+        var directorId = GetUserId();
+        await _userService.DeleteUserFromCompanyAsync(directorId, id, ct);
+
+        // Notification de suppression (fire-and-forget)
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                using var conn = _connectionFactory.CreateConnection();
+                var userInfo = await conn.QuerySingleOrDefaultAsync<(string Email, string FirstName, string CompanyName)>(
+                    """
+                    SELECT u.email AS Email, u.first_name AS FirstName,
+                           COALESCE(c.name, 'Etablissement') AS CompanyName
+                    FROM auth.users u
+                    INNER JOIN auth.user_companies uc ON uc.user_id = u.id
+                    INNER JOIN auth.companies c ON c.id = uc.company_id
+                    INNER JOIN auth.user_companies uc_dir ON uc_dir.company_id = c.id AND uc_dir.user_id = @DirectorId AND uc_dir.role = 'owner'
+                    WHERE u.id = @UserId
+                    """,
+                    new { DirectorId = directorId, UserId = id });
+                if (!string.IsNullOrWhiteSpace(userInfo.Email))
+                {
+                    await _emailService.SendAccountRemovedEmailAsync(
+                        userInfo.Email, userInfo.FirstName, userInfo.CompanyName);
+                }
+            }
+            catch { /* logged in EmailService */ }
+        });
+
         return Ok(ApiResponse<object>.Ok(null!, "Utilisateur supprime."));
     }
 }
