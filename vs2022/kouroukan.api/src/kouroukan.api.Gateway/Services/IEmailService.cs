@@ -65,4 +65,9 @@ public interface IEmailService
 
     /// <summary>Notifie l'utilisateur/etablissement qu'un abonnement a ete supprime par l'admin.</summary>
     Task SendAdminSubscriptionDeletedEmailAsync(string email, string firstName, string planName, CancellationToken ct = default);
+
+    // ── Email de rapport de deploiement ─────────────────────────────
+
+    /// <summary>Envoie un rapport de deploiement aux administrateurs.</summary>
+    Task SendDeploymentReportEmailAsync(string to, Models.DeploymentReportRequest report, CancellationToken ct = default);
 }

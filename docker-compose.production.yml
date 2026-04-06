@@ -118,6 +118,8 @@ services:
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__Username=${RABBITMQ_USER:-kouroukan}
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+      - Deployment__ApiKey=${DEPLOYMENT_API_KEY:-}
+      - Deployment__ReportRecipients=${DEPLOYMENT_REPORT_RECIPIENTS:-}
     depends_on:
       kouroukan-db:
         condition: service_healthy

@@ -176,9 +176,17 @@ jobs:
         working-directory: kouroukan.front
         run: npm ci --legacy-peer-deps
 
-      - name: Run tests
+      - name: Run tests with coverage
         working-directory: kouroukan.front
-        run: npm run test
+        run: npm run test:coverage
+
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: kouroukan.front/coverage/coverage-summary.json
+          retention-days: 7
 
   # ===========================================================================
   # Portal — Lint
@@ -232,8 +240,12 @@ jobs:
       - name: Build
         run: dotnet build ${{ matrix.solution }} --no-restore -c Release
 
-      - name: Test
-        run: dotnet test ${{ matrix.solution }} --no-build -c Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      - name: Test with coverage
+        run: >
+          dotnet test ${{ matrix.solution }} --no-build -c Release --verbosity normal
+          --logger "trx;LogFileName=test-results.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -241,6 +253,14 @@ jobs:
         with:
           name: test-results-gateway-${{ strategy.job-index }}
           path: "**/test-results.trx"
+          retention-days: 7
+
+      - name: Upload gateway coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-gateway-${{ strategy.job-index }}
+          path: coverage/**/coverage.cobertura.xml
           retention-days: 7
 
   # ===========================================================================
@@ -268,8 +288,12 @@ jobs:
       - name: Build
         run: dotnet build ${{ matrix.service.solution }} --no-restore -c Release
 
-      - name: Test
-        run: dotnet test ${{ matrix.service.solution }} --no-build -c Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      - name: Test with coverage
+        run: >
+          dotnet test ${{ matrix.service.solution }} --no-build -c Release --verbosity normal
+          --logger "trx;LogFileName=test-results.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -277,6 +301,14 @@ jobs:
         with:
           name: test-results-${{ matrix.service.name }}
           path: "**/test-results.trx"
+          retention-days: 7
+
+      - name: Upload service coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-${{ matrix.service.name }}
+          path: coverage/**/coverage.cobertura.xml
           retention-days: 7
 
   # ===========================================================================
