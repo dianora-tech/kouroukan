@@ -51,4 +51,7 @@ public class RegisterRequest
 
     /// <summary>Adresse libre de l'etablissement.</summary>
     public string? Address { get; set; }
+
+    /// <summary>Token Cloudflare Turnstile (protection anti-bot).</summary>
+    public string? TurnstileToken { get; set; }
 }

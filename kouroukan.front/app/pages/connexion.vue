@@ -19,6 +19,16 @@ const form = reactive({
 const loading = ref(false)
 const showPassword = ref(false)
 
+// Cloudflare Turnstile (anti-bot)
+const turnstileContainer = ref<HTMLElement | null>(null)
+const { token: turnstileToken, error: turnstileError, render: renderTurnstile, reset: resetTurnstile } = useTurnstile()
+
+onMounted(() => {
+  if (turnstileContainer.value) {
+    renderTurnstile(turnstileContainer.value)
+  }
+})
+
 async function handleLogin(): Promise<void> {
   if (!form.email || !form.password) {
     toast.add({
@@ -30,7 +40,7 @@ async function handleLogin(): Promise<void> {
 
   loading.value = true
   try {
-    await auth.login(form.email, form.password)
+    await auth.login(form.email, form.password, turnstileToken.value)
 
     // Appliquer les preferences utilisateur (langue et theme)
     if (auth.user?.preferredLocale) {
@@ -84,6 +94,8 @@ async function handleLogin(): Promise<void> {
       description: t('auth.invalidCredentials'),
       color: 'error',
     })
+    // Réinitialiser Turnstile après un échec pour obtenir un nouveau token
+    resetTurnstile()
   }
   finally {
     loading.value = false
@@ -131,6 +143,18 @@ async function handleLogin(): Promise<void> {
           </template>
         </UInput>
       </UFormField>
+
+      <!-- Cloudflare Turnstile (invisible pour la plupart des utilisateurs) -->
+      <div
+        ref="turnstileContainer"
+        class="flex justify-center"
+      />
+      <p
+        v-if="turnstileError"
+        class="text-sm text-red-500"
+      >
+        {{ $t('auth.turnstileError') }}
+      </p>
 
       <UButton
         type="submit"

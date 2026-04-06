@@ -97,7 +97,8 @@
     "loginError": "Sign in error",
     "invalidCredentials": "Invalid email or password",
     "registerSuccess": "Account created successfully",
-    "registerError": "Error creating account"
+    "registerError": "Error creating account",
+    "turnstileError": "Security verification failed. Please refresh the page and try again."
   },
   "cgu": {
     "title": "Terms and Conditions",

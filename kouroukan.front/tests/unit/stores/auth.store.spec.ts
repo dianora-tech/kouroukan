@@ -182,6 +182,38 @@ describe('useAuthStore', () => {
 
       await expect(store.login('test@test.gn', 'pass')).rejects.toThrow('Identifiants incorrects.')
     })
+
+    it('passe le turnstileToken au body de la requete login', async () => {
+      const user = mockUser()
+      vi.mocked($fetch)
+        .mockResolvedValueOnce({
+          success: true,
+          data: { accessToken: 'jwt-token-123', refreshToken: 'refresh-token' },
+        })
+        .mockResolvedValueOnce({ success: true, data: user })
+
+      await store.login('ibrahima@test.gn', 'password123', 'cf-turnstile-token-abc')
+
+      expect($fetch).toHaveBeenCalledWith('/api/auth/login', expect.objectContaining({
+        body: { email: 'ibrahima@test.gn', password: 'password123', turnstileToken: 'cf-turnstile-token-abc' },
+      }))
+    })
+
+    it('ne passe pas turnstileToken si null', async () => {
+      const user = mockUser()
+      vi.mocked($fetch)
+        .mockResolvedValueOnce({
+          success: true,
+          data: { accessToken: 'jwt-token-123', refreshToken: 'refresh-token' },
+        })
+        .mockResolvedValueOnce({ success: true, data: user })
+
+      await store.login('ibrahima@test.gn', 'password123', null)
+
+      expect($fetch).toHaveBeenCalledWith('/api/auth/login', expect.objectContaining({
+        body: { email: 'ibrahima@test.gn', password: 'password123' },
+      }))
+    })
   })
 
   // ═══════════════════════════════════════════════════════════════
