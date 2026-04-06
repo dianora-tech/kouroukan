@@ -17,6 +17,7 @@ const form = reactive({
 
 const loading = ref(false)
 const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
 async function handleRegister(): Promise<void> {
   if (form.password !== form.confirmPassword) {
@@ -109,18 +110,36 @@ async function handleRegister(): Promise<void> {
           icon="i-heroicons-lock-closed"
           autocomplete="new-password"
           required
-        />
+        >
+          <template #trailing>
+            <UButton
+              variant="ghost"
+              size="xs"
+              :icon="showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+              @click="showPassword = !showPassword"
+            />
+          </template>
+        </UInput>
       </UFormField>
 
       <UFormField :label="$t('auth.confirmPassword')">
         <UInput
           v-model="form.confirmPassword"
-          :type="showPassword ? 'text' : 'password'"
+          :type="showConfirmPassword ? 'text' : 'password'"
           :placeholder="$t('auth.confirmPasswordPlaceholder')"
           icon="i-heroicons-lock-closed"
           autocomplete="new-password"
           required
-        />
+        >
+          <template #trailing>
+            <UButton
+              variant="ghost"
+              size="xs"
+              :icon="showConfirmPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+              @click="showConfirmPassword = !showConfirmPassword"
+            />
+          </template>
+        </UInput>
       </UFormField>
 
       <UButton

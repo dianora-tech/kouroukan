@@ -11,6 +11,9 @@ const toast = useToast()
 
 const saving = ref(false)
 const uploadingAvatar = ref(false)
+const showCurrentPassword = ref(false)
+const showNewPassword = ref(false)
+const showConfirmPassword = ref(false)
 const { formatDateTime } = useFormatDate()
 
 const userInitials = computed(() => {
@@ -253,23 +256,50 @@ async function handleSave(): Promise<void> {
             <UFormField :label="$t('profil.currentPassword')">
               <UInput
                 v-model="form.currentPassword"
-                type="password"
+                :type="showCurrentPassword ? 'text' : 'password'"
                 class="w-full"
-              />
+              >
+                <template #trailing>
+                  <UButton
+                    variant="ghost"
+                    size="xs"
+                    :icon="showCurrentPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+                    @click="showCurrentPassword = !showCurrentPassword"
+                  />
+                </template>
+              </UInput>
             </UFormField>
             <UFormField :label="$t('profil.newPassword')">
               <UInput
                 v-model="form.newPassword"
-                type="password"
+                :type="showNewPassword ? 'text' : 'password'"
                 class="w-full"
-              />
+              >
+                <template #trailing>
+                  <UButton
+                    variant="ghost"
+                    size="xs"
+                    :icon="showNewPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+                    @click="showNewPassword = !showNewPassword"
+                  />
+                </template>
+              </UInput>
             </UFormField>
             <UFormField :label="$t('profil.confirmPassword')">
               <UInput
                 v-model="form.confirmPassword"
-                type="password"
+                :type="showConfirmPassword ? 'text' : 'password'"
                 class="w-full"
-              />
+              >
+                <template #trailing>
+                  <UButton
+                    variant="ghost"
+                    size="xs"
+                    :icon="showConfirmPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+                    @click="showConfirmPassword = !showConfirmPassword"
+                  />
+                </template>
+              </UInput>
             </UFormField>
           </div>
         </div>

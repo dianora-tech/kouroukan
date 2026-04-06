@@ -66,8 +66,18 @@ vi.stubGlobal('useState', vi.fn().mockImplementation((_key: string, init?: () =>
 
 // ─── Pinia persistence plugin mock ───
 vi.stubGlobal('piniaPluginPersistedstate', {
+  cookies: (_opts?: Record<string, unknown>) => ({
+    getItem: vi.fn().mockReturnValue(null),
+    setItem: vi.fn(),
+    removeItem: vi.fn(),
+  }),
   localStorage: () => ({
-    getItem: vi.fn(),
+    getItem: vi.fn().mockReturnValue(null),
+    setItem: vi.fn(),
+    removeItem: vi.fn(),
+  }),
+  sessionStorage: () => ({
+    getItem: vi.fn().mockReturnValue(null),
     setItem: vi.fn(),
     removeItem: vi.fn(),
   }),

@@ -22,6 +22,7 @@ const secretToken = ref('')
 const senderName = ref('Kouroukan')
 const testPhone = ref('')
 const testMessage = ref('')
+const showSecretToken = ref(false)
 
 const solde = computed(() => config.value?.solde ?? 0)
 const smsRestants = computed(() => config.value?.smsRestants ?? 0)
@@ -154,9 +155,18 @@ const columns: Column[] = [
         <UFormField label="Secret Token (Auth Token)">
           <UInput
             v-model="secretToken"
-            type="password"
+            :type="showSecretToken ? 'text' : 'password'"
             placeholder="Laisser vide pour ne pas modifier"
-          />
+          >
+            <template #trailing>
+              <UButton
+                variant="ghost"
+                size="xs"
+                :icon="showSecretToken ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+                @click="showSecretToken = !showSecretToken"
+              />
+            </template>
+          </UInput>
         </UFormField>
         <UFormField label="Nom expediteur">
           <UInput

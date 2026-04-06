@@ -22,6 +22,7 @@ const smtpConfig = reactive({
 })
 
 const testEmail = ref('')
+const showSmtpPassword = ref(false)
 
 onMounted(async () => {
   await store.fetch()
@@ -107,9 +108,18 @@ async function sendTestEmail(): Promise<void> {
         <UFormField :label="$t('admin.email.password')">
           <UInput
             v-model="smtpConfig.password"
-            type="password"
+            :type="showSmtpPassword ? 'text' : 'password'"
             :placeholder="$t('admin.email.passwordPlaceholder')"
-          />
+          >
+            <template #trailing>
+              <UButton
+                variant="ghost"
+                size="xs"
+                :icon="showSmtpPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+                @click="showSmtpPassword = !showSmtpPassword"
+              />
+            </template>
+          </UInput>
         </UFormField>
         <UFormField :label="$t('admin.email.expediteurNom')">
           <UInput

@@ -228,20 +228,26 @@ export const useAuthStore = defineStore('auth', {
         // Ignore logout errors
       }
       finally {
-        // Nettoyage local uniquement (pas de 2eme appel API via sidebase)
+        // Nettoyage local
         try {
           const tokenCookie = useCookie('auth.token')
           tokenCookie.value = null
+          const authTokensCookie = useCookie('auth-tokens')
+          authTokensCookie.value = null
         }
         catch {
           // cookie non disponible
+        }
+        // Nettoyer localStorage
+        if (import.meta.client) {
+          try { localStorage.removeItem('auth-profile') } catch { /* noop */ }
         }
         this.$reset()
         await navigateTo('/connexion', { replace: true })
       }
     },
 
-    async refreshToken(): Promise<void> {
+    async refreshProfile(): Promise<void> {
       const response = await $fetch<{
         success: boolean
         data: User
@@ -411,7 +417,20 @@ export const useAuthStore = defineStore('auth', {
     },
   },
 
-  persist: {
-    pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion', 'mustChangePassword', 'activeCompanyId', 'accessToken', 'refreshToken', 'onboardingStep', 'onboardingCompleted'],
-  },
+  persist: [
+    {
+      // Tokens dans des cookies (accessibles SSR + client, légers < 4KB)
+      key: 'auth-tokens',
+      pick: ['accessToken', 'refreshToken'],
+      storage: piniaPluginPersistedstate.cookies({
+        maxAge: 60 * 60 * 24 * 7, // 7 jours
+      }),
+    },
+    {
+      // Profil utilisateur dans localStorage (trop volumineux pour un cookie)
+      key: 'auth-profile',
+      pick: ['user', 'roles', 'permissions', 'lastLoginAt', 'cguAccepted', 'cguVersion', 'mustChangePassword', 'activeCompanyId', 'onboardingStep', 'onboardingCompleted'],
+      storage: piniaPluginPersistedstate.localStorage(),
+    },
+  ],
 })

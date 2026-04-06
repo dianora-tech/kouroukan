@@ -19,6 +19,7 @@ const form = reactive({
 const loading = ref(false)
 const showCurrentPassword = ref(false)
 const showNewPassword = ref(false)
+const showConfirmPassword = ref(false)
 
 const isValid = computed(() =>
   form.currentPassword.length > 0
@@ -113,11 +114,20 @@ async function handleSubmit() {
         <UFormField :label="$t('changePassword.confirmPassword')">
           <UInput
             v-model="form.confirmPassword"
-            type="password"
+            :type="showConfirmPassword ? 'text' : 'password'"
             :placeholder="$t('changePassword.confirmPasswordPlaceholder')"
             class="w-full"
             required
-          />
+          >
+            <template #trailing>
+              <UButton
+                variant="ghost"
+                size="xs"
+                :icon="showConfirmPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+                @click="showConfirmPassword = !showConfirmPassword"
+              />
+            </template>
+          </UInput>
           <p
             v-if="form.confirmPassword && form.newPassword !== form.confirmPassword"
             class="mt-1 text-xs text-red-500"
