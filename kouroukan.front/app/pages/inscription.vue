@@ -19,6 +19,16 @@ const loading = ref(false)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
+// Cloudflare Turnstile (anti-bot)
+const turnstileContainer = ref<HTMLElement | null>(null)
+const { token: turnstileToken, error: turnstileError, render: renderTurnstile, reset: resetTurnstile } = useTurnstile()
+
+onMounted(() => {
+  if (turnstileContainer.value) {
+    renderTurnstile(turnstileContainer.value)
+  }
+})
+
 async function handleRegister(): Promise<void> {
   if (form.password !== form.confirmPassword) {
     toast.add({
@@ -39,6 +49,7 @@ async function handleRegister(): Promise<void> {
         phoneNumber: form.phoneNumber,
         password: form.password,
         confirmPassword: form.confirmPassword,
+        turnstileToken: turnstileToken.value ?? undefined,
       },
     })
 
@@ -53,6 +64,7 @@ async function handleRegister(): Promise<void> {
       title: t('auth.registerError'),
       color: 'error',
     })
+    resetTurnstile()
   }
   finally {
     loading.value = false
@@ -141,6 +153,18 @@ async function handleRegister(): Promise<void> {
           </template>
         </UInput>
       </UFormField>
+
+      <!-- Cloudflare Turnstile (invisible pour la plupart des utilisateurs) -->
+      <div
+        ref="turnstileContainer"
+        class="flex justify-center"
+      />
+      <p
+        v-if="turnstileError"
+        class="text-sm text-red-500"
+      >
+        {{ $t('auth.turnstileError') }}
+      </p>
 
       <UButton
         type="submit"

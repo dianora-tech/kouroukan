@@ -69,6 +69,10 @@ try
     // Service d'envoi d'emails transactionnels
     builder.Services.AddSingleton<IEmailService, EmailService>();
 
+    // Cloudflare Turnstile (anti-bot)
+    builder.Services.AddHttpClient<TurnstileService>();
+    builder.Services.AddScoped<ITurnstileService, TurnstileService>();
+
     // Services d'administration de la plateforme
     builder.Services.AddHttpClient<NimbaSmsService>();
     builder.Services.AddScoped<IAdminService, AdminService>();

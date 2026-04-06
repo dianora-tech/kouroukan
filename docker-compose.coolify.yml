@@ -110,6 +110,7 @@ services:
     environment:
       # URL interne : le SSR fait ses appels API en direct dans le réseau Docker
       - NUXT_PUBLIC_API_BASE_URL=http://gateway:5000
+      - NUXT_PUBLIC_TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY:-}
     depends_on:
       gateway:
         condition: service_started
@@ -148,6 +149,7 @@ services:
       - RabbitMQ__Password=${RABBITMQ_PASSWORD}
       - Deployment__ApiKey=${DEPLOYMENT_API_KEY:-}
       - Deployment__ReportRecipients=${DEPLOYMENT_REPORT_RECIPIENTS:-}
+      - Turnstile__SecretKey=${TURNSTILE_SECRET_KEY:-}
     depends_on:
       kouroukan-db:
         condition: service_healthy

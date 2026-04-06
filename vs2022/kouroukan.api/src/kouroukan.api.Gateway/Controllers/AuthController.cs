@@ -24,6 +24,7 @@ public sealed class AuthController : ControllerBase
     private readonly IRefreshTokenService _refreshTokenService;
     private readonly IMinioStorageService _storageService;
     private readonly IEmailService _emailService;
+    private readonly ITurnstileService _turnstileService;
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly ILogger<AuthController> _logger;
 
@@ -41,6 +42,7 @@ public sealed class AuthController : ControllerBase
         IRefreshTokenService refreshTokenService,
         IMinioStorageService storageService,
         IEmailService emailService,
+        ITurnstileService turnstileService,
         IDbConnectionFactory connectionFactory,
         ILogger<AuthController> logger)
     {
@@ -48,6 +50,7 @@ public sealed class AuthController : ControllerBase
         _refreshTokenService = refreshTokenService;
         _storageService = storageService;
         _emailService = emailService;
+        _turnstileService = turnstileService;
         _connectionFactory = connectionFactory;
         _logger = logger;
     }
@@ -66,6 +69,18 @@ public sealed class AuthController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
+        // Validation Cloudflare Turnstile (anti-bot)
+        if (!string.IsNullOrEmpty(request.TurnstileToken))
+        {
+            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var isHuman = await _turnstileService.ValidateAsync(request.TurnstileToken, remoteIp, cancellationToken);
+            if (!isHuman)
+            {
+                _logger.LogWarning("Turnstile validation echouee pour inscription depuis {Ip}", remoteIp);
+                return BadRequest(ApiResponse<object>.Fail("Verification anti-bot echouee. Veuillez reessayer."));
+            }
+        }
+
         var tokens = await _tokenService.RegisterAsync(request, cancellationToken);
 
         // Email de bienvenue (fire-and-forget)
@@ -94,6 +109,18 @@ public sealed class AuthController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
+        // Validation Cloudflare Turnstile (anti-bot)
+        if (!string.IsNullOrEmpty(request.TurnstileToken))
+        {
+            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var isHuman = await _turnstileService.ValidateAsync(request.TurnstileToken, remoteIp, cancellationToken);
+            if (!isHuman)
+            {
+                _logger.LogWarning("Turnstile validation echouee pour {Email} depuis {Ip}", request.Email, remoteIp);
+                return BadRequest(ApiResponse<object>.Fail("Verification anti-bot echouee. Veuillez reessayer."));
+            }
+        }
+
         var tokens = await _tokenService.LoginAsync(request.Email, request.Password, cancellationToken);
 
         return Ok(ApiResponse<AuthTokensDto>.Ok(tokens, "Connexion reussie."));

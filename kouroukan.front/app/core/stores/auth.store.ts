@@ -150,7 +150,7 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
-    async login(email: string, password: string): Promise<void> {
+    async login(email: string, password: string, turnstileToken?: string | null): Promise<void> {
       let loginResponse: { success: boolean, data: { accessToken: string, refreshToken: string } }
       try {
         // 1. Login — get tokens
@@ -162,7 +162,7 @@ export const useAuthStore = defineStore('auth', {
           }
         }>('/api/auth/login', {
           method: 'POST',
-          body: { email, password },
+          body: { email, password, turnstileToken: turnstileToken ?? undefined },
         })
       }
       catch (error) {

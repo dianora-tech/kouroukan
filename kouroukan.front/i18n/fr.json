@@ -97,7 +97,8 @@
     "loginError": "Erreur de connexion",
     "invalidCredentials": "Email ou mot de passe incorrect",
     "registerSuccess": "Compte créé avec succès",
-    "registerError": "Erreur lors de la création du compte"
+    "registerError": "Erreur lors de la création du compte",
+    "turnstileError": "La vérification de sécurité a échoué. Veuillez rafraîchir la page et réessayer."
   },
   "cgu": {
     "title": "Conditions Générales d'Utilisation",

@@ -54,6 +54,7 @@ export default defineNuxtConfig({
       appName: 'Kouroukan',
       appVersion: process.env.NUXT_PUBLIC_APP_VERSION || 'v1.0-dev',
       cguVersion: process.env.CGU_VERSION || '1.0.0',
+      turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '',
     },
   },
 
