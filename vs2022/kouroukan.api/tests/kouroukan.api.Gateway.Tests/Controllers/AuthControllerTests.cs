@@ -19,6 +19,7 @@ public class AuthControllerTests
     private readonly Mock<ITokenService> _tokenServiceMock;
     private readonly Mock<IRefreshTokenService> _refreshTokenServiceMock;
     private readonly Mock<IMinioStorageService> _storageServiceMock;
+    private readonly Mock<IEmailService> _emailServiceMock;
     private readonly Mock<IDbConnectionFactory> _connectionFactoryMock;
     private readonly Mock<ILogger<AuthController>> _loggerMock;
     private readonly AuthController _controller;
@@ -28,12 +29,14 @@ public class AuthControllerTests
         _tokenServiceMock = new Mock<ITokenService>();
         _refreshTokenServiceMock = new Mock<IRefreshTokenService>();
         _storageServiceMock = new Mock<IMinioStorageService>();
+        _emailServiceMock = new Mock<IEmailService>();
         _connectionFactoryMock = new Mock<IDbConnectionFactory>();
         _loggerMock = new Mock<ILogger<AuthController>>();
         _controller = new AuthController(
             _tokenServiceMock.Object,
             _refreshTokenServiceMock.Object,
             _storageServiceMock.Object,
+            _emailServiceMock.Object,
             _connectionFactoryMock.Object,
             _loggerMock.Object);
     }

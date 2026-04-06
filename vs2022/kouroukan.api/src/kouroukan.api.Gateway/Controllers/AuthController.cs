@@ -23,6 +23,7 @@ public sealed class AuthController : ControllerBase
     private readonly ITokenService _tokenService;
     private readonly IRefreshTokenService _refreshTokenService;
     private readonly IMinioStorageService _storageService;
+    private readonly IEmailService _emailService;
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly ILogger<AuthController> _logger;
 
@@ -39,12 +40,14 @@ public sealed class AuthController : ControllerBase
         ITokenService tokenService,
         IRefreshTokenService refreshTokenService,
         IMinioStorageService storageService,
+        IEmailService emailService,
         IDbConnectionFactory connectionFactory,
         ILogger<AuthController> logger)
     {
         _tokenService = tokenService;
         _refreshTokenService = refreshTokenService;
         _storageService = storageService;
+        _emailService = emailService;
         _connectionFactory = connectionFactory;
         _logger = logger;
     }
@@ -64,6 +67,16 @@ public sealed class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
         var tokens = await _tokenService.RegisterAsync(request, cancellationToken);
+
+        // Email de bienvenue (fire-and-forget)
+        if (!string.IsNullOrWhiteSpace(request.Email))
+        {
+            _ = _emailService.SendWelcomeEmailAsync(
+                request.Email,
+                request.FirstName,
+                request.SchoolName ?? $"{request.FirstName} {request.LastName}",
+                cancellationToken);
+        }
 
         return Ok(ApiResponse<AuthTokensDto>.Ok(tokens, "Inscription reussie."));
     }
@@ -222,6 +235,17 @@ public sealed class AuthController : ControllerBase
         try
         {
             await _tokenService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword, cancellationToken);
+
+            // Notification de changement de mot de passe (fire-and-forget)
+            using var conn = _connectionFactory.CreateConnection();
+            var userInfo = await conn.QuerySingleOrDefaultAsync<(string Email, string FirstName)>(
+                "SELECT email AS Email, first_name AS FirstName FROM auth.users WHERE id = @UserId",
+                new { UserId = userId });
+            if (!string.IsNullOrWhiteSpace(userInfo.Email))
+            {
+                _ = _emailService.SendPasswordChangedEmailAsync(userInfo.Email, userInfo.FirstName, cancellationToken);
+            }
+
             return Ok(ApiResponse<object>.Ok(null!, "Mot de passe modifie avec succes."));
         }
         catch (UnauthorizedAccessException ex)

@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using Dapper;
+using GnDapper.Connection;
 using Kouroukan.Api.Gateway.Models;
 using Kouroukan.Api.Gateway.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,10 +18,14 @@ namespace Kouroukan.Api.Gateway.Controllers;
 public sealed class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IEmailService _emailService;
+    private readonly IDbConnectionFactory _connectionFactory;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IEmailService emailService, IDbConnectionFactory connectionFactory)
     {
         _userService = userService;
+        _emailService = emailService;
+        _connectionFactory = connectionFactory;
     }
 
     private int GetUserId() =>
@@ -50,6 +56,29 @@ public sealed class UsersController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request, CancellationToken ct)
     {
         var result = await _userService.CreateUserAsync(GetUserId(), request, ct);
+
+        // Email de credentials au nouvel utilisateur (fire-and-forget)
+        if (!string.IsNullOrWhiteSpace(request.Email) && !string.IsNullOrEmpty(result.TemporaryPassword))
+        {
+            using var conn = _connectionFactory.CreateConnection();
+            var companyName = await conn.ExecuteScalarAsync<string>(
+                """
+                SELECT c.name FROM auth.companies c
+                INNER JOIN auth.user_companies uc ON uc.company_id = c.id
+                WHERE uc.user_id = @DirectorId AND uc.role = 'owner' AND uc.is_deleted = FALSE
+                LIMIT 1
+                """,
+                new { DirectorId = GetUserId() }) ?? "Kouroukan";
+
+            _ = _emailService.SendAccountCreatedEmailAsync(
+                request.Email,
+                request.FirstName,
+                result.TemporaryPassword,
+                companyName,
+                request.Role,
+                ct);
+        }
+
         return Ok(ApiResponse<CreateUserResultDto>.Ok(result, "Utilisateur cree avec succes."));
     }
 

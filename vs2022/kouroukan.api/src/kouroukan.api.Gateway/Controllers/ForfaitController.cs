@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using Dapper;
+using GnDapper.Connection;
 using Kouroukan.Api.Gateway.Models;
 using Kouroukan.Api.Gateway.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -17,10 +19,14 @@ namespace Kouroukan.Api.Gateway.Controllers;
 public sealed class ForfaitController : ControllerBase
 {
     private readonly IForfaitUserService _forfaitUserService;
+    private readonly IEmailService _emailService;
+    private readonly IDbConnectionFactory _connectionFactory;
 
-    public ForfaitController(IForfaitUserService forfaitUserService)
+    public ForfaitController(IForfaitUserService forfaitUserService, IEmailService emailService, IDbConnectionFactory connectionFactory)
     {
         _forfaitUserService = forfaitUserService;
+        _emailService = emailService;
+        _connectionFactory = connectionFactory;
     }
 
     /// <summary>
@@ -86,6 +92,25 @@ public sealed class ForfaitController : ControllerBase
         try
         {
             var result = await _forfaitUserService.SubscribeAsync(companyId, userId, request, ct);
+
+            // Email de confirmation d'abonnement (fire-and-forget)
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    using var conn = _connectionFactory.CreateConnection();
+                    var user = await conn.QuerySingleOrDefaultAsync<(string Email, string FirstName)>(
+                        "SELECT email AS Email, first_name AS FirstName FROM auth.users WHERE id = @Id",
+                        new { Id = userId });
+                    if (!string.IsNullOrWhiteSpace(user.Email))
+                    {
+                        await _emailService.SendSubscriptionConfirmationEmailAsync(
+                            user.Email, user.FirstName, result.ForfaitNom, result.DateDebut.ToString("dd/MM/yyyy"));
+                    }
+                }
+                catch { /* logged in EmailService */ }
+            });
+
             return Ok(ApiResponse<AbonnementHistoryDto>.Ok(result, "Abonnement souscrit avec succes."));
         }
         catch (InvalidOperationException ex)
@@ -112,6 +137,32 @@ public sealed class ForfaitController : ControllerBase
         try
         {
             await _forfaitUserService.CancelAsync(request.AbonnementId, companyId, userId, ct);
+
+            // Email de confirmation de resiliation (fire-and-forget)
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    using var conn = _connectionFactory.CreateConnection();
+                    var info = await conn.QuerySingleOrDefaultAsync<(string Email, string FirstName, string ForfaitNom)>(
+                        """
+                        SELECT u.email AS Email, u.first_name AS FirstName,
+                               COALESCE(f.nom, 'Forfait') AS ForfaitNom
+                        FROM auth.users u
+                        LEFT JOIN forfaits.abonnements a ON a.id = @AbonnementId
+                        LEFT JOIN forfaits.forfaits f ON f.id = a.forfait_id
+                        WHERE u.id = @UserId
+                        """,
+                        new { request.AbonnementId, UserId = userId });
+                    if (!string.IsNullOrWhiteSpace(info.Email))
+                    {
+                        await _emailService.SendSubscriptionCancelledEmailAsync(
+                            info.Email, info.FirstName, info.ForfaitNom);
+                    }
+                }
+                catch { /* logged in EmailService */ }
+            });
+
             return Ok(ApiResponse<object>.Ok(null!, "Abonnement resilie avec succes."));
         }
         catch (KeyNotFoundException ex)

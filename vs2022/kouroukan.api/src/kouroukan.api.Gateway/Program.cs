@@ -66,6 +66,9 @@ try
     // Service de gestion des utilisateurs
     builder.Services.AddScoped<IUserService, UserService>();
 
+    // Service d'envoi d'emails transactionnels
+    builder.Services.AddSingleton<IEmailService, EmailService>();
+
     // Services d'administration de la plateforme
     builder.Services.AddHttpClient<NimbaSmsService>();
     builder.Services.AddScoped<IAdminService, AdminService>();
