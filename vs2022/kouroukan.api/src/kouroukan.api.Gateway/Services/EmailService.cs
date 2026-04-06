@@ -216,6 +216,23 @@ public sealed class EmailService : IEmailService
         return SendEmailAsync(teacherEmail, $"Votre liaison avec {establishmentName} a ete terminee", body, null, ct);
     }
 
+    public Task SendLiaisonReintegratedEmailAsync(string teacherEmail, string teacherName, string establishmentName, CancellationToken ct = default)
+    {
+        var body = WrapInLayout($"""
+            <h2 style="color:#16a34a;margin:0 0 16px">Liaison reintegree</h2>
+            <p>Bonjour <strong>{Escape(teacherName)}</strong>,</p>
+            <p>Bonne nouvelle ! Votre liaison avec l'etablissement <strong>{Escape(establishmentName)}</strong> a ete <span style="color:#16a34a;font-weight:600">reintegree</span>.</p>
+            <p>Vous avez de nouveau acces aux donnees de l'etablissement depuis votre espace.</p>
+            <div style="text-align:center;margin:32px 0">
+                <a href="{AppUrl}" style="background:#16a34a;color:#fff;padding:14px 32px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block">
+                    Acceder a mon espace
+                </a>
+            </div>
+            """);
+
+        return SendEmailAsync(teacherEmail, $"Votre liaison avec {establishmentName} a ete reintegree", body, null, ct);
+    }
+
     // ═══════════════════════════════════════════════════════════════════════
     // EMAILS D'ABONNEMENT
     // ═══════════════════════════════════════════════════════════════════════
@@ -263,6 +280,114 @@ public sealed class EmailService : IEmailService
             """);
 
         return SendEmailAsync(email, $"Confirmation de resiliation — Forfait {planName}", body, null, ct);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EMAILS DE GESTION UTILISATEUR
+    // ═══════════════════════════════════════════════════════════════════════
+
+    public Task SendAccountRemovedEmailAsync(string email, string firstName, string establishmentName, CancellationToken ct = default)
+    {
+        var body = WrapInLayout($"""
+            <h2 style="color:#e11d48;margin:0 0 16px">Compte retire de l'etablissement</h2>
+            <p>Bonjour <strong>{Escape(firstName)}</strong>,</p>
+            <p>Votre compte a ete retire de l'etablissement <strong>{Escape(establishmentName)}</strong> par le directeur.</p>
+            <p>Vous n'avez plus acces aux donnees de cet etablissement. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter directement l'etablissement ou notre support.</p>
+            <div style="text-align:center;margin:32px 0">
+                <a href="mailto:{SupportEmail}" style="background:#16a34a;color:#fff;padding:14px 32px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block">
+                    Contacter le support
+                </a>
+            </div>
+            """);
+
+        return SendEmailAsync(email, $"Votre compte a ete retire de {establishmentName}", body, null, ct);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EMAILS CGU
+    // ═══════════════════════════════════════════════════════════════════════
+
+    public Task SendCguAcceptedEmailAsync(string email, string firstName, string cguVersion, CancellationToken ct = default)
+    {
+        var now = DateTime.UtcNow.ToString("dd/MM/yyyy a HH:mm UTC");
+        var body = WrapInLayout($"""
+            <h2 style="color:#16a34a;margin:0 0 16px">Conditions generales acceptees</h2>
+            <p>Bonjour <strong>{Escape(firstName)}</strong>,</p>
+            <p>Nous confirmons que vous avez accepte les Conditions Generales d'Utilisation (CGU) version <strong>{Escape(cguVersion)}</strong> le <strong>{now}</strong>.</p>
+            <p>Vous pouvez consulter les CGU a tout moment depuis votre espace utilisateur.</p>
+            <div style="text-align:center;margin:32px 0">
+                <a href="{AppUrl}" style="background:#16a34a;color:#fff;padding:14px 32px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block">
+                    Acceder a mon espace
+                </a>
+            </div>
+            """);
+
+        return SendEmailAsync(email, "Confirmation d'acceptation des CGU Kouroukan", body, null, ct);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // EMAILS ADMIN ABONNEMENT
+    // ═══════════════════════════════════════════════════════════════════════
+
+    public Task SendAdminSubscriptionCreatedEmailAsync(string email, string firstName, string planName, string startDate, CancellationToken ct = default)
+    {
+        var body = WrapInLayout($"""
+            <h2 style="color:#16a34a;margin:0 0 16px">Nouvel abonnement active</h2>
+            <p>Bonjour <strong>{Escape(firstName)}</strong>,</p>
+            <p>Un abonnement au forfait <strong>{Escape(planName)}</strong> a ete active pour votre compte par l'equipe Kouroukan.</p>
+            <table style="width:100%;border-collapse:collapse;margin:24px 0;background:#f9fafb;border-radius:8px">
+                <tr>
+                    <td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;color:#666;width:40%">Forfait</td>
+                    <td style="padding:12px 16px;border-bottom:1px solid #e5e7eb;font-weight:600">{Escape(planName)}</td>
+                </tr>
+                <tr>
+                    <td style="padding:12px 16px;color:#666">Date de debut</td>
+                    <td style="padding:12px 16px;font-weight:600">{Escape(startDate)}</td>
+                </tr>
+            </table>
+            <p>Vous pouvez gerer votre abonnement depuis les parametres de votre compte.</p>
+            <div style="text-align:center;margin:32px 0">
+                <a href="{AppUrl}" style="background:#16a34a;color:#fff;padding:14px 32px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block">
+                    Mon espace
+                </a>
+            </div>
+            """);
+
+        return SendEmailAsync(email, $"Abonnement active — Forfait {planName}", body, null, ct);
+    }
+
+    public Task SendAdminSubscriptionUpdatedEmailAsync(string email, string firstName, string planName, CancellationToken ct = default)
+    {
+        var body = WrapInLayout($"""
+            <h2 style="color:#f59e0b;margin:0 0 16px">Abonnement modifie</h2>
+            <p>Bonjour <strong>{Escape(firstName)}</strong>,</p>
+            <p>Votre abonnement au forfait <strong>{Escape(planName)}</strong> a ete modifie par l'equipe Kouroukan.</p>
+            <p>Consultez les details de votre abonnement depuis votre espace pour voir les changements.</p>
+            <div style="text-align:center;margin:32px 0">
+                <a href="{AppUrl}" style="background:#16a34a;color:#fff;padding:14px 32px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block">
+                    Voir mon abonnement
+                </a>
+            </div>
+            """);
+
+        return SendEmailAsync(email, $"Votre abonnement Kouroukan a ete modifie — Forfait {planName}", body, null, ct);
+    }
+
+    public Task SendAdminSubscriptionDeletedEmailAsync(string email, string firstName, string planName, CancellationToken ct = default)
+    {
+        var body = WrapInLayout($"""
+            <h2 style="color:#e11d48;margin:0 0 16px">Abonnement supprime</h2>
+            <p>Bonjour <strong>{Escape(firstName)}</strong>,</p>
+            <p>Votre abonnement au forfait <strong>{Escape(planName)}</strong> a ete supprime par l'equipe Kouroukan.</p>
+            <p>Si vous pensez qu'il s'agit d'une erreur ou si vous avez des questions, contactez notre support a <a href="mailto:{SupportEmail}" style="color:#16a34a">{SupportEmail}</a>.</p>
+            <div style="text-align:center;margin:32px 0">
+                <a href="mailto:{SupportEmail}" style="background:#16a34a;color:#fff;padding:14px 32px;text-decoration:none;border-radius:8px;font-weight:600;display:inline-block">
+                    Contacter le support
+                </a>
+            </div>
+            """);
+
+        return SendEmailAsync(email, $"Votre abonnement Kouroukan a ete supprime — Forfait {planName}", body, null, ct);
     }
 
     // ═══════════════════════════════════════════════════════════════════════

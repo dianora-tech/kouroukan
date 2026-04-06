@@ -211,6 +211,24 @@ public sealed class AuthController : ControllerBase
 
         var tokens = await _tokenService.AcceptCguAsync(userId, activeCgu.Version, cancellationToken);
 
+        // Confirmation d'acceptation des CGU (fire-and-forget)
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                using var conn = _connectionFactory.CreateConnection();
+                var userInfo = await conn.QuerySingleOrDefaultAsync<(string Email, string FirstName)>(
+                    "SELECT email AS Email, first_name AS FirstName FROM auth.users WHERE id = @UserId",
+                    new { UserId = userId });
+                if (!string.IsNullOrWhiteSpace(userInfo.Email))
+                {
+                    await _emailService.SendCguAcceptedEmailAsync(
+                        userInfo.Email, userInfo.FirstName, activeCgu.Version);
+                }
+            }
+            catch { /* logged in EmailService */ }
+        });
+
         return Ok(ApiResponse<AuthTokensDto>.Ok(tokens, "CGU acceptees avec succes."));
     }
 

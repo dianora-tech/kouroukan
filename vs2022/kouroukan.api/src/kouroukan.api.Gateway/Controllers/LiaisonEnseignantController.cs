@@ -142,6 +142,11 @@ public sealed class LiaisonEnseignantController : ControllerBase
     public async Task<IActionResult> ReintegrateLiaison(int id, CancellationToken ct)
     {
         await _liaisonService.ReintegrateLiaisonAsync(id, ct);
+
+        // Notifier l'enseignant (fire-and-forget)
+        _ = NotifyTeacherForLiaisonAsync(id, (email, name, company) =>
+            _emailService.SendLiaisonReintegratedEmailAsync(email, name, company));
+
         return Ok(ApiResponse<object>.Ok(null!, "Liaison reintegree."));
     }
 
