@@ -397,26 +397,49 @@ public sealed class EmailService : IEmailService
     public Task SendDeploymentReportEmailAsync(string to, Models.DeploymentReportRequest report, CancellationToken ct = default)
     {
         var isSuccess = report.Status.Equals("success", StringComparison.OrdinalIgnoreCase);
+        var isCi = report.Environment.StartsWith("ci-", StringComparison.OrdinalIgnoreCase);
         var statusIcon = isSuccess ? "&#9989;" : "&#10060;";
-        var statusLabel = isSuccess ? "Deploiement reussi" : "Echec du deploiement";
+        var statusLabel = isCi
+            ? (isSuccess ? "CI reussi" : "Echec du CI")
+            : (isSuccess ? "Deploiement reussi" : "Echec du deploiement");
         var statusColor = isSuccess ? "#16a34a" : "#dc2626";
-        var envLabel = report.Environment.Equals("production", StringComparison.OrdinalIgnoreCase) ? "PRODUCTION" : "TEST";
-        var envColor = report.Environment.Equals("production", StringComparison.OrdinalIgnoreCase) ? "#dc2626" : "#2563eb";
+
+        string envLabel, envColor;
+        if (isCi)
+        {
+            envLabel = $"CI — {report.Branch}";
+            envColor = "#7c3aed"; // violet pour CI
+        }
+        else if (report.Environment.Equals("production", StringComparison.OrdinalIgnoreCase))
+        {
+            envLabel = "PRODUCTION";
+            envColor = "#dc2626";
+        }
+        else
+        {
+            envLabel = "TEST";
+            envColor = "#2563eb";
+        }
 
         var duration = report.DeploymentDurationSeconds > 0
             ? $"{report.DeploymentDurationSeconds / 60}m {report.DeploymentDurationSeconds % 60}s"
             : "N/A";
 
-        // Health checks table rows
+        // Health checks / CI jobs table rows
         var healthChecksRows = "";
         foreach (var (domain, code) in report.HealthChecks)
         {
-            var hcIcon = code.StartsWith("2") ? "&#9989;" : (code == "000" ? "&#9888;" : "&#10060;");
-            var hcColor = code.StartsWith("2") ? "#16a34a" : (code == "000" ? "#f59e0b" : "#dc2626");
+            string hcIcon, hcColor, hcLabel;
+            if (code == "200") { hcIcon = "&#9989;"; hcColor = "#16a34a"; hcLabel = isCi ? "OK" : $"HTTP {code}"; }
+            else if (code == "304") { hcIcon = "&#9898;"; hcColor = "#9ca3af"; hcLabel = "Ignore"; }
+            else if (code == "000") { hcIcon = "&#9888;"; hcColor = "#f59e0b"; hcLabel = isCi ? "Inconnu" : "Timeout"; }
+            else if (code.StartsWith("5")) { hcIcon = "&#10060;"; hcColor = "#dc2626"; hcLabel = isCi ? "Echoue" : $"HTTP {code}"; }
+            else { hcIcon = "&#9989;"; hcColor = "#16a34a"; hcLabel = isCi ? "OK" : $"HTTP {code}"; }
+
             healthChecksRows += $"""
                 <tr>
-                    <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-family:monospace;font-size:13px">{Escape(domain)}</td>
-                    <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:center;color:{hcColor};font-weight:600">{hcIcon} HTTP {Escape(code)}</td>
+                    <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px">{Escape(domain)}</td>
+                    <td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;text-align:center;color:{hcColor};font-weight:600">{hcIcon} {hcLabel}</td>
                 </tr>
                 """;
         }
@@ -510,8 +533,8 @@ public sealed class EmailService : IEmailService
             <h3 style="color:#333;margin:0 0 8px">Services impactes</h3>
             {servicesHtml}
 
-            <!-- Health checks -->
-            <h3 style="color:#333;margin:24px 0 12px">Health checks</h3>
+            <!-- Health checks / Jobs -->
+            <h3 style="color:#333;margin:24px 0 12px">{(isCi ? "Resultat des jobs CI" : "Health checks")}</h3>
             <table style="width:100%;border-collapse:collapse;background:#f9fafb;border-radius:8px">
                 <tr style="background:#e5e7eb">
                     <th style="padding:8px 12px;text-align:left;font-size:13px;color:#374151">Domaine</th>
@@ -537,9 +560,19 @@ public sealed class EmailService : IEmailService
             </div>
             """);
 
-        var subject = isSuccess
-            ? $"{statusIcon} Deploiement {envLabel} reussi — {report.AppVersion}"
-            : $"{statusIcon} ECHEC deploiement {envLabel} — {report.AppVersion}";
+        string subject;
+        if (isCi)
+        {
+            subject = isSuccess
+                ? $"{statusIcon} CI OK — {report.Branch} — {report.CommitMessage}"
+                : $"{statusIcon} CI ECHOUE — {report.Branch} — {report.CommitMessage}";
+        }
+        else
+        {
+            subject = isSuccess
+                ? $"{statusIcon} Deploiement {envLabel} reussi — {report.AppVersion}"
+                : $"{statusIcon} ECHEC deploiement {envLabel} — {report.AppVersion}";
+        }
 
         return SendEmailAsync(to, subject, body, "noreply@kouroukan.dianora.org", ct);
     }

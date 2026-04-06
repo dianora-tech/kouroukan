@@ -19,7 +19,7 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'text-summary', 'lcov', 'html'],
+      reporter: ['text', 'text-summary', 'json-summary', 'lcov', 'html'],
       include: [
         'app/core/stores/**',
         'app/core/api/**',
