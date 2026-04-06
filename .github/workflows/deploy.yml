@@ -230,8 +230,8 @@ jobs:
             echo '[]' > /tmp/errors.json
           fi
 
-          echo "${HEALTH_CHECKS:-{}}" > /tmp/hc.json
-          echo "${COVERAGE_DATA:-{}}" > /tmp/coverage.json
+          if [ -n "${HEALTH_CHECKS:-}" ]; then echo "$HEALTH_CHECKS" > /tmp/hc.json; else echo '{}' > /tmp/hc.json; fi
+          if [ -n "${COVERAGE_DATA:-}" ]; then echo "$COVERAGE_DATA" > /tmp/coverage.json; else echo '{}' > /tmp/coverage.json; fi
 
           # Build payload safely using --slurpfile
           PAYLOAD=$(jq -n \
@@ -509,8 +509,8 @@ jobs:
             echo '[]' > /tmp/errors.json
           fi
 
-          echo "${HEALTH_CHECKS:-{}}" > /tmp/hc.json
-          echo "${COVERAGE_DATA:-{}}" > /tmp/coverage.json
+          if [ -n "${HEALTH_CHECKS:-}" ]; then echo "$HEALTH_CHECKS" > /tmp/hc.json; else echo '{}' > /tmp/hc.json; fi
+          if [ -n "${COVERAGE_DATA:-}" ]; then echo "$COVERAGE_DATA" > /tmp/coverage.json; else echo '{}' > /tmp/coverage.json; fi
 
           # Build payload safely using --slurpfile
           PAYLOAD=$(jq -n \

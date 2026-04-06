@@ -596,15 +596,12 @@ jobs:
           git log --oneline -5 "$COMMIT_SHA" 2>/dev/null | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/commits.json || echo '[]' > /tmp/commits.json
           echo "$CHANGED_SERVICES" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/services.json || echo '[]' > /tmp/services.json
 
-          # Write coverage to file
-          echo "${COVERAGE_DATA:-{}}" > /tmp/coverage.json
-
-          # Debug: show intermediate JSON
-          echo "=== errors ===" && cat /tmp/errors.json
-          echo "=== healthChecks ===" && cat /tmp/hc.json
-          echo "=== commits ===" && cat /tmp/commits.json
-          echo "=== services ===" && cat /tmp/services.json
-          echo "=== coverage ===" && cat /tmp/coverage.json
+          # Write coverage to file (avoid ${VAR:-{}} as bash misparses the braces)
+          if [ -n "${COVERAGE_DATA:-}" ]; then
+            echo "$COVERAGE_DATA" > /tmp/coverage.json
+          else
+            echo '{}' > /tmp/coverage.json
+          fi
 
           # Build payload safely using --slurpfile to avoid shell quoting issues
           PAYLOAD=$(jq -n \
