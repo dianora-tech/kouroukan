@@ -220,20 +220,20 @@ jobs:
           DEPLOY_STATUS="success"
           [ "${{ job.status }}" != "success" ] && DEPLOY_STATUS="failure"
 
-          # Construire la liste des commits en JSON
-          COMMITS_JSON=$(echo "$RECENT_COMMITS" | jq -R -s 'split("\n") | map(select(. != ""))')
+          # Write intermediate JSON to temp files to avoid shell quoting issues
+          echo "$RECENT_COMMITS" | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/commits.json || echo '[]' > /tmp/commits.json
+          echo "$IMPACTED_SERVICES" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/services.json || echo '[]' > /tmp/services.json
 
-          # Construire la liste des services impactes en JSON
-          SERVICES_JSON=$(echo "$IMPACTED_SERVICES" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(. != ""))')
-
-          # Construire la liste des erreurs en JSON
           if [ -n "${DEPLOY_ERRORS:-}" ]; then
-            ERRORS_JSON=$(echo "$DEPLOY_ERRORS" | tr ';' '\n' | jq -R -s 'split("\n") | map(select(. != ""))')
+            echo "$DEPLOY_ERRORS" | tr ';' '\n' | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/errors.json
           else
-            ERRORS_JSON="[]"
+            echo '[]' > /tmp/errors.json
           fi
 
-          # Payload JSON
+          echo "${HEALTH_CHECKS:-{}}" > /tmp/hc.json
+          echo "${COVERAGE_DATA:-{}}" > /tmp/coverage.json
+
+          # Build payload safely using --slurpfile
           PAYLOAD=$(jq -n \
             --arg env "test" \
             --arg branch "develop" \
@@ -245,11 +245,11 @@ jobs:
             --argjson duration "${DEPLOY_DURATION:-0}" \
             --arg startedAt "${DEPLOY_START}" \
             --arg runUrl "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-            --argjson commits "$COMMITS_JSON" \
-            --argjson services "$SERVICES_JSON" \
-            --argjson errors "$ERRORS_JSON" \
-            --argjson healthChecks "${HEALTH_CHECKS:-{}}" \
-            --argjson coverage "${COVERAGE_DATA:-{}}" \
+            --slurpfile commits /tmp/commits.json \
+            --slurpfile services /tmp/services.json \
+            --slurpfile errors /tmp/errors.json \
+            --slurpfile healthChecks /tmp/hc.json \
+            --slurpfile coverage /tmp/coverage.json \
             '{
               environment: $env,
               branch: $branch,
@@ -261,11 +261,11 @@ jobs:
               deploymentDurationSeconds: $duration,
               deploymentStartedAt: $startedAt,
               workflowRunUrl: $runUrl,
-              commits: $commits,
-              impactedServices: $services,
-              errors: $errors,
-              healthChecks: $healthChecks,
-              codeCoverage: $coverage
+              commits: $commits[0],
+              impactedServices: $services[0],
+              errors: $errors[0],
+              healthChecks: $healthChecks[0],
+              codeCoverage: $coverage[0]
             }')
 
           echo "Sending deployment report..."
@@ -499,15 +499,20 @@ jobs:
           DEPLOY_STATUS="success"
           [ "${{ job.status }}" != "success" ] && DEPLOY_STATUS="failure"
 
-          COMMITS_JSON=$(echo "$RECENT_COMMITS" | jq -R -s 'split("\n") | map(select(. != ""))')
-          SERVICES_JSON=$(echo "$IMPACTED_SERVICES" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(. != ""))')
+          # Write intermediate JSON to temp files to avoid shell quoting issues
+          echo "$RECENT_COMMITS" | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/commits.json || echo '[]' > /tmp/commits.json
+          echo "$IMPACTED_SERVICES" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/services.json || echo '[]' > /tmp/services.json
 
           if [ -n "${DEPLOY_ERRORS:-}" ]; then
-            ERRORS_JSON=$(echo "$DEPLOY_ERRORS" | tr ';' '\n' | jq -R -s 'split("\n") | map(select(. != ""))')
+            echo "$DEPLOY_ERRORS" | tr ';' '\n' | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/errors.json
           else
-            ERRORS_JSON="[]"
+            echo '[]' > /tmp/errors.json
           fi
 
+          echo "${HEALTH_CHECKS:-{}}" > /tmp/hc.json
+          echo "${COVERAGE_DATA:-{}}" > /tmp/coverage.json
+
+          # Build payload safely using --slurpfile
           PAYLOAD=$(jq -n \
             --arg env "production" \
             --arg branch "main" \
@@ -519,11 +524,11 @@ jobs:
             --argjson duration "${DEPLOY_DURATION:-0}" \
             --arg startedAt "${DEPLOY_START}" \
             --arg runUrl "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-            --argjson commits "$COMMITS_JSON" \
-            --argjson services "$SERVICES_JSON" \
-            --argjson errors "$ERRORS_JSON" \
-            --argjson healthChecks "${HEALTH_CHECKS:-{}}" \
-            --argjson coverage "${COVERAGE_DATA:-{}}" \
+            --slurpfile commits /tmp/commits.json \
+            --slurpfile services /tmp/services.json \
+            --slurpfile errors /tmp/errors.json \
+            --slurpfile healthChecks /tmp/hc.json \
+            --slurpfile coverage /tmp/coverage.json \
             '{
               environment: $env,
               branch: $branch,
@@ -535,11 +540,11 @@ jobs:
               deploymentDurationSeconds: $duration,
               deploymentStartedAt: $startedAt,
               workflowRunUrl: $runUrl,
-              commits: $commits,
-              impactedServices: $services,
-              errors: $errors,
-              healthChecks: $healthChecks,
-              codeCoverage: $coverage
+              commits: $commits[0],
+              impactedServices: $services[0],
+              errors: $errors[0],
+              healthChecks: $healthChecks[0],
+              codeCoverage: $coverage[0]
             }')
 
           echo "Sending deployment report..."

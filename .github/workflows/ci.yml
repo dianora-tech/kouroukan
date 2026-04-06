@@ -568,41 +568,45 @@ jobs:
 
       - name: Send CI report email
         run: |
-          # Build errors list from failed jobs
-          ERRORS_JSON="["
-          ERRORS_FIRST=true
           JOB_RESULTS=$(cat /tmp/ci-jobs.json)
 
+          # Build errors array using jq (only failed jobs)
+          echo '[]' > /tmp/errors.json
           for job in "Lint Frontend" "Test Frontend" "Lint Portal" "Test Gateway" "Test Services" "Validate SQL" "Build Docker" "Security Scan"; do
-            RESULT=$(echo "$JOB_RESULTS" | jq -r ".\"$job\"" 2>/dev/null || echo "skipped")
+            RESULT=$(echo "$JOB_RESULTS" | jq -r --arg j "$job" '.[$j] // "skipped"' 2>/dev/null || echo "skipped")
             if [ "$RESULT" = "failure" ]; then
-              [ "$ERRORS_FIRST" = "false" ] && ERRORS_JSON="${ERRORS_JSON},"
-              ERRORS_JSON="${ERRORS_JSON}\"Job echoue: $job\""
-              ERRORS_FIRST=false
+              jq --arg e "Job echoue: $job" '. + [$e]' /tmp/errors.json > /tmp/errors2.json && mv /tmp/errors2.json /tmp/errors.json
             fi
           done
-          ERRORS_JSON="${ERRORS_JSON}]"
 
-          # Build health checks as job statuses
-          HC_JSON="{"
-          HC_FIRST=true
+          # Build health checks object using jq
+          echo '{}' > /tmp/hc.json
           for job in "Lint Frontend" "Test Frontend" "Lint Portal" "Test Gateway" "Test Services" "Validate SQL" "Build Docker" "Security Scan"; do
-            RESULT=$(echo "$JOB_RESULTS" | jq -r ".\"$job\"" 2>/dev/null || echo "skipped")
+            RESULT=$(echo "$JOB_RESULTS" | jq -r --arg j "$job" '.[$j] // "skipped"' 2>/dev/null || echo "skipped")
             case "$RESULT" in
               success) CODE="200" ;;
               failure) CODE="500" ;;
               skipped) CODE="304" ;;
               *) CODE="000" ;;
             esac
-            [ "$HC_FIRST" = "false" ] && HC_JSON="${HC_JSON},"
-            HC_JSON="${HC_JSON}\"${job}\":\"${CODE}\""
-            HC_FIRST=false
+            jq --arg k "$job" --arg v "$CODE" '. + {($k): $v}' /tmp/hc.json > /tmp/hc2.json && mv /tmp/hc2.json /tmp/hc.json
           done
-          HC_JSON="${HC_JSON}}"
 
-          COMMITS_JSON=$(git log --oneline -5 "$COMMIT_SHA" 2>/dev/null | jq -R -s 'split("\n") | map(select(. != ""))')
-          SERVICES_JSON=$(echo "$CHANGED_SERVICES" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(. != ""))')
+          # Build commits and services arrays
+          git log --oneline -5 "$COMMIT_SHA" 2>/dev/null | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/commits.json || echo '[]' > /tmp/commits.json
+          echo "$CHANGED_SERVICES" | tr ',' '\n' | jq -R -s 'split("\n") | map(select(. != ""))' > /tmp/services.json || echo '[]' > /tmp/services.json
 
+          # Write coverage to file
+          echo "${COVERAGE_DATA:-{}}" > /tmp/coverage.json
+
+          # Debug: show intermediate JSON
+          echo "=== errors ===" && cat /tmp/errors.json
+          echo "=== healthChecks ===" && cat /tmp/hc.json
+          echo "=== commits ===" && cat /tmp/commits.json
+          echo "=== services ===" && cat /tmp/services.json
+          echo "=== coverage ===" && cat /tmp/coverage.json
+
+          # Build payload safely using --slurpfile to avoid shell quoting issues
           PAYLOAD=$(jq -n \
             --arg env "ci-$BRANCH" \
             --arg branch "$BRANCH" \
@@ -614,11 +618,11 @@ jobs:
             --argjson duration 0 \
             --arg startedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
             --arg runUrl "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-            --argjson commits "$COMMITS_JSON" \
-            --argjson services "$SERVICES_JSON" \
-            --argjson errors "$ERRORS_JSON" \
-            --argjson healthChecks "$HC_JSON" \
-            --argjson coverage "${COVERAGE_DATA:-{}}" \
+            --slurpfile commits /tmp/commits.json \
+            --slurpfile services /tmp/services.json \
+            --slurpfile errors /tmp/errors.json \
+            --slurpfile healthChecks /tmp/hc.json \
+            --slurpfile coverage /tmp/coverage.json \
             '{
               environment: $env,
               branch: $branch,
@@ -630,11 +634,11 @@ jobs:
               deploymentDurationSeconds: $duration,
               deploymentStartedAt: $startedAt,
               workflowRunUrl: $runUrl,
-              commits: $commits,
-              impactedServices: $services,
-              errors: $errors,
-              healthChecks: $healthChecks,
-              codeCoverage: $coverage
+              commits: $commits[0],
+              impactedServices: $services[0],
+              errors: $errors[0],
+              healthChecks: $healthChecks[0],
+              codeCoverage: $coverage[0]
             }')
 
           # Try test environment API first, fall back silently
