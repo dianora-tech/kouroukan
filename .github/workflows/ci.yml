@@ -247,11 +247,15 @@ jobs:
           --collect:"XPlat Code Coverage"
           --results-directory ./coverage
 
+      - name: Extract solution name
+        id: sln-name
+        run: echo "name=$(basename '${{ matrix.solution }}' .sln)" >> $GITHUB_OUTPUT
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-gateway-${{ strategy.job-index }}
+          name: test-results-${{ steps.sln-name.outputs.name }}
           path: "**/test-results.trx"
           retention-days: 7
 
@@ -259,7 +263,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-gateway-${{ strategy.job-index }}
+          name: coverage-${{ steps.sln-name.outputs.name }}
           path: coverage/**/coverage.cobertura.xml
           retention-days: 7
 
@@ -536,21 +540,27 @@ jobs:
           COVERAGE_JSON="{"
           FIRST=true
 
+          # Frontend coverage from vitest json-summary
           if [ -f ci-artifacts/frontend-coverage/coverage-summary.json ]; then
             PCT=$(jq -r '.total.lines.pct // "N/A"' ci-artifacts/frontend-coverage/coverage-summary.json 2>/dev/null || echo "N/A")
             COVERAGE_JSON="${COVERAGE_JSON}\"Frontend\":\"${PCT}%\""
             FIRST=false
           fi
 
-          for xml in $(find ci-artifacts -name "coverage.cobertura.xml" 2>/dev/null); do
-            COMPONENT=$(echo "$xml" | sed 's|ci-artifacts/coverage-||;s|/.*||')
+          # .NET coverage from Cobertura XML — one entry per artifact folder
+          for dir in $(find ci-artifacts -type d -name "coverage-*" 2>/dev/null | sort -u); do
+            COMPONENT=$(basename "$dir" | sed 's/^coverage-//')
+            # Find the first cobertura XML in this artifact folder (root-level has overall rate)
+            xml=$(find "$dir" -name "coverage.cobertura.xml" 2>/dev/null | head -1)
+            [ -z "$xml" ] && continue
+            # Extract line-rate from the root <coverage> element (first occurrence)
             LINE_RATE=$(grep -oP 'line-rate="\K[^"]+' "$xml" 2>/dev/null | head -1 || echo "")
-            if [ -n "$LINE_RATE" ]; then
-              PCT=$(echo "$LINE_RATE * 100" | bc 2>/dev/null | cut -d. -f1-2 || echo "N/A")
-              [ "$FIRST" = "false" ] && COVERAGE_JSON="${COVERAGE_JSON},"
-              COVERAGE_JSON="${COVERAGE_JSON}\"${COMPONENT}\":\"${PCT}%\""
-              FIRST=false
-            fi
+            [ -z "$LINE_RATE" ] && continue
+            # Calculate percentage with 2 decimal precision using awk
+            PCT=$(awk "BEGIN { printf \"%.2f\", $LINE_RATE * 100 }" 2>/dev/null || echo "N/A")
+            [ "$FIRST" = "false" ] && COVERAGE_JSON="${COVERAGE_JSON},"
+            COVERAGE_JSON="${COVERAGE_JSON}\"${COMPONENT}\":\"${PCT}%\""
+            FIRST=false
           done
 
           COVERAGE_JSON="${COVERAGE_JSON}}"
