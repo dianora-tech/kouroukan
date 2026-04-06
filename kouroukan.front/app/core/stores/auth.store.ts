@@ -240,7 +240,12 @@ export const useAuthStore = defineStore('auth', {
         }
         // Nettoyer localStorage
         if (import.meta.client) {
-          try { localStorage.removeItem('auth-profile') } catch { /* noop */ }
+          try {
+            localStorage.removeItem('auth-profile')
+          }
+          catch {
+            // noop
+          }
         }
         this.$reset()
         await navigateTo('/connexion', { replace: true })
