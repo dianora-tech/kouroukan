@@ -15,4 +15,7 @@ public class LoginRequest
     /// <summary>Mot de passe.</summary>
     [Required]
     public string Password { get; set; } = string.Empty;
+
+    /// <summary>Token Cloudflare Turnstile (protection anti-bot).</summary>
+    public string? TurnstileToken { get; set; }
 }
