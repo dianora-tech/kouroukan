@@ -143,12 +143,20 @@ jobs:
         run: |
           echo "Waiting for deployment $DEPLOYMENT_UUID to complete..."
           for i in $(seq 1 60); do
-            STATUS=$(curl -sf --max-time 10 \
+            # Fetch deployment status — store response in file to handle large payloads
+            HTTP_CODE=$(curl -s --max-time 30 \
               -H "Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}" \
               -H "Accept: application/json" \
-              "${{ secrets.COOLIFY_URL }}/api/v1/deployments/$DEPLOYMENT_UUID" \
-              | jq -r '.status // "unknown"')
+              -o /tmp/deploy-status.json -w '%{http_code}' \
+              "${{ secrets.COOLIFY_URL }}/api/v1/deployments/$DEPLOYMENT_UUID" 2>/dev/null || echo "000")
 
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "  Attempt $i: API returned HTTP $HTTP_CODE, retrying..."
+              sleep 20
+              continue
+            fi
+
+            STATUS=$(jq -r '.status // "unknown"' /tmp/deploy-status.json 2>/dev/null || echo "unknown")
             echo "  Attempt $i: status=$STATUS"
 
             case "$STATUS" in
@@ -163,11 +171,11 @@ jobs:
                 ;;
             esac
 
-            sleep 15
+            sleep 20
           done
 
-          echo "::error::Deployment timed out after 15 minutes"
-          echo "DEPLOY_ERRORS=Deploiement expire apres 15 minutes" >> $GITHUB_ENV
+          echo "::error::Deployment timed out after 20 minutes"
+          echo "DEPLOY_ERRORS=Deploiement expire apres 20 minutes" >> $GITHUB_ENV
           exit 1
 
       - name: Health check
@@ -421,13 +429,20 @@ jobs:
         id: wait
         run: |
           echo "Waiting for production deployment $DEPLOYMENT_UUID to complete..."
-          for i in $(seq 1 80); do
-            STATUS=$(curl -sf --max-time 10 \
+          for i in $(seq 1 60); do
+            HTTP_CODE=$(curl -s --max-time 30 \
               -H "Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}" \
               -H "Accept: application/json" \
-              "${{ secrets.COOLIFY_URL }}/api/v1/deployments/$DEPLOYMENT_UUID" \
-              | jq -r '.status // "unknown"')
+              -o /tmp/deploy-status.json -w '%{http_code}' \
+              "${{ secrets.COOLIFY_URL }}/api/v1/deployments/$DEPLOYMENT_UUID" 2>/dev/null || echo "000")
 
+            if [ "$HTTP_CODE" != "200" ]; then
+              echo "  Attempt $i: API returned HTTP $HTTP_CODE, retrying..."
+              sleep 20
+              continue
+            fi
+
+            STATUS=$(jq -r '.status // "unknown"' /tmp/deploy-status.json 2>/dev/null || echo "unknown")
             echo "  Attempt $i: status=$STATUS"
 
             case "$STATUS" in
@@ -442,7 +457,7 @@ jobs:
                 ;;
             esac
 
-            sleep 15
+            sleep 20
           done
 
           echo "::error::Production deployment timed out after 20 minutes"
