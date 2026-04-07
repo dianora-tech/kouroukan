@@ -17,10 +17,14 @@
 #   2. Renseigner toutes les variables d'environnement dans Coolify
 #   3. Coolify provisionne automatiquement les certificats SSL
 #
-# Images Docker :
-#   Les images sont buildées et poussées vers GHCR (ghcr.io) par la CI
-#   GitHub Actions. Coolify ne fait que pull + start (aucun build sur le VPS).
-#   Tag par défaut : "dev" (branche develop). Variable IMAGE_TAG configurable.
+# ⚠️  BUILD SUR SERVEURS < 8 Go RAM :
+#   Coolify lance `docker compose build` qui builde TOUS les services en
+#   parallèle. Sur un serveur avec peu de RAM (< 8 Go), cela échoue par OOM.
+#   Utiliser le script de build par lots à la place :
+#
+#     ./scripts/build-batched.sh              # Build tout par lots de 2
+#     BATCH_SIZE=3 ./scripts/build-batched.sh # Build par lots de 3
+#     ./scripts/build-batched.sh gateway      # Build un seul service
 #
 # Domaines configurés :
 #   portal       → https://kouroukan.dianora.org
@@ -74,7 +78,12 @@ services:
   # Exposé publiquement sur → https://kouroukan.dianora.org
   # ==========================================================================
   portal:
-    image: ghcr.io/dianora-tech/kouroukan/portal:${IMAGE_TAG:-dev}
+    build:
+      context: ./kouroukan.portal
+      dockerfile: Dockerfile
+      args:
+        APP_URL: https://app.kouroukan.dianora.org
+        APP_VERSION: ${APP_VERSION:-v1.0-dev}
     container_name: kouroukan-portal
     restart: unless-stopped
     <<: *app-networks
@@ -92,7 +101,11 @@ services:
   # Exposé publiquement sur → https://app.kouroukan.dianora.org
   # ==========================================================================
   frontend:
-    image: ghcr.io/dianora-tech/kouroukan/frontend:${IMAGE_TAG:-dev}
+    build:
+      context: ./kouroukan.front
+      dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-v1.0-dev}
     container_name: kouroukan-frontend
     environment:
       # URL interne : le SSR fait ses appels API en direct dans le réseau Docker
@@ -117,7 +130,11 @@ services:
   # Exposé publiquement sur → https://api.kouroukan.dianora.org
   # ==========================================================================
   gateway:
-    image: ghcr.io/dianora-tech/kouroukan/gateway:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: kouroukan.api/Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-v1.0-dev}
     container_name: kouroukan-gateway
     environment:
       - ConnectionStrings__DefaultConnection=Host=kouroukan-db;Port=5432;Database=${DB_NAME:-kouroukan};Username=${DB_USER:-kouroukan};Password=${DB_PASSWORD}
@@ -163,7 +180,9 @@ services:
   # ==========================================================================
 
   inscriptions-service:
-    image: ghcr.io/dianora-tech/kouroukan/inscriptions-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: inscriptions.service/Dockerfile
     container_name: kouroukan-inscriptions
     environment:
       <<: *jwt-env
@@ -183,7 +202,9 @@ services:
       - kouroukan-internal
 
   pedagogie-service:
-    image: ghcr.io/dianora-tech/kouroukan/pedagogie-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: pedagogie.service/Dockerfile
     container_name: kouroukan-pedagogie
     environment:
       <<: *jwt-env
@@ -203,7 +224,9 @@ services:
       - kouroukan-internal
 
   evaluations-service:
-    image: ghcr.io/dianora-tech/kouroukan/evaluations-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: evaluations.service/Dockerfile
     container_name: kouroukan-evaluations
     environment:
       <<: *jwt-env
@@ -223,7 +246,9 @@ services:
       - kouroukan-internal
 
   presences-service:
-    image: ghcr.io/dianora-tech/kouroukan/presences-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: presences.service/Dockerfile
     container_name: kouroukan-presences
     environment:
       <<: *jwt-env
@@ -243,7 +268,9 @@ services:
       - kouroukan-internal
 
   finances-service:
-    image: ghcr.io/dianora-tech/kouroukan/finances-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: finances.service/Dockerfile
     container_name: kouroukan-finances
     environment:
       <<: *jwt-env
@@ -263,7 +290,9 @@ services:
       - kouroukan-internal
 
   personnel-service:
-    image: ghcr.io/dianora-tech/kouroukan/personnel-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: personnel.service/Dockerfile
     container_name: kouroukan-personnel
     environment:
       <<: *jwt-env
@@ -283,7 +312,9 @@ services:
       - kouroukan-internal
 
   communication-service:
-    image: ghcr.io/dianora-tech/kouroukan/communication-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: communication.service/Dockerfile
     container_name: kouroukan-communication
     environment:
       <<: *jwt-env
@@ -303,7 +334,9 @@ services:
       - kouroukan-internal
 
   bde-service:
-    image: ghcr.io/dianora-tech/kouroukan/bde-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: bde.service/Dockerfile
     container_name: kouroukan-bde
     environment:
       <<: *jwt-env
@@ -323,7 +356,9 @@ services:
       - kouroukan-internal
 
   documents-service:
-    image: ghcr.io/dianora-tech/kouroukan/documents-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: documents.service/Dockerfile
     container_name: kouroukan-documents
     environment:
       <<: *jwt-env
@@ -348,7 +383,9 @@ services:
       - kouroukan-internal
 
   services-premium-service:
-    image: ghcr.io/dianora-tech/kouroukan/services-premium-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: services-premium.service/Dockerfile
     container_name: kouroukan-services-premium
     environment:
       <<: *jwt-env
@@ -368,7 +405,9 @@ services:
       - kouroukan-internal
 
   support-service:
-    image: ghcr.io/dianora-tech/kouroukan/support-service:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: support.service/Dockerfile
     container_name: kouroukan-support
     environment:
       <<: *jwt-env
@@ -393,7 +432,9 @@ services:
   # CACHE SERVICE (MemoryCache L1 + Redis L2 + Quartz.NET)
   # ==========================================================================
   cache:
-    image: ghcr.io/dianora-tech/kouroukan/cache:${IMAGE_TAG:-dev}
+    build:
+      context: ./vs2022
+      dockerfile: gn-cache/Dockerfile
     container_name: kouroukan-cache
     environment:
       Redis__ConnectionString: kouroukan-redis:6379
