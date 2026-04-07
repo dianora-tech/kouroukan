@@ -12,7 +12,7 @@ RUN npm ci --prefer-offline --no-audit --legacy-peer-deps
 COPY . .
 RUN node scripts/patch-pinia.mjs
 ENV NUXT_TYPECHECK=false
-ENV NODE_OPTIONS="--max-old-space-size=2048"
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 ARG API_BASE_URL=http://gateway:5000
 ENV API_BASE_URL=${API_BASE_URL}
 ARG APP_VERSION=v1.0-dev
