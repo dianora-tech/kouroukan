@@ -351,25 +351,40 @@ jobs:
           echo "All migrations executed successfully"
 
   # ===========================================================================
-  # Docker — Build images
-  # develop : selective (only changed services) pour des builds rapides
-  # main    : full rebuild (toutes les images) pour la production
+  # Docker — Build and push images to GHCR
+  # Only runs on push to develop or main branches
   # ===========================================================================
-  build-docker:
-    name: Build Docker Images
+  build-and-push-images:
+    name: "Build & Push ${{ matrix.service.name }}"
     runs-on: ubuntu-latest
     needs: [changes, lint-frontend, test-frontend, lint-portal, test-gateway, test-services]
     if: |
       always() &&
       github.event_name == 'push' &&
-      !contains(needs.*.result, 'failure') &&
-      (github.ref == 'refs/heads/main' ||
-       needs.changes.outputs.frontend == 'true' ||
-       needs.changes.outputs.portal == 'true' ||
-       needs.changes.outputs.gateway == 'true' ||
-       needs.changes.outputs.shared-libs == 'true' ||
-       needs.changes.outputs.any-service == 'true' ||
-       needs.changes.outputs.docker == 'true')
+      (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main') &&
+      !contains(needs.*.result, 'failure')
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - { name: portal, context: ./kouroukan.portal, dockerfile: ./kouroukan.portal/Dockerfile }
+          - { name: frontend, context: ./kouroukan.front, dockerfile: ./kouroukan.front/Dockerfile }
+          - { name: gateway, context: ./vs2022, dockerfile: ./vs2022/kouroukan.api/Dockerfile }
+          - { name: cache, context: ./vs2022, dockerfile: ./vs2022/gn-cache/Dockerfile }
+          - { name: inscriptions-service, context: ./vs2022, dockerfile: ./vs2022/inscriptions.service/Dockerfile }
+          - { name: pedagogie-service, context: ./vs2022, dockerfile: ./vs2022/pedagogie.service/Dockerfile }
+          - { name: evaluations-service, context: ./vs2022, dockerfile: ./vs2022/evaluations.service/Dockerfile }
+          - { name: presences-service, context: ./vs2022, dockerfile: ./vs2022/presences.service/Dockerfile }
+          - { name: finances-service, context: ./vs2022, dockerfile: ./vs2022/finances.service/Dockerfile }
+          - { name: personnel-service, context: ./vs2022, dockerfile: ./vs2022/personnel.service/Dockerfile }
+          - { name: communication-service, context: ./vs2022, dockerfile: ./vs2022/communication.service/Dockerfile }
+          - { name: bde-service, context: ./vs2022, dockerfile: ./vs2022/bde.service/Dockerfile }
+          - { name: documents-service, context: ./vs2022, dockerfile: ./vs2022/documents.service/Dockerfile }
+          - { name: services-premium-service, context: ./vs2022, dockerfile: ./vs2022/services-premium.service/Dockerfile }
+          - { name: support-service, context: ./vs2022, dockerfile: ./vs2022/support.service/Dockerfile }
     steps:
       - uses: actions/checkout@v4
 
@@ -382,72 +397,67 @@ jobs:
 
           if [ "$BRANCH" = "main" ]; then
             APP_VERSION="v${BASE_VERSION}"
-          elif [ "$BRANCH" = "develop" ]; then
-            APP_VERSION="v${BASE_VERSION}-dev.${TIMESTAMP}"
           else
-            # Nettoyer le nom de branche (feat/xxx → feat-xxx)
-            CLEAN_BRANCH=$(echo "$BRANCH" | sed 's/[^a-zA-Z0-9]/-/g' | head -c 30)
-            APP_VERSION="v${BASE_VERSION}-${CLEAN_BRANCH}.${TIMESTAMP}"
+            APP_VERSION="v${BASE_VERSION}-dev.${TIMESTAMP}"
           fi
 
           echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
           echo "Generated version: $APP_VERSION"
 
+      - name: Determine image tags
+        id: tags
+        run: |
+          IMAGE="ghcr.io/dianora-tech/kouroukan/${{ matrix.service.name }}"
+          SHORT_SHA="${GITHUB_SHA::7}"
+
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            echo "tags=${IMAGE}:latest,${IMAGE}:sha-${SHORT_SHA}" >> $GITHUB_OUTPUT
+          else
+            echo "tags=${IMAGE}:dev,${IMAGE}:sha-${SHORT_SHA}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Determine build args
+        id: build-args
+        run: |
+          ARGS="APP_VERSION=${{ steps.version.outputs.version }}"
+
+          if [ "${{ matrix.service.name }}" = "portal" ]; then
+            if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+              ARGS="${ARGS}
+          APP_URL=https://app.kouroukan.gn"
+            else
+              ARGS="${ARGS}
+          APP_URL=https://app.kouroukan.dianora.org"
+            fi
+          fi
+
+          # Use heredoc to preserve newlines
+          {
+            echo "args<<EOF"
+            echo "$ARGS"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # --- Production (main) : rebuild complet ---
-      - name: Build ALL images (production)
-        if: github.ref == 'refs/heads/main'
-        env:
-          APP_VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          docker compose -f docker-compose.production.yml build --parallel \
-            --build-arg APP_VERSION=$APP_VERSION
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # --- Autres branches : rebuild selectif par service ---
-      - name: Build changed images only
-        if: github.ref != 'refs/heads/main'
-        env:
-          APP_VERSION: ${{ steps.version.outputs.version }}
-          SERVICES_MATRIX: ${{ needs.changes.outputs.services-matrix }}
-        run: |
-          SERVICES=""
-
-          # Frontend
-          if [ "${{ needs.changes.outputs.frontend }}" = "true" ]; then
-            SERVICES="$SERVICES frontend"
-          fi
-
-          # Portal
-          if [ "${{ needs.changes.outputs.portal }}" = "true" ]; then
-            SERVICES="$SERVICES portal"
-          fi
-
-          # Gateway
-          if [ "${{ needs.changes.outputs.gateway }}" = "true" ] || [ "${{ needs.changes.outputs.shared-libs }}" = "true" ]; then
-            SERVICES="$SERVICES gateway cache"
-          fi
-
-          # Microservices — uniquement ceux qui ont change
-          DOCKER_SERVICES=$(echo "$SERVICES_MATRIX" | jq -r '.[].docker' 2>/dev/null || true)
-          for svc in $DOCKER_SERVICES; do
-            SERVICES="$SERVICES $svc"
-          done
-
-          # Docker/infra changes
-          if [ "${{ needs.changes.outputs.docker }}" = "true" ]; then
-            SERVICES="$SERVICES kouroukan-db kouroukan-redis rabbitmq minio"
-          fi
-
-          if [ -z "$SERVICES" ]; then
-            echo "No services to build"
-            exit 0
-          fi
-
-          echo "Building services: $SERVICES"
-          docker compose -f docker-compose.coolify.yml build --parallel $SERVICES \
-            --build-arg APP_VERSION=$APP_VERSION
+      - name: Build and push ${{ matrix.service.name }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.service.context }}
+          file: ${{ matrix.service.dockerfile }}
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          build-args: ${{ steps.build-args.outputs.args }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   # ===========================================================================
   # Security — Scan avec Trivy
@@ -455,7 +465,7 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    needs: [build-docker]
+    needs: [build-and-push-images]
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
@@ -476,7 +486,7 @@ jobs:
   notify-ci:
     name: CI Report Email
     runs-on: ubuntu-latest
-    needs: [changes, lint-frontend, test-frontend, lint-portal, test-gateway, test-services, validate-sql, build-docker, security-scan]
+    needs: [changes, lint-frontend, test-frontend, lint-portal, test-gateway, test-services, validate-sql, build-and-push-images, security-scan]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -496,7 +506,7 @@ jobs:
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
           # Determine global status
-          RESULTS="${{ needs.lint-frontend.result }},${{ needs.test-frontend.result }},${{ needs.lint-portal.result }},${{ needs.test-gateway.result }},${{ needs.test-services.result }},${{ needs.validate-sql.result }},${{ needs.build-docker.result }},${{ needs.security-scan.result }}"
+          RESULTS="${{ needs.lint-frontend.result }},${{ needs.test-frontend.result }},${{ needs.lint-portal.result }},${{ needs.test-gateway.result }},${{ needs.test-services.result }},${{ needs.validate-sql.result }},${{ needs.build-and-push-images.result }},${{ needs.security-scan.result }}"
 
           if echo "$RESULTS" | grep -q "failure"; then
             echo "CI_STATUS=failure" >> $GITHUB_ENV
@@ -513,7 +523,7 @@ jobs:
             "Test Gateway": "${{ needs.test-gateway.result }}",
             "Test Services": "${{ needs.test-services.result }}",
             "Validate SQL": "${{ needs.validate-sql.result }}",
-            "Build Docker": "${{ needs.build-docker.result }}",
+            "Build & Push Images": "${{ needs.build-and-push-images.result }}",
             "Security Scan": "${{ needs.security-scan.result }}"
           }
           ENDJSON
@@ -572,7 +582,7 @@ jobs:
 
           # Build errors array using jq (only failed jobs)
           echo '[]' > /tmp/errors.json
-          for job in "Lint Frontend" "Test Frontend" "Lint Portal" "Test Gateway" "Test Services" "Validate SQL" "Build Docker" "Security Scan"; do
+          for job in "Lint Frontend" "Test Frontend" "Lint Portal" "Test Gateway" "Test Services" "Validate SQL" "Build & Push Images" "Security Scan"; do
             RESULT=$(echo "$JOB_RESULTS" | jq -r --arg j "$job" '.[$j] // "skipped"' 2>/dev/null || echo "skipped")
             if [ "$RESULT" = "failure" ]; then
               jq --arg e "Job echoue: $job" '. + [$e]' /tmp/errors.json > /tmp/errors2.json && mv /tmp/errors2.json /tmp/errors.json
@@ -581,7 +591,7 @@ jobs:
 
           # Build health checks object using jq
           echo '{}' > /tmp/hc.json
-          for job in "Lint Frontend" "Test Frontend" "Lint Portal" "Test Gateway" "Test Services" "Validate SQL" "Build Docker" "Security Scan"; do
+          for job in "Lint Frontend" "Test Frontend" "Lint Portal" "Test Gateway" "Test Services" "Validate SQL" "Build & Push Images" "Security Scan"; do
             RESULT=$(echo "$JOB_RESULTS" | jq -r --arg j "$job" '.[$j] // "skipped"' 2>/dev/null || echo "skipped")
             case "$RESULT" in
               success) CODE="200" ;;
