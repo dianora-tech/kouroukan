@@ -42,6 +42,8 @@ try
             policy.WithOrigins(
                     "https://www.kouroukan.gn",
                     "https://app.kouroukan.gn",
+                    "https://kouroukan.dianora.org",
+                    "https://app.kouroukan.dianora.org",
                     "http://localhost",
                     "http://localhost:3000",
                     "http://localhost:3001",

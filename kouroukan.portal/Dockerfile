@@ -23,6 +23,8 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 COPY --from=build /app/.output/public /usr/share/nginx/html
 
+# Nginx config with API reverse proxy to gateway
+# In SSG mode, Nitro routeRules don't work — Nginx handles /api/ proxying
 COPY <<'EOF' /etc/nginx/conf.d/portal.conf
 server {
     listen 80;
@@ -33,6 +35,17 @@ server {
 
     root /usr/share/nginx/html;
     index index.html;
+
+    # Proxy API requests to the gateway service
+    location /api/ {
+        proxy_pass http://gateway:5000/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_for_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 30s;
+        proxy_connect_timeout 10s;
+    }
 
     location / {
         try_files $uri $uri/ $uri.html /200.html;
